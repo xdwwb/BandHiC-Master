@@ -26,10 +26,6 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Bump version and create Git tag
-        run: |
-          pip install python-semantic-release
-          semantic-release version
 
       - name: Build release distributions
         run: |
