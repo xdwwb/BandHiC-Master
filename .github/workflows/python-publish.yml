@@ -26,6 +26,11 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Bump version and create Git tag
+        run: |
+          pip install python-semantic-release
+          semantic-release version
+
       - name: Build release distributions
         run: |
           # NOTE: put your own distribution build steps here.
@@ -37,6 +42,24 @@ jobs:
         with:
           name: release-dists
           path: dist/
+
+  test-install:
+    runs-on: ubuntu-latest
+    needs:
+      - release-build
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-dists
+          path: dist/
+
+      - name: Install and verify package
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install dist/*.whl || pip install dist/*.tar.gz
+          python -c "import bandhic; print(bandhic.__version__)"
 
   pypi-publish:
     runs-on: ubuntu-latest
@@ -68,3 +91,4 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist/
+          password: ${{ secrets.PYPI_API_TOKEN }}
