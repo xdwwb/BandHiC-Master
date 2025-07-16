@@ -12,7 +12,6 @@ using a banded matrix representation.
 """
 
 import copy
-import imp
 import sys
 import warnings
 from numbers import Number

@@ -17,6 +17,17 @@ from typing import Dict, Optional
 import hicstraw
 import cooler
 
+__all__ = [
+    "save_npz",
+    "load_npz",
+    "straw_chr",
+    "straw_all_chrs",
+    "cooler_chr",
+    "cooler_all_chrs",
+    "cooler_chr_all_cells",
+    "cooler_all_cells_all_chrs",
+]
+
 def save_npz(file_name: str, mat: band_hic_matrix) -> None:
     """
     Save a band_hic_matrix to a .npz file.
@@ -159,7 +170,7 @@ def straw_chr(
         resolution,
     )
 
-#TODO: 这里可以优化一下，直接过滤距离？
+#TODO: can more fast?
     row_idx = np.array(
         [record.binX // resolution for record in records]
     )
@@ -243,6 +254,7 @@ def cooler_chr(
     file_path: str,
     chrom: str,
     diag_num: int,
+    cell_id: Optional[str] = None,
     resolution: Optional[int] = None,
     balance: bool = True,
 ) -> band_hic_matrix:
@@ -257,6 +269,8 @@ def cooler_chr(
         Chromosome name.
     diag_num : int
         Number of diagonals to consider.
+    cell_id : str, optional
+        Cell ID for .scool files.
     resolution : int, optional
         Resolution of the Hi-C data. 
     balance : bool, optional
@@ -293,9 +307,9 @@ def cooler_chr(
     elif file_format == "cool":
         # For .cool and .mcool files, we can use the file path directly
         cool_file = file_path
-    # TODO: support scool files
-    # elif file_format == "scool":
-    #     cool_file = file_path + "::/cells/{cell_id}".format(cell_id=cell_id)
+    # TODO: support and test scool files
+    elif file_format == "scool":
+        cool_file = file_path + "::/cells/{cell_id}".format(cell_id=cell_id)
     else:
         raise ValueError(
             f"Unsupported file format: {file_format}. Supported formats are .cool, .mcool, and .cool."
@@ -314,6 +328,7 @@ def cooler_all_chrs(
     file_path: str,
     diag_num: int,
     resolution: Optional[int] = None,
+    cell_id: Optional[str] = None,
     balance: bool = True,
 ) -> Dict[str, band_hic_matrix]:
     """
@@ -327,6 +342,8 @@ def cooler_all_chrs(
         Number of diagonals to consider.
     resolution : int, optional
         Resolution of the Hi-C data. 
+    cell_id : str, optional
+        Cell ID for .scool files.
     balance : bool, optional
         If True, use balanced data. Default is False. This parameter is specific to cooler files.
 
@@ -355,9 +372,117 @@ def cooler_all_chrs(
         mats[chrom] = cooler_chr(
             file_path,
             chrom,
+            cell_id=cell_id,
             diag_num=diag_num,
             resolution=resolution,
             balance=balance,
         )
+    
+    return mats
+
+# TODO: need test for scool files
+def cooler_chr_all_cells(
+    file_path: str,
+    chrom: str,
+    diag_num: int,
+    balance: bool = True,
+) -> Dict[str, band_hic_matrix]:
+    """
+    Read Hi-C data from a .scool file for a specific chromosome and return a dictionary of band_hic_matrix objects for all cells.
+
+    Parameters
+    ----------
+    file_path : str
+        Path to the .scool file.
+    chrom : str
+        Chromosome name.
+    diag_num : int
+        Number of diagonals to consider.
+    balance : bool, optional
+        If True, use balanced data. Default is False. This parameter is specific to cooler files.
+
+    Returns
+    -------
+    Dict[str, band_hic_matrix]
+        A dictionary mapping cell IDs to band_hic_matrix objects for the specified chromosome.
+
+    Raises
+    ------
+    ValueError
+        If the scool file is invalid or parameters are incorrect.
+
+    Examples
+    --------
+    >>> import bandhic as bh
+    >>> mats = bh.cooler_chr_all_cells('/Users/wwb/Documents/workspace/BandHiC-Master/data/yeast.10kb.scool', 'chrI', diag_num=10, resolution=10000)
+    >>> isinstance(mats['cell1'], band_hic_matrix)
+    True
+    """
+    
+    clr = cooler.Cooler(file_path)
+    mats = {}
+    for cell_id in clr.cell_ids:
+        try:
+            mats[cell_id] = cooler_chr(
+                file_path,
+                chrom,
+                cell_id=cell_id,
+                diag_num=diag_num,
+                balance=balance,
+            )
+        except ValueError as e:
+            raise ValueError(
+                f"Failed to read cooler group '{file_path}' for chromosome '{chrom}' and cell '{cell_id}': {e}"
+            )
+
+# TODO: need test for scool files
+def cooler_all_cells_all_chrs(
+    file_path: str,
+    diag_num: int,
+    resolution: Optional[int] = None,
+    ) -> Dict[str, Dict[str, band_hic_matrix]]:
+    """
+    Read Hi-C data from a .scool file for all cells and return a dictionary of dictionaries of band_hic_matrix objects.
+
+    Parameters
+    ----------
+    file_path : str
+        Path to the .scool file.
+    diag_num : int
+        Number of diagonals to consider.
+    resolution : int, optional
+        Resolution of the Hi-C data. 
+
+    Returns
+    -------
+    Dict[str, Dict[str, band_hic_matrix]]
+        A dictionary mapping cell IDs to dictionaries mapping chromosome names to band_hic_matrix objects.
+
+    Raises
+    ------
+    ValueError
+        If the scool file is invalid or parameters are incorrect.
+
+    Examples
+    --------
+    >>> import bandhic as bh
+    >>> mats = bh.cooler_all_cells('/Users/wwb/Documents/workspace/BandHiC-Master/data/yeast.10kb.scool', diag_num=10, resolution=10000)
+    >>> isinstance(mats['cell1']['chrI'], band_hic_matrix)
+    True
+    """
+    clr = cooler.Cooler(file_path)
+    
+    mats = {}
+    
+    for cell_id in clr.cell_ids:
+        mats[cell_id] = {}
+        for chrom in clr.chromnames:
+            mats[cell_id][chrom] = cooler_chr(
+                file_path,
+                chrom,
+                cell_id=cell_id,
+                diag_num=diag_num,
+                resolution=resolution,
+            )
     
     return mats

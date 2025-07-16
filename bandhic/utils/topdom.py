@@ -23,6 +23,11 @@ import scipy.sparse as sparse
 import bandhic as bh
 from typing import Union
 
+__all__ = [
+    "call_tad",
+    "topdom",
+]
+
 def call_tad(hic_matrix:Union[bh.band_hic_matrix, np.ndarray],
                 resolution:int,
                 chrom_short:str,

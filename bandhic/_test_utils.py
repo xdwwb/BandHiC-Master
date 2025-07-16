@@ -13,6 +13,11 @@ This module provides functions to compare two band_hic_matrix objects and assert
 from .bandhic import band_hic_matrix
 import numpy as np
 
+__all__ = [
+    "matrix_equal",
+    "assert_band_matrix_equal",
+]
+
 def matrix_equal(a: band_hic_matrix, b: band_hic_matrix) -> bool:
     """
     Check if two band_hic_matrix objects are equal.

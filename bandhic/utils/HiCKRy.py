@@ -8,7 +8,7 @@ Date: 2025-06-11
 Email: wangweibing@xidian.edu.cn
 
 This module provides functions to load Hi-C interaction data, compute bias values, and apply the Knight-Ruiz normalization algorithm.
-It is designed to work with Hi-C data in the .hic format and can handle large datasets efficiently.
+It is designed to work with Hi-C data in the `.hic` format and can handle large datasets efficiently.
 This code is modified from the original HiCKRy implementation by the Ay Lab, we added some features and optimizations for usability.
 
 These are two ways to run this script:
@@ -29,6 +29,10 @@ import sys
 import numpy as np
 import scipy.sparse as sps
 import time
+
+__all__ = [
+    "compute_bin_bias",
+]
 
 def compute_bin_bias(hic_coo,verbose=False):
     """

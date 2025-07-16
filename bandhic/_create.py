@@ -14,6 +14,17 @@ from typing import Tuple, Union
 import numpy as np
 from .bandhic import band_hic_matrix
 
+__all__ = [
+    "ones",
+    "zeros",
+    "eye",
+    "full",
+    "zeros_like",
+    "ones_like",
+    "eye_like",
+    "full_like",
+]
+
 def ones(
     shape: Tuple[int, int], diag_num: int = 1, dtype: type = np.float64
 ) -> band_hic_matrix:

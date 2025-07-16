@@ -1,11 +1,12 @@
 name: bandhic
 channels:
+  - conda-forge
   - defaults
 dependencies:
-  - python>=3.11.7
-  - numpy>=1.26.4
-  - scipy>=1.16.0
-  - pandas>=2.3.1
+  - python>=3.11
+  - numpy>=2.3
+  - scipy>=1.16
+  - pandas>=2.3
   - pip:
-    - hic-straw>=1.3.1
-    - cooler>=0.10.3
+    - hic-straw>=1.3
+    - cooler>=0.10
