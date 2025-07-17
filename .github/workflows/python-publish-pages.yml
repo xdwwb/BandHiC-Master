@@ -15,6 +15,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Disable Jekyll
+        run: touch docs/build/html/.nojekyll
+        
       - name: Deploy prebuilt HTML
         uses: peaceiris/actions-gh-pages@v4
         with:
