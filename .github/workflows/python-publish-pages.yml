@@ -26,6 +26,8 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install sphinx pydata-sphinx-theme
+          pip install .
+          
       - name: Build Sphinx documentation
         working-directory: docs
         run: |
