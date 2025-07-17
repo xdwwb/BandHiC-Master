@@ -1,11 +1,9 @@
 # BandHiC
 
-**BandHiC** is a Python package for efficient storage, manipulation, and analysis of Hi-C matrices using a banded matrix representation.
+[**BandHiC**](https:pypi.org/project/bandhic) is a Python package for efficient storage, manipulation, and analysis of Hi-C matrices using a banded matrix representation.
 
 ## Overview
 Given that most informative chromatin contacts occur within a limited genomic distance (typically within 2 Mb), **BandHiC** adopts a banded storage scheme that stores only a configurable diagonal bandwidth of the dense Hi-C contact matrices. This design can reduce memory usage by up to 99% compared to dense matrices, while still supporting fast random access and user-friendly indexing operations. In addition, BandHiC supports flexible masking mechanisms to efficiently handle missing values, outliers, and unmappable genomic regions. It also provides a suite of vectorized operations optimized with NumPy, making it both scalable and practical for ultra-high-resolution Hi-C data analysis.
-
----
 
 ## 🔧 Installation
 
@@ -13,12 +11,12 @@ Given that most informative chromatin contacts occur within a limited genomic di
 
 **BandHiC** could be installed in a linux-like system and requires the following dependencies. 
 
-    1. python>=3.11
-    2. numpy>=2.3
-    3. pandas>=2.3
-    4. scipy>=1.16
-    5. cooler>=0.10
-    6. hic_straw>=1.3
+1. python>=3.11
+2. numpy>=2.3
+3. pandas>=2.3
+4. scipy>=1.16
+5. [cooler>=0.10](https://cooler.readthedocs.io/en/latest/)
+6. [hic_straw>=1.3](https://pypi.org/project/hic-straw/)
 
 There are two recommended ways to install **BandHiC**:
 
@@ -51,12 +49,9 @@ If you already have Python ≥ 3.11 installed:
 
 ### Prerequisites
 
-BandHiC can serve as an alternative to the NumPy package when managing and manipulating Hi-C data, aiming to address the issue of excessive memory usage caused by storing dense matrices using NumPy’s `ndarray`. At the same time, BandHiC supports masking operations similar to NumPy’s ma.MaskedArray module, with enhancements tailored for Hi-C data.
+BandHiC can serve as an alternative to the NumPy package when managing and manipulating Hi-C data, aiming to address the issue of excessive memory usage caused by storing dense matrices using NumPy’s `ndarray`. At the same time, BandHiC supports masking operations similar to NumPy’s `ma.MaskedArray` module, with enhancements tailored for Hi-C data.
 
-Users can leverage their experience with NumPy when using the BandHiC package, so it is recommended that users have some basic knowledge of NumPy. A link to NumPy is provided below.
-
-[https://numpy.org](https://numpy.org)
-
+Users can leverage their experience with NumPy when using the BandHiC package, so it is recommended that users have some basic knowledge of NumPy. A link to NumPy is provided below: [https://numpy.org](https://numpy.org)
 
 ### Import `bandhic` package
 ```Python
