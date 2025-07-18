@@ -74,7 +74,7 @@ from numpy import tanh as _np_tanh
 from numpy import true_divide as _np_true_divide
 
 __all__ = [
-    band_hic_matrix,
+    "band_hic_matrix",
 ]
 
 # Automatically generate band_hic_matrix methods for common NumPy ufuncs

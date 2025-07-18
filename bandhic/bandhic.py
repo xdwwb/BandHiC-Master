@@ -57,9 +57,10 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
     """
     Symmetric banded matrix stored in upper-triangular format.
     This storage format is motivated by high-resolution Hi-C data characteristics:
-        1. Symmetry of contact maps.
-        2. Interaction frequency concentrated near the diagonal; long-range contacts are sparse (mostly zero).
-        3. Contact frequency decays sharply with genomic distance.
+    1. Symmetry of contact maps.
+    2. Interaction frequency concentrated near the diagonal; long-range contacts are sparse (mostly zero).
+    3. Contact frequency decays sharply with genomic distance.
+    
     By storing only the main and a fixed number of super-diagonals as columns of a band matrix
     (diagonal-major storage: diagonal k stored in column k), we drastically reduce memory usage
     while enabling random access to Hi-C contacts. Additionally, mask and mask_row_col arrays
@@ -111,7 +112,6 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         default_value: Union[int, float] = 0,
         band_data_input: bool = False,
     ) -> None:
-        
         """
         Initialize a band_hic_matrix instance.
 
@@ -909,12 +909,12 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         int
             Number of valid entries in the banded matrix.
 
-            Examples
-            --------
-            >>> import bandhic as bh
-            >>> mat = bh.band_hic_matrix(np.eye(4), diag_num=2)
-            >>> mat.count_masked()
-            0
+        Examples
+        --------
+        >>> import bandhic as bh
+        >>> mat = bh.band_hic_matrix(np.eye(4), diag_num=2)
+        >>> mat.count_masked()
+        0
         """
         if self.mask is None:
             return 0
@@ -1207,6 +1207,7 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         >>> result = mat3[bool_mask]  # Use boolean mask for indexing
         >>> isinstance(result, np.ma.MaskedArray)
         True
+        
         >>> result
         masked_array(data=[1.0, 1.0, 1.0, 1.0],
                     mask=[False, False, False, False],
@@ -1342,18 +1343,18 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         >>> import bandhic as bh
         >>> import numpy as np
         >>> mat = bh.band_hic_matrix(np.zeros((4,4)), diag_num=2, dtype=int)
-        
+
         # Single element assignment
         >>> mat[1, 2] = 5
         >>> mat[1, 2]
         5
-        
+
         # Slice assignment to square submatrix
         >>> mat[0:2, 0:2] = [[1, 2], [2, 4]]
         >>> mat[0:2, 0:2].todense()
         array([[1, 2],
                [2, 4]])
-               
+
         # Single-axis slice assignment (equivalent square slice)
         >>> mat[2:4] = 0
         >>> mat[2:4].todense()

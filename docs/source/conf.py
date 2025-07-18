@@ -12,7 +12,7 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../../'))
+# sys.path.insert(0, os.path.abspath('../../'))
 
 
 # -- Project information -----------------------------------------------------
@@ -22,7 +22,7 @@ copyright = '2025, Weibing Wang'
 author = 'Weibing Wang'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1'
+version = '0.1.2'
 
 
 # -- General configuration ---------------------------------------------------
@@ -37,12 +37,16 @@ extensions = [
     'sphinx.ext.autosummary',  # 自动生成 API 文档
     'sphinx.ext.napoleon',      # 支持 NumPy / Google 风格
     'sphinx.ext.viewcode',      # （可选）源码链接
+    'sphinx_autodoc_typehints',  # 类型提示支持
 ]
 
 autosummary_generate = True
 
 napoleon_numpy_docstring = True
 napoleon_google_docstring = False
+
+autodoc_typehints = "description"
+typehints_fully_qualified = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -79,19 +83,22 @@ html_theme_options = {
     #     "image_light": "logo-light.png",   # 可选：浅色模式下的 logo
     #     "image_dark": "logo-dark.png",     # 可选：深色模式下的 logo
     # },
-    # "icon_links": [                        # 可在右上角加快捷链接
-    #     {
-    #         "name": "GitHub",
-    #         "url": "https://github.com/xdwwb/BandHiC-Master/tree/master",
-    #         "icon": "fab fa-github",
-    #     },
-    # ],
-    # "navbar_start": ["navbar-logo"],      # 导航栏左侧元素
-    # "navbar_center": ["navbar-nav"],      # 导航栏中部元素
-    # "navbar_end":    ["navbar-icon-links"],   # 导航栏右侧元素
-    # "show_prev_next": False,              # 隐藏／显示上下篇链接
-    # "navigation_depth": 2,                # 侧边栏显示深度
-    # "use_edit_page_button": True,         # 在页面上显示“Edit on GitHub”按钮
+    "icon_links": [                        # 可在右上角加快捷链接
+        {
+            "name": "GitHub",
+            "url": "https://github.com/xdwwb/BandHiC-Master/tree/master",
+            "icon": "fab fa-github",
+            "type": "fontawesome",
+        },
+    ],
+    "navbar_start": ["navbar-logo"],      # 导航栏左侧元素
+    "navbar_center": ["navbar-nav"],      # 导航栏中部元素
+    "navbar_end":    ["navbar-icon-links"],   # 导航栏右侧元素
+    "show_prev_next": True,              # 隐藏／显示上下篇链接
+    "navigation_depth": 2,                # 侧边栏显示深度
+    "collapse_navigation": False,  # 不折叠目录
+    "show_toc_level": 2,  # 控制右侧“本页目录”的显示层数
+    "use_edit_page_button": True,         # 在页面上显示“Edit on GitHub”按钮
     # 更多选项请参考官方文档
 }
 
@@ -106,8 +113,11 @@ html_static_path = ["_static"]
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-
-
+html_context = {
+    "github_user": "xdwwb",      # 你的 GitHub 用户名
+    "github_repo": "BandHiC-Master",      # 你的 GitHub 仓库名
+    "github_version": "master",                   # 或者是你仓库中的版本名，通常是 "main" 或 "master"
+}
 # -- Options for LaTeX output -------------------------------------------------
 
 latex_elements = {
