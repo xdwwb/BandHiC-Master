@@ -13,7 +13,7 @@ To further enhance flexibility of usage, ``band_hic_matrix`` integrates an optio
 Lastly, a scalar default value *d* is defined to fill in the undefined entries of *A* not covered by the band matrix *D*. This default is typically set to 0, consistent with the assumption that long-range interactions are negligibly sparse. It also ensures that reconstruction of the full matrix *A* (if required) can be achieved seamlessly by combining *D*, *M*, *X*, and *d*. Overall, ``band_hic_matrix`` provides an efficient, flexible data structure for scalable Hi-C data analysis.
 
 Features of BandHiC
-------------------------
+-------------------
 
 A key feature of ``band_hic_matrix`` is its direct coordinate mapping between the banded matrix *B* and the full dense matrix *A*. For any pair of genomic loci *(i, j)* satisfying the band constraint :math:`|i - j| \le k`, the interaction frequency :math:`A[i, j]` can be accessed in constant time via :math:`D[i, j - i]`. This structure ensures random access in :math:`\mathcal{O}(1)` time, which is critical for performance-sensitive Hi-C analyses, particularly when memory constraints prohibit the use of fully dense matrices. Data access in ``band_hic_matrix`` is fully consistent with that of a dense matrix, as each entry is accessed via :math:`B[i, j] = D[i, j - i] = A[i, j]`, allowing users to interact with ``band_hic_matrix`` objects as if they were dense matrices without needing to consider the underlying implementation.
 

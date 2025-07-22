@@ -1,5 +1,6 @@
-Create Functions
------------------
+Creation Functions
+------------------
+These functions create BandHiC matrices with specific properties.
 
 .. autosummary::
    :toctree: ../_autosummary
@@ -12,3 +13,13 @@ Create Functions
    bandhic.zeros_like
    bandhic.eye_like
    bandhic.full_like
+
+..
+   .. autofunction:: bandhic.ones
+   .. autofunction:: bandhic.zeros
+   .. autofunction:: bandhic.eye
+   .. autofunction:: bandhic.full
+   .. autofunction:: bandhic.ones_like
+   .. autofunction:: bandhic.zeros_like
+   .. autofunction:: bandhic.eye_like
+   .. autofunction:: bandhic.full_like

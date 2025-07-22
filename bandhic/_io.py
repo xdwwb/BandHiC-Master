@@ -139,8 +139,8 @@ def straw_chr(
         
     See also
     --------
-    `hicstraw` documentation for more details on available parameters and usage.
-    URL: https://github.com/aidenlab/straw/tree/master/pybind11_python
+    `hicstraw documentation <https://github.com/aidenlab/straw/tree/master/pybind11_python>`_
+    Python interface to read Hi-C data files using `.hic` format.
 
     Returns
     -------
@@ -295,9 +295,10 @@ def cooler_chr(
     
     See also
     --------
-    `cooler` documentation for more details on available parameters and usage.
-    URL: https://cooler.readthedocs.io/en/latest/index.html
+    `cooler documentation <https://cooler.readthedocs.io/en/latest/index.html>`_
+    Official documentation for the Cooler format and API usage.
     """
+    
     file_format = file_path.split(".")[-1].lower()
     if file_format == "mcool":
         if resolution is None:

@@ -57,6 +57,7 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
     """
     Symmetric banded matrix stored in upper-triangular format.
     This storage format is motivated by high-resolution Hi-C data characteristics:
+    
     1. Symmetry of contact maps.
     2. Interaction frequency concentrated near the diagonal; long-range contacts are sparse (mostly zero).
     3. Contact frequency decays sharply with genomic distance.
@@ -125,12 +126,16 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
             Number of diagonals to store. Must be >=1 and <= matrix dimension. Default is 1.
         mask_row_col : ndarray of bool or indices, optional
             Mask for invalid rows/columns. Can be specified as:
+            
             - A boolean array of shape (bin_num,) indicating which rows/columns to mask.
             - A list of indices to mask.
+            
             Defaults to None (no masking).
         mask : ndarray pair of (row_indices, col_indices), optional
             Mask for invalid matrix entries. Can be specified as:
+            
             - A tuple of two ndarray (row_indices, col_indices) listing positions to mask.
+            
             Defaults to None (no masking).
         dtype : data-type, optional
             Desired numpy dtype; defaults to 'contacts' data dtype; compatible with numpy dtypes.
@@ -146,7 +151,9 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
 
         Examples
         --------
+        
         Initialize from a SciPy COO matrix:
+        
         >>> import bandhic as bh
         >>> import numpy as np
         >>> from scipy.sparse import coo_matrix
@@ -156,28 +163,33 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         (3, 2)
 
         Initialize from a tuple (data, (row, col)):
+        
         >>> mat2 = bh.band_hic_matrix(([4, 5, 6], ([0, 1, 2],[2, 1, 0])), diag_num=1)
         >>> mat2.data.shape
         (3, 1)
 
         Initialize from a full dense array, only upper-triangular part is stored, lower part is symmetrized:
+        
         >>> arr = np.arange(16).reshape(4,4)
         >>> mat3 = bh.band_hic_matrix(arr, diag_num=3)
         >>> mat3.data.shape
         (4, 3)
 
         Initialize with row/column mask, this masks entire rows and corresponding columns:
+        
         >>> mask = np.array([True, False, False, True])
         >>> mat4 = bh.band_hic_matrix(arr, diag_num=2, mask_row_col=mask)
         >>> mat4.mask_row_col
         array([ True, False, False,  True])
         
         `mask_row_col` is also supported as a list of indices:
+        
         >>> mat4 = bh.band_hic_matrix(arr, diag_num=2, mask_row_col=[0, 3])
         >>> mat4.mask_row_col
         array([ True, False, False,  True])
         
         Initialize from precomputed banded storage:
+        
         >>> band = mat3.data.copy()
         >>> mat5 = bh.band_hic_matrix(band, band_data_input=True)
         >>> mat5.data.shape
@@ -867,7 +879,6 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         -----
         This method is useful when you want to keep the row/column mask but clear the entry-level mask.
         It will not affect the row/column mask, allowing you to maintain the masking of entire rows and columns.
-        >>> mat.mask
         """
         self.mask = None
         # If mask_row_col is set, we need to add the row/column mask to the mask array.
@@ -902,8 +913,10 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
     def count_masked(self):
         """
         Count the number of masked entries in the banded matrix.
+        
         This counts the number of entries in the upper triangular part of the matrix,
         excluding the diagonal and valid entries.
+        
         Returns
         -------
         int
@@ -1098,10 +1111,12 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         """
         Process a slice input to extract start, stop, and step values.
 
-        Parameters:
+        Parameters
+        ----------
             slice_input (slice): A slice object.
 
-        Returns:
+        Returns
+        -------
             tuple: Start, stop, and step values.
         """
         start = slice_input.start
@@ -1125,6 +1140,7 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         Retrieve matrix entries or submatrix using NumPy-like indexing.
 
         Supports:
+        
         - Integer indexing: mat[i, j] returns a single value.
         - Slice indexing: mat[i:j, i:j] returns a band_hic_matrix for square slices.
         - Single-axis slice: mat[i:j] returns a band_hic_matrix same as mat[i:j, i:j].
@@ -1136,26 +1152,29 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         a new band_hic_matrix representing that square submatrix is returned. New submatrix is the view of the original matrix,
         sharing the same data and mask. If the mask or data is altered in the submatrix,
         the original matrix will reflect those changes as well.
-        If a single integer index is provided for both row and column, a scalar value is returned.
-        If a mask is set, masked entries will return as `numpy.ma.masked` for scalars, or as a `numpy.ma.MaskedArray` for arrays.
-        If a mask is not set, the scalar value is returned directly, or a numpy.ndarray for arrays.
-        If a square slice is provided, a new band_hic_matrix is returned with the same diagonal number and shape as the original matrix.
-        If a single slice is provided, it returns a band_hic_matrix with the same diagonal number and shape as the original matrix.
-        If fancy indexing is used, it returns a numpy.ndarray or numpy.ma.MaskedArray depending on whether the mask is set.
-        In all other cases, a numpy.ndarray (if no mask) or numpy.ma.MaskedArray (if mask present) 
-        is returned.
+        
+        - If a single integer index is provided for both row and column, a scalar value is returned.
+        - If a mask is set, masked entries will return as `numpy.ma.masked` for scalars, or as a `numpy.ma.MaskedArray` for arrays.
+        - If a mask is not set, the scalar value is returned directly, or a numpy.ndarray for arrays.
+        - If a square slice is provided, a new band_hic_matrix is returned with the same diagonal number and shape as the original matrix.
+        - If a single slice is provided, it returns a band_hic_matrix with the same diagonal number and shape as the original matrix.
+        - If fancy indexing is used, it returns a numpy.ndarray or numpy.ma.MaskedArray depending on whether the mask is set.
+        - In all other cases, a numpy.ndarray (if no mask) or numpy.ma.MaskedArray (if mask present) 
+          is returned.
 
         Parameters
         ----------
-        index : int, slice, band_hic_matrix, array-like of int, or tuple of these
-            Index expression for rows and columns. May be:
+        index : int, slice, band_hic_matrix, array-like of int, or tuple of these 
+            index expression for rows and columns. May be:
+            
             - A pair `(row_idx, col_idx)` of ints, slices, or array-like for mixed indexing.
             - A single slice selecting a square region.
             - A `band_hic_matrix` object with dtype of `bool` for boolean indexing.
 
         Returns
         -------
-        scalar or ndarray or MaskedArray or band_hic_matrix
+        scalar or ndarray or MaskedArray or band_hic_matrix:
+        
             - scalar : when both row and column are integer indices.
             - numpy.ndarray : for fancy or mixed indexing without mask.
             - numpy.ma.MaskedArray : for fancy or mixed indexing when mask is set.
@@ -1173,25 +1192,30 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         >>> mat = bh.band_hic_matrix(np.arange(16).reshape(4,4), diag_num=2)
 
         # Single-element access (scalar)
+        
         >>> mat[1, 2]
         6
 
         # Masked element returns masked
+        
         >>> mat2 = bh.band_hic_matrix(np.eye(4), dtype=int, diag_num=2, mask=([0],[1]))
         >>> mat2[0, 1]
         masked
 
         # Square submatrix via two-slice indexing returns band_hic_matrix
+        
         >>> sub = mat[1:3, 1:3]
         >>> isinstance(sub, bh.band_hic_matrix)
         True
 
         # Single-axis slice returns band_hic_matrix for square region
+        
         >>> sub2 = mat[0:2]  # equivalent to mat[0:2, 0:2]
         >>> isinstance(sub2, bh.band_hic_matrix)
         True
 
         # Fancy indexing returns ndarray or MaskedArray
+        
         >>> arr = mat[[0,2,3], [1,2,0]]
         >>> isinstance(arr, np.ndarray)
         True
@@ -1202,6 +1226,7 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         True
         
         # Boolean indexing with band_hic_matrix
+        
         >>> mat3 = bh.band_hic_matrix(np.eye(4), diag_num=2, mask=([0,1],[1,2]))
         >>> bool_mask = mat3 > 0  # Create a boolean mask
         >>> result = mat3[bool_mask]  # Use boolean mask for indexing
@@ -1317,10 +1342,12 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         ----------
         index : int, tuple of (row_idx, col_idx), slice, or band_hic_matrix
             Index expression for rows and columns. May be:
-            - A single integer for both row and column.
-            - A tuple of row and column indices (can be int, slice, or array-like).
-            - A single slice selecting a square region.
-            - A `band_hic_matrix` object with dtype of `bool` for boolean indexing.
+            
+        - A single integer for both row and column.
+        - A tuple of row and column indices (can be int, slice, or array-like).
+        - A single slice selecting a square region.
+        - A `band_hic_matrix` object with dtype of `bool` for boolean indexing.
+            
         values : scalar or array-like
             Values to assign. Can be a single scalar or an array-like object.
         Raises
@@ -1331,6 +1358,7 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
             If `values` is not a scalar or array-like object.
 
         Supports:
+        
         - Integer indexing: mat[i, j] = value assigns to a single element.
         - Slice indexing: mat[i:j, i:j] = array or scalar assigns to a square submatrix.
         - Single-axis slice: mat[i:j] = ... is equivalent to mat[i:j, i:j].
@@ -1340,33 +1368,39 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
 
         Examples
         --------
+        
         >>> import bandhic as bh
         >>> import numpy as np
         >>> mat = bh.band_hic_matrix(np.zeros((4,4)), diag_num=2, dtype=int)
 
         # Single element assignment
+        
         >>> mat[1, 2] = 5
         >>> mat[1, 2]
         5
 
         # Slice assignment to square submatrix
+        
         >>> mat[0:2, 0:2] = [[1, 2], [2, 4]]
         >>> mat[0:2, 0:2].todense()
         array([[1, 2],
                [2, 4]])
 
         # Single-axis slice assignment (equivalent square slice)
+        
         >>> mat[2:4] = 0
         >>> mat[2:4].todense()
         array([[0, 0],
                [0, 0]])
         
         # Fancy indexing for scattered assignments
+        
         >>> mat[[0, 3], [1, 2]] = [7, 8]
         >>> mat[0, 1], mat[3, 2]
         (7, 8)
         
         # Boolean mask assignment
+        
         >>> mat2 = bh.band_hic_matrix(np.eye(4), diag_num=2, dtype=int)
         >>> bool_mask = mat2 > 0
         >>> mat2[bool_mask] = 9
@@ -1518,7 +1552,7 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         
         Notes
         -----
-                Writing to masked positions will update the underlying data but will not clear the mask.
+        Writing to masked positions will update the underlying data but will not clear the mask.
         """
         row_idx = np.array(row_idx)
         col_idx = np.array(col_idx)
@@ -2126,10 +2160,12 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         ----------
         axis : None, int, or {'row','col','diag'}, optional
             Axis along which to compute the minimum:
+            
             - None: compute over all stored values (and default for missing).
             - 0 or 'row': per-row reduction.
             - 1 or 'col': per-column reduction.
             - 'diag': per-diagonal reduction.
+            
             Default is None.
 
         Returns
@@ -2210,10 +2246,12 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         ----------
         axis : None, int, or {'row','col','diag'}, optional
             Axis along which to compute the maximum:
+            
             - None: compute over all stored values (and default for missing).
             - 0 or 'row': per-row reduction.
             - 1 or 'col': per-column reduction.
             - 'diag': per-diagonal reduction.
+            
             Default is None.
 
         Returns
@@ -2288,10 +2326,12 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         ----------
         axis : None, int, or {'row','col','diag'}, optional
             Axis along which to compute the sum:
+            
             - None: sum over all stored values (and default for missing).
             - 0 or 'row': per-row reduction.
             - 1 or 'col': per-column reduction.
             - 'diag': per-diagonal reduction.
+            
             Default is None.
 
         Returns
@@ -2371,10 +2411,12 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         ----------
         axis : None, int, or {'row','col','diag'}, optional
             Axis along which to compute the mean:
+            
             - None: mean over all stored values (and default for missing).
             - 0 or 'row': per-row reduction.
             - 1 or 'col': per-column reduction.
             - 'diag': per-diagonal reduction.
+            
             Default is None.
 
         Returns
@@ -2447,10 +2489,12 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         ----------
         axis : None, int, or {'row','col','diag'}, optional
             Axis along which to compute the product:
+            
             - None: product over all stored values (and default for missing).
             - 0 or 'row': per-row reduction.
             - 1 or 'col': per-column reduction.
             - 'diag': per-diagonal reduction.
+            
             Default is None.
 
         Returns
@@ -2528,10 +2572,12 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         ----------
         axis : None, int, or {'row','col','diag'}, optional
             Axis along which to compute the variance:
+            
             - None: variance over all stored values (and default for missing).
             - 0 or 'row': per-row reduction.
             - 1 or 'col': per-column reduction.
             - 'diag': per-diagonal reduction.
+            
             Default is None.
 
         Returns
@@ -2597,10 +2643,12 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         ----------
         axis : None, int, or {'row','col','diag'}, optional
             Axis along which to compute the standard deviation:
+            
             - None: std over all stored values (and default for missing).
             - 0 or 'row': per-row reduction.
             - 1 or 'col': per-column reduction.
             - 'diag': per-diagonal reduction.
+            
             Default is None.
 
         Returns
@@ -2678,10 +2726,12 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         ----------
         axis : None, int, or {'row','col','diag'}, optional
             Axis along which to compute the peak-to-peak value:
+            
             - None: ptp over all stored values (and default for missing).
             - 0 or 'row': per-row reduction.
             - 1 or 'col': per-column reduction.
             - 'diag': per-diagonal reduction.
+            
             Default is None.
 
         Returns
@@ -2717,6 +2767,12 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         ----------
         axis : None, int, or {'row','col','diag'}, optional
             Axis along which to test.
+            
+            - None: test all stored values (and default for missing).
+            - 0 or 'row': per-row reduction.
+            - 1 or 'col': per-column reduction.
+            - 'diag': per-diagonal reduction.
+            
         banded_only : bool, optional
             If True, only consider stored band elements; ignore out-of-band values.
             Default is False.
@@ -2821,7 +2877,13 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         Parameters
         ----------
         axis : None, int, or {'row','col','diag'}, optional
-            Axis along which to test.
+            Axis along which to test:
+            
+            - None: test all stored values (and default for missing).
+            - 0 or 'row': per-row reduction.
+            - 1 or 'col': per-column reduction.
+            - 'diag': per-diagonal reduction.
+            
         banded_only : bool, optional
             If True, only consider stored band elements; ignore out-of-band values.
             Default is False.

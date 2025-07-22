@@ -38,6 +38,7 @@ def call_tad(hic_matrix:Union[bh.band_hic_matrix, np.ndarray],
     """
     Detect TADs from a Hi-C matrix using the TopDom algorithm. Different from the `TopDom` function, this function accepts a Hi-C matrix in either `band_hic_matrix` format or as a dense numpy array.
     This function is designed to be used with the BandHiC package and provides a convenient interface for TAD detection.
+    
     Parameters
     ----------
     hic_matrix : band_hic_matrix or np.ndarray
@@ -54,6 +55,7 @@ def call_tad(hic_matrix:Union[bh.band_hic_matrix, np.ndarray],
         Whether to apply statistical filtering to remove false positives. Default is True.
     verbose : bool, optional
         Whether to print detailed information during processing. Default is False.
+    
     Returns
     -------
     domains : pd.DataFrame
@@ -145,6 +147,7 @@ def topdom(hic_matrix,
            verbose=False):
     """
     Detect TADs using TopDom algorithm.
+    
     Parameters
     ----------
     hic_matrix : band_hic_matrix or np.ndarray
@@ -157,6 +160,7 @@ def topdom(hic_matrix,
         Whether to apply statistical filtering to remove false positives. Default is True.
     verbose : bool, optional
         Whether to print detailed information during processing. Default is False.
+        
     Returns
     -------
     domains : pd.DataFrame

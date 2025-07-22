@@ -1,0 +1,23 @@
+Input/Output Functions
+----------------------
+.. autosummary::
+   :toctree: ../_autosummary
+
+   bandhic.save_npz
+   bandhic.load_npz
+   bandhic.straw_chr
+   bandhic.straw_all_chrs
+   bandhic.cooler_chr
+   bandhic.cooler_all_chrs
+   bandhic.cooler_chr_all_cells
+   bandhic.cooler_all_cells_all_chrs
+
+..
+   .. autofunction:: bandhic.save_npz
+   .. autofunction:: bandhic.load_npz
+   .. autofunction:: bandhic.straw_chr
+   .. autofunction:: bandhic.straw_all_chrs
+   .. autofunction:: bandhic.cooler_chr
+   .. autofunction:: bandhic.cooler_all_chrs
+   .. autofunction:: bandhic.cooler_chr_all_cells
+   .. autofunction:: bandhic.cooler_all_cells_all_chrs

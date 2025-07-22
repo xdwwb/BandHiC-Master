@@ -1,5 +1,7 @@
+from sys import version
 import numpy as np
-from .bandhic import band_hic_matrix
+from bandhic import band_hic_matrix
+import bandhic
 from typing import Callable, Dict
 from numpy import absolute as _np_absolute, ndarray
 from numpy import add as _np_add
@@ -75,93 +77,163 @@ from numpy import true_divide as _np_true_divide
 
 __all__ = [
     "band_hic_matrix",
+    "add",
+    "subtract",
+    "multiply",
+    # "matmul",  # Not implemented yet
+    "divide",
+    "logaddexp",
+    "logaddexp2",
+    "true_divide",
+    "floor_divide",
+    "negative",
+    "positive",
+    "power",
+    "float_power",
+    "remainder",
+    "mod",
+    "fmod",
+    "divmod",
+    "absolute",
+    "fabs",
+    "rint",
+    "sign",
+    "heaviside",
+    "conj",
+    "conjugate",
+    "exp",
+    "exp2",
+    "log",
+    "log2",
+    "log10",
+    "expm1",
+    "log1p",
+    "sqrt",
+    "square",
+    "cbrt",
+    "reciprocal",
+    "gcd",
+    "lcm",
+    "sin",
+    "cos",
+    "tan",
+    "arcsin",
+    "arccos",
+    "arctan",
+    "arctan2",
+    "hypot",
+    "sinh",
+    "cosh",
+    "tanh",
+    "arcsinh",
+    "arccosh",
+    "arctanh",
+    "degrees",
+    "radians",
+    "deg2rad",
+    "rad2deg",
+    "bitwise_and",
+    "bitwise_or",
+    "bitwise_xor",
+    "invert",
+    "left_shift",
+    "right_shift",
+    "greater",
+    "greater_equal",
+    "less",
+    "less_equal",
+    "not_equal",
+    "equal",
+    "logical_and",
+    "logical_or",
+    "logical_xor",
+    "maximum",
+    "minimum",
 ]
 
 # Automatically generate band_hic_matrix methods for common NumPy ufuncs
-_UFUNC_DISPATCH = {
-    _np_add: "add",
-    _np_subtract: "subtract",
-    _np_multiply: "multiply",
-    # _np_matmul: "matmul",
-    _np_divide: "divide",
-    _np_logaddexp: "logaddexp",
-    _np_logaddexp2: "logaddexp2",
-    _np_true_divide: "true_divide",
-    _np_floor_divide: "floor_divide",
-    _np_negative: "negative",
-    _np_positive: "positive",
-    _np_power: "power",
-    _np_float_power: "float_power",
-    _np_remainder: "remainder",
-    _np_mod: "mod",
-    _np_fmod: "fmod",
-    _np_divmod: "divmod",
-    _np_absolute: "absolute",
-    _np_fabs: "fabs",
-    _np_rint: "rint",
-    _np_sign: "sign",
-    _np_heaviside: "heaviside",
-    _np_conj: "conj",
-    _np_conjugate: "conjugate",
-    _np_exp: "exp",
-    _np_exp2: "exp2",
-    _np_log: "log",
-    _np_log2: "log2",
-    _np_log10: "log10",
-    _np_expm1: "expm1",
-    _np_log1p: "log1p",
-    _np_sqrt: "sqrt",
-    _np_square: "square",
-    _np_cbrt: "cbrt",
-    _np_reciprocal: "reciprocal",
-    _np_gcd: "gcd",
-    _np_lcm: "lcm",
-    _np_sin: "sin",
-    _np_cos: "cos",
-    _np_tan: "tan",
-    _np_arcsin: "arcsin",
-    _np_arccos: "arccos",
-    _np_arctan: "arctan",
-    _np_arctan2: "arctan2",
-    _np_hypot: "hypot",
-    _np_sinh: "sinh",
-    _np_cosh: "cosh",
-    _np_tanh: "tanh",
-    _np_arcsinh: "arcsinh",
-    _np_arccosh: "arccosh",
-    _np_arctanh: "arctanh",
-    _np_degrees: "degrees",
-    _np_radians: "radians",
-    _np_deg2rad: "deg2rad",
-    _np_rad2deg: "rad2deg",
-    _np_bitwise_and: "bitwise_and",
-    _np_bitwise_or: "bitwise_or",
-    _np_bitwise_xor: "bitwise_xor",
-    _np_invert: "invert",
-    _np_left_shift: "left_shift",
-    _np_right_shift: "right_shift",
-    _np_greater: "greater",
-    _np_greater_equal: "greater_equal",
-    _np_less: "less",
-    _np_less_equal: "less_equal",
-    _np_not_equal: "not_equal",
-    _np_equal: "equal",
-    _np_logical_and: "logical_and",
-    _np_logical_or: "logical_or",
-    _np_logical_xor: "logical_xor",
-    _np_maximum: "maximum",
-    _np_minimum: "minimum",
+_UFUNC_DISPATCH = { 
+    "add": _np_add, 
+    "subtract": _np_subtract,
+    "multiply": _np_multiply,
+    "divide": _np_divide,
+    "logaddexp": _np_logaddexp,
+    "logaddexp2": _np_logaddexp2,
+    "true_divide": _np_true_divide,
+    "floor_divide": _np_floor_divide,
+    "negative": _np_negative,
+    "positive": _np_positive,
+    "power": _np_power,
+    "float_power": _np_float_power,
+    "remainder": _np_remainder,
+    "mod": _np_mod,
+    "fmod": _np_fmod,
+    "divmod": _np_divmod,
+    "absolute": _np_absolute,
+    "fabs": _np_fabs,
+    "rint": _np_rint,
+    "sign": _np_sign,
+    "heaviside": _np_heaviside,
+    "conj": _np_conj,
+    "conjugate": _np_conjugate,
+    "exp": _np_exp,
+    "exp2": _np_exp2,
+    "log": _np_log,
+    "log2": _np_log2,
+    "log10": _np_log10,
+    "expm1": _np_expm1,
+    "log1p": _np_log1p,
+    "sqrt": _np_sqrt,
+    "square": _np_square,
+    "cbrt": _np_cbrt,
+    "reciprocal": _np_reciprocal,
+    "gcd": _np_gcd,
+    "lcm": _np_lcm,
+    "sin": _np_sin,
+    "cos": _np_cos,
+    "tan": _np_tan,
+    "arcsin": _np_arcsin,
+    "arccos": _np_arccos,
+    "arctan": _np_arctan,
+    "arctan2": _np_arctan2,
+    "hypot": _np_hypot,
+    "sinh": _np_sinh,
+    "cosh": _np_cosh,
+    "tanh": _np_tanh,
+    "arcsinh": _np_arcsinh,
+    "arccosh": _np_arccosh,
+    "arctanh": _np_arctanh,
+    "degrees": _np_degrees,
+    "radians": _np_radians,
+    "deg2rad": _np_deg2rad,
+    "rad2deg": _np_rad2deg,
+    "bitwise_and": _np_bitwise_and,
+    "bitwise_or": _np_bitwise_or,
+    "bitwise_xor": _np_bitwise_xor,
+    "invert": _np_invert,
+    "left_shift": _np_left_shift,
+    "right_shift": _np_right_shift,
+    "greater": _np_greater,
+    "greater_equal": _np_greater_equal,
+    "less": _np_less,
+    "less_equal": _np_less_equal,
+    "not_equal": _np_not_equal,
+    "equal": _np_equal,
+    "logical_and": _np_logical_and,
+    "logical_or": _np_logical_or,
+    "logical_xor": _np_logical_xor,
+    "maximum": _np_maximum,
+    "minimum": _np_minimum,
 }
 
 def _generate_ufunc_aliases():
     """
     Dynamically attach NumPy ufunc aliases to band_hic_matrix.
     """
-    for ufunc, method_name in _UFUNC_DISPATCH.items():
+    for method_name, ufunc in _UFUNC_DISPATCH.items():
 
         def make_ufunc_wrapper(uf):
             nin = uf.nin
-
             def wrapper(self, *args, **kwargs):
                 # Handle unary ufunc (nin=1)
                 if nin == 1:
@@ -170,7 +242,7 @@ def _generate_ufunc_aliases():
                 elif nin == 2:
                     if len(args) < 1:
                         raise TypeError(
-                            f"{uf.__name__} requires an 'other' argument."
+                            f"{method_name} requires an 'other' argument."
                         )
                     other, *rest = args
                     return uf(self, other, *rest, **kwargs)
@@ -178,7 +250,7 @@ def _generate_ufunc_aliases():
                 else:
                     return uf(self, *args, **kwargs)
 
-            wrapper.__name__ = uf.__name__
+            wrapper.__name__ = method_name
             # Build a NumPy-style docstring reflecting input count
             if nin == 1:
                 param_sig = "self, *args, **kwargs"
@@ -191,40 +263,120 @@ def _generate_ufunc_aliases():
                     "other : band_hic_matrix or array-like\n"
                     "    Second input for the operation.\n"
                 )
+            url = _make_numpy_ufunc_doc_url(method_name)
             wrapper.__doc__ = (
-                f"{uf.__name__}({param_sig})\n\n"
-                f"Perform element-wise '{uf.__name__}' operation"
+                f"{method_name}({param_sig})\n\n"
+                f"Perform element-wise '{method_name}' operation"
                 + (" with two inputs." if nin == 2 else ".")
                 + "\n\n"
                 "Parameters\n"
                 "----------\n"
                 f"{params_desc}"
                 "*args : tuple\n"
-                f"    Additional positional arguments for numpy.{uf.__name__}.\n"
+                f"    Additional positional arguments for numpy.{method_name}.\n"
                 "**kwargs : dict\n"
-                f"    Keyword arguments for numpy.{uf.__name__}.\n\n"
+                f"    Keyword arguments for numpy.{method_name}.\n\n"
                 "Returns\n"
                 "-------\n"
                 "band_hic_matrix\n"
-                f"    Result of element-wise '{uf.__name__}' operation.\n\n"
+                f"    Result of element-wise '{method_name}' operation.\n\n"
                 "See Also\n"
                 "--------\n"
-                f"numpy.{uf.__name__}\n\n"
+                f"`numpy.{method_name} <{url}>`_\n\n"
                 "Examples\n"
                 "--------\n"
                 + (
                     f">>> from bandhic import band_hic_matrix\n"
                     f">>> mat = band_hic_matrix(np.eye(3), diag_num=2, dtype=int)\n"
                     + (
-                        f">>> result = mat.{uf.__name__}()\n"
+                        f">>> result = mat.{method_name}()\n"
                         if nin == 1
-                        else f">>> other = mat.copy()\n>>> result = mat.{uf.__name__}(other)\n"
+                        else f">>> other = mat.copy()\n>>> result = mat.{method_name}(other)\n"
                     )
                 )
             )
             return wrapper
 
-        setattr(band_hic_matrix, ufunc.__name__, make_ufunc_wrapper(ufunc))
+        setattr(band_hic_matrix, method_name, make_ufunc_wrapper(ufunc))
+        
+def _generate_ufunc_module_aliases():
+    """
+    Dynamically attach NumPy ufunc aliases to bandhic module.
+    """
+    for method_name, ufunc in _UFUNC_DISPATCH.items():
+        def make_ufunc_wrapper(uf):
+            nin = uf.nin
+            def wrapper(*args, **kwargs):
+                # Handle unary ufunc (nin=1)
+                # Build a NumPy-style docstring reflecting input count
+                return uf(*args, **kwargs)
+            if nin == 1:
+                param_sig = "x, *args, **kwargs"
+                params_desc = "x : band_hic_matrix\n" "    Input matrix.\n"
+            else:
+                param_sig = "x1, x2, *args, **kwargs"
+                params_desc = (
+                    "x1 : band_hic_matrix, ndarray or scalar\n"
+                    "    First input matrix.\n"
+                    "x2 : band_hic_matrix, ndarray or scalar\n"
+                    "    Second input for the operation.\n"
+                )
+            url = _make_numpy_ufunc_doc_url(method_name)
+            wrapper.__doc__ = (
+                f"{method_name}({param_sig})\n\n"
+                f"Perform element-wise '{method_name}' operation"
+                + (" with two inputs." if nin == 2 else ".")
+                + "\n\n"
+                "Parameters\n"
+                "----------\n"
+                f"{params_desc}"
+                "*args : tuple\n"
+                f"    Additional positional arguments for numpy.{method_name}.\n"
+                "**kwargs : dict\n"
+                f"    Keyword arguments for numpy.{method_name}.\n\n"
+                "Returns\n"
+                "-------\n"
+                "band_hic_matrix\n"
+                f"    Result of element-wise '{method_name}' operation.\n\n"
+                "See Also\n"
+                "--------\n"
+                f"`numpy.{method_name} <{url}>`_\n\n"
+                "Examples\n"
+                "--------\n"
+                + (
+                    f">>> import bandhic as bh\n"
+                    f">>> x1 = band_hic_matrix(np.eye(3), diag_num=2, dtype=int)\n"
+                    + (
+                        f">>> result = bh.{method_name}(x1)\n"
+                        if nin == 1
+                        else f">>> x2 = x1.copy()\n>>> result = bh.{method_name}(x1, x2)\n"
+                    )
+                )
+            )
+            wrapper.__name__ = method_name
+            wrapper.__module__ = bandhic.__name__
+            return wrapper
+        # Attach to bandhic module
+        func = make_ufunc_wrapper(ufunc)
+        globals()[method_name] = func
+        
+def _make_numpy_ufunc_doc_url(func_name: str) -> str:
+    """
+    Construct the NumPy documentation URL for a given ufunc.
+
+    Parameters
+    ----------
+    func_name : str
+        The name of the function, e.g., "add" or "multiply".
+
+    Returns
+    -------
+    url : str
+        The full URL to the function's documentation.
+    """
+    version = '.'.join(np.__version__.split(".")[:2])
+    return f"https://numpy.org/doc/{version}/reference/generated/numpy.{func_name}.html"
 
 # Execute ufunc alias generation
 _generate_ufunc_aliases()
+_generate_ufunc_module_aliases()

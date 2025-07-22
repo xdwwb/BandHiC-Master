@@ -71,52 +71,46 @@ exclude_patterns = []
 #
 # -- Options for HTML output -------------------------------------------------
 
-# 指定主题名称
 html_theme = "pydata_sphinx_theme"
 
-# 指定主题包（如果需要显式声明）
-html_theme_path = [""]  # 通常可留空
+html_theme_path = [""]  
 
-# 主题选项——按需开启或调整
 html_theme_options = {
     # "logo": {
-    #     "image_light": "logo-light.png",   # 可选：浅色模式下的 logo
-    #     "image_dark": "logo-dark.png",     # 可选：深色模式下的 logo
+    #     "image_light": "logo-light.png",
+    #     "image_dark": "logo-dark.png",
     # },
-    "icon_links": [                        # 可在右上角加快捷链接
+    "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/xdwwb/BandHiC-Master/tree/master",
+            "url": "https://github.com/xdwwb/BandHiC-Master/tree/main",
             "icon": "fab fa-github",
             "type": "fontawesome",
         },
     ],
-    "navbar_start": ["navbar-logo"],      # 导航栏左侧元素
-    "navbar_center": ["navbar-nav"],      # 导航栏中部元素
-    "navbar_end":    ["navbar-icon-links"],   # 导航栏右侧元素
-    "show_prev_next": True,              # 隐藏／显示上下篇链接
-    "navigation_depth": 2,                # 侧边栏显示深度
-    "collapse_navigation": False,  # 不折叠目录
-    "show_toc_level": 2,  # 控制右侧“本页目录”的显示层数
-    "use_edit_page_button": True,         # 在页面上显示“Edit on GitHub”按钮
-    # 更多选项请参考官方文档
+    "navbar_start": ["navbar-logo"],
+    "navbar_center": ["navbar-nav"],
+    "navbar_end":    ["navbar-icon-links"],
+    "show_prev_next": True,
+    "navigation_depth": 3,
+    "collapse_navigation": False,
+    "show_toc_level": 3,
+    "use_edit_page_button": True,
 }
 
-# 如果你想让侧边栏固定不滚动：
 html_sidebars = {
     "**": ["sidebar-nav-bs"],
 }
 
-# 引入静态资源目录（logo、CSS 之类）
 html_static_path = ["_static"]
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_context = {
-    "github_user": "xdwwb",      # 你的 GitHub 用户名
-    "github_repo": "BandHiC-Master",      # 你的 GitHub 仓库名
-    "github_version": "master",                   # 或者是你仓库中的版本名，通常是 "main" 或 "master"
+    "github_user": "xdwwb", 
+    "github_repo": "BandHiC-Master", 
+    "github_version": "main",
 }
 # -- Options for LaTeX output -------------------------------------------------
 

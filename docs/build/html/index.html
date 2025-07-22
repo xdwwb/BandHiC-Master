@@ -173,7 +173,7 @@
           
           
           
-          <a href="https://github.com/xdwwb/BandHiC-Master/tree/master" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/xdwwb/BandHiC-Master/tree/main" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
 </ul></div>
@@ -267,7 +267,7 @@
           
           
           
-          <a href="https://github.com/xdwwb/BandHiC-Master/tree/master" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
+          <a href="https://github.com/xdwwb/BandHiC-Master/tree/main" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
             <span class="sr-only">GitHub</span></a>
         </li>
 </ul></div>
@@ -306,25 +306,22 @@
                   
   <section id="bandhic">
 <h1>BandHiC<a class="headerlink" href="#bandhic" title="Link to this heading">#</a></h1>
-<p>Given that most informative chromatin contacts occur within a limited genomic distance (typically within 2 Mb), <strong>BandHiC</strong> adopts a banded storage scheme that stores only a configurable diagonal bandwidth of the dense Hi-C contact matrices. This design can reduce memory usage by up to 99% compared to dense matrices, while still supporting fast random access and user-friendly indexing operations. In addition, BandHiC supports flexible masking mechanisms to efficiently handle missing values, outliers, and unmappable genomic regions. It also provides a suite of vectorized operations optimized with NumPy, making it both scalable and practical for ultra-high-resolution Hi-C data analysis.</p>
+<p>Welcome to the BandHiC documentation!</p>
+<p>This documentation provides a comprehensive guide to the BandHiC library, including its features, installation instructions, and API reference.
+It is designed to help you efficiently store and manipulate Hi-C contact matrices in a banded form, enabling NumPy-compatible operations, matrix masking, diagonal reduction, file I/O, and domain-level interaction analysis.</p>
+<p>Refer to the sections below for detailed information on how to use BandHiC effectively:</p>
+<p>Author:  Wang Weibing</p>
+<p>Email:   <a class="reference external" href="mailto:wangweibing&#37;&#52;&#48;xidian&#46;edu&#46;cn">wangweibing<span>&#64;</span>xidian<span>&#46;</span>edu<span>&#46;</span>cn</a></p>
+<p>Web:     <a class="reference external" href="https://xdwwb.github.io/BandHiC-Master/">https://xdwwb.github.io/BandHiC-Master/</a></p>
+<p>PyPI:    <a class="reference external" href="https://pypi.org/project/bandhic/">https://pypi.org/project/bandhic/</a></p>
+<p>Github:  <a class="github reference external" href="https://github.com/xdwwb/BandHiC-Master">xdwwb/BandHiC-Master</a></p>
 <div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="quickstart/intro.html">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="quickstart/installation.html">Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="quickstart/installation.html#required-package">Required Package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="quickstart/installation.html#option-1-install-via-pip">Option 1: Install via pip</a></li>
-<li class="toctree-l3"><a class="reference internal" href="quickstart/installation.html#option-2-install-from-source-with-conda">Option 2: Install from source with conda</a></li>
-<li class="toctree-l3"><a class="reference internal" href="quickstart/installation.html#build-troubleshooting-for-hic-straw">Build Troubleshooting for hic-straw</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="quickstart/whatis.html">What is BandHiC?</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="quickstart/whatis.html#data-structure-of-bandhic">Data structure of BandHiC</a></li>
-<li class="toctree-l3"><a class="reference internal" href="quickstart/whatis.html#features-of-bandhic">Features of BandHiC</a></li>
-<li class="toctree-l3"><a class="reference internal" href="quickstart/whatis.html#bandhic-reduces-the-memory-consumption-of-topdom">BandHiC reduces the memory consumption of TopDom</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart/whatis.html">What is BandHiC?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a><ul>
@@ -340,45 +337,12 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/bandhic.html"><cite>band_hic_matrix</cite> Class API</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/bandhic.html#bandhic.band_hic_matrix"><code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/bandhic.html#masking-operations">Masking Operations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/bandhic.html#data-indexing-and-modification">Data Indexing and Modification</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/bandhic.html#data-reduction-methods">Data Reduction Methods</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/bandhic.html#universal-functions">Universal Functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/bandhic.html#other-methods">Other Methods</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/create.html">Create Functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.ones.html">bandhic.ones</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.zeros.html">bandhic.zeros</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.eye.html">bandhic.eye</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.full.html">bandhic.full</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.ones_like.html">bandhic.ones_like</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.zeros_like.html">bandhic.zeros_like</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.eye_like.html">bandhic.eye_like</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.full_like.html">bandhic.full_like</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/io.html">Input/Output Functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.save_npz.html">bandhic.save_npz</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.load_npz.html">bandhic.load_npz</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.straw_chr.html">bandhic.straw_chr</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.straw_all_chrs.html">bandhic.straw_all_chrs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.cooler_chr.html">bandhic.cooler_chr</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.cooler_all_chrs.html">bandhic.cooler_all_chrs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.cooler_chr_all_cells.html">bandhic.cooler_chr_all_cells</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.cooler_all_cells_all_chrs.html">bandhic.cooler_all_cells_all_chrs</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/utils.html">Other Functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.matrix_equal.html">bandhic.matrix_equal</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.assert_band_matrix_equal.html">bandhic.assert_band_matrix_equal</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.compute_bin_bias.html">bandhic.compute_bin_bias</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.call_tad.html">bandhic.call_tad</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_autosummary/bandhic.topdom.html">bandhic.topdom</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="api/bandhic.html">band_hic_matrix Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/create.html">Creation Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/io.html">Input/Output Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/ufunc.html">Vectorized operations for BandHiC matrices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/func.html">Data Reduction and Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/utils.html">Other Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -441,7 +405,7 @@
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/xdwwb/BandHiC-Master/edit/master/index.rst">
+    <a href="https://github.com/xdwwb/BandHiC-Master/edit/main/index.rst">
       <i class="fa-solid fa-pencil"></i>
       
       

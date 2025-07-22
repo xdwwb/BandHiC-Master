@@ -1,5 +1,7 @@
 Input/Output Functions
 ----------------------
+These functions handle input and output operations for BandHiC matrices, including saving and loading from various formats.
+
 .. autosummary::
    :toctree: ../_autosummary
 
@@ -11,3 +13,13 @@ Input/Output Functions
    bandhic.cooler_all_chrs
    bandhic.cooler_chr_all_cells
    bandhic.cooler_all_cells_all_chrs
+
+..
+   .. autofunction:: bandhic.save_npz
+   .. autofunction:: bandhic.load_npz
+   .. autofunction:: bandhic.straw_chr
+   .. autofunction:: bandhic.straw_all_chrs
+   .. autofunction:: bandhic.cooler_chr
+   .. autofunction:: bandhic.cooler_all_chrs
+   .. autofunction:: bandhic.cooler_chr_all_cells
+   .. autofunction:: bandhic.cooler_all_cells_all_chrs

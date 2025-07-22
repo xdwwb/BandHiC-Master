@@ -1,0 +1,150 @@
+Universal Functions
+----------------------
+
+.. autosummary::
+   :toctree: ../_autosummary
+
+    bandhic.absolute
+    bandhic.add
+    bandhic.arccos
+    bandhic.arccosh
+    bandhic.arcsin
+    bandhic.arcsinh
+    bandhic.arctan
+    bandhic.arctan2
+    bandhic.arctanh
+    bandhic.bitwise_and
+    bandhic.bitwise_or
+    bandhic.bitwise_xor
+    bandhic.cbrt
+    bandhic.conj
+    bandhic.conjugate
+    bandhic.cos
+    bandhic.cosh
+    bandhic.deg2rad
+    bandhic.degrees
+    bandhic.divide
+    bandhic.divmod
+    bandhic.equal
+    bandhic.exp
+    bandhic.exp2
+    bandhic.expm1
+    bandhic.fabs
+    bandhic.float_power
+    bandhic.floor_divide
+    bandhic.fmod
+    bandhic.gcd
+    bandhic.greater
+    bandhic.greater_equal
+    bandhic.heaviside
+    bandhic.hypot
+    bandhic.invert
+    bandhic.lcm
+    bandhic.left_shift
+    bandhic.less
+    bandhic.less_equal
+    bandhic.log
+    bandhic.log1p
+    bandhic.log2
+    bandhic.log10
+    bandhic.logaddexp
+    bandhic.logaddexp2
+    bandhic.logical_and
+    bandhic.logical_or
+    bandhic.logical_xor
+    bandhic.maximum
+    bandhic.minimum
+    bandhic.mod
+    bandhic.multiply
+    bandhic.negative
+    bandhic.not_equal
+    bandhic.positive
+    bandhic.power
+    bandhic.rad2deg
+    bandhic.radians
+    bandhic.reciprocal
+    bandhic.remainder
+    bandhic.right_shift
+    bandhic.rint
+    bandhic.sign
+    bandhic.sin
+    bandhic.sinh
+    bandhic.sqrt
+    bandhic.square
+    bandhic.subtract
+    bandhic.tan
+    bandhic.tanh
+    bandhic.true_divide
+
+..
+   .. autofunction:: bandhic.absolute
+   .. autofunction:: bandhic.add
+   .. autofunction:: bandhic.arccos
+   .. autofunction:: bandhic.arccosh
+   .. autofunction:: bandhic.arcsin
+   .. autofunction:: bandhic.arcsinh
+   .. autofunction:: bandhic.arctan
+   .. autofunction:: bandhic.arctan2
+   .. autofunction:: bandhic.arctanh
+   .. autofunction:: bandhic.bitwise_and
+   .. autofunction:: bandhic.bitwise_or
+   .. autofunction:: bandhic.bitwise_xor
+   .. autofunction:: bandhic.cbrt
+   .. autofunction:: bandhic.conj
+   .. autofunction:: bandhic.conjugate
+   .. autofunction:: bandhic.cos
+   .. autofunction:: bandhic.cosh
+   .. autofunction:: bandhic.deg2rad
+   .. autofunction:: bandhic.degrees
+   .. autofunction:: bandhic.divide
+   .. autofunction:: bandhic.divmod
+   .. autofunction:: bandhic.equal
+   .. autofunction:: bandhic.exp
+   .. autofunction:: bandhic.exp2
+   .. autofunction:: bandhic.expm1
+   .. autofunction:: bandhic.fabs
+   .. autofunction:: bandhic.float_power
+   .. autofunction:: bandhic.floor_divide
+   .. autofunction:: bandhic.fmod
+   .. autofunction:: bandhic.gcd
+   .. autofunction:: bandhic.greater
+   .. autofunction:: bandhic.greater_equal
+   .. autofunction:: bandhic.heaviside
+   .. autofunction:: bandhic.hypot
+   .. autofunction:: bandhic.invert
+   .. autofunction:: bandhic.lcm
+   .. autofunction:: bandhic.left_shift
+   .. autofunction:: bandhic.less
+   .. autofunction:: bandhic.less_equal
+   .. autofunction:: bandhic.log
+   .. autofunction:: bandhic.log1p
+   .. autofunction:: bandhic.log2
+   .. autofunction:: bandhic.log10
+   .. autofunction:: bandhic.logaddexp
+   .. autofunction:: bandhic.logaddexp2
+   .. autofunction:: bandhic.logical_and
+   .. autofunction:: bandhic.logical_or
+   .. autofunction:: bandhic.logical_xor
+   .. autofunction:: bandhic.maximum
+   .. autofunction:: bandhic.minimum
+   .. autofunction:: bandhic.mod
+   .. autofunction:: bandhic.multiply
+   .. autofunction:: bandhic.negative
+   .. autofunction:: bandhic.not_equal
+   .. autofunction:: bandhic.positive
+   .. autofunction:: bandhic.power
+   .. autofunction:: bandhic.rad2deg
+   .. autofunction:: bandhic.radians
+   .. autofunction:: bandhic.reciprocal
+   .. autofunction:: bandhic.remainder
+   .. autofunction:: bandhic.right_shift
+   .. autofunction:: bandhic.rint
+   .. autofunction:: bandhic.sign
+   .. autofunction:: bandhic.sin
+   .. autofunction:: bandhic.sinh
+   .. autofunction:: bandhic.sqrt
+   .. autofunction:: bandhic.square
+   .. autofunction:: bandhic.subtract
+   .. autofunction:: bandhic.tan
+   .. autofunction:: bandhic.tanh
+   .. autofunction:: bandhic.true_divide

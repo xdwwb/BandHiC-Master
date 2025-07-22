@@ -1,0 +1,31 @@
+What is BandHiC?
+================
+
+Data structure of BandHiC
+-------------------------
+
+To address the growing memory demands posed by high-resolution Hi-C data, we introduce ``band_hic_matrix``, the core class implemented in the BandHiC package. For a Hi-C contact matrix :math:`A \in \mathbb{R}^{n \times n}` at resolution *r*, ``band_hic_matrix`` retains only the diagonals within a user-defined bandwidth *k*, yielding a compact representation :math:`D \in \mathbb{R}^{n \times k}`. This format ensures that each column in *D* corresponds to a fixed diagonal of *A*, such that the mapping :math:`A[i, j] = D[i, j - i]` holds for :math:`|i - j| \le k`.
+
+The memory efficiency achieved by this strategy is substantial. When :math:`k \ll n`, the memory footprint of ``band_hic_matrix`` is reduced from :math:`\mathcal{O}(n^2)` to :math:`\mathcal{O}(nk)`. For example, assuming a resolution of 1 kb and a bandwidth of 2 Mb (k = 200), the representation of chromosome 1 of the human genome (~249 Mb) requires 3.7 GB of memory, less than 1% of the memory required by the dense matrix (~461.9 GB). This compression enables the use of high-resolution Hi-C data on commodity hardware without sacrificing random access efficiency.
+
+To further enhance flexibility of usage, ``band_hic_matrix`` integrates an optional two-tier masking mechanism. The element-wise mask matrix :math:`M \in \{0,1\}^{n \times k}` allows users to selectively ignore missing or outlier contacts, enabling robust statistical estimation on unmasked subsets. Additionally, a bin-level mask :math:`X \in \{0,1\}^n` supports the exclusion of entire rows or columns, which is particularly useful for removing repetitive genomic regions devoid of a valid Hi-C signal. These masking features facilitate downstream tasks such as the estimation of average contact intensity at given distances, while confirming statistical validity.
+
+Lastly, a scalar default value *d* is defined to fill in the undefined entries of *A* not covered by the band matrix *D*. This default is typically set to 0, consistent with the assumption that long-range interactions are negligibly sparse. It also ensures that reconstruction of the full matrix *A* (if required) can be achieved seamlessly by combining *D*, *M*, *X*, and *d*. Overall, ``band_hic_matrix`` provides an efficient, flexible data structure for scalable Hi-C data analysis.
+
+Features of BandHiC
+------------------------
+
+A key feature of ``band_hic_matrix`` is its direct coordinate mapping between the banded matrix *B* and the full dense matrix *A*. For any pair of genomic loci *(i, j)* satisfying the band constraint :math:`|i - j| \le k`, the interaction frequency :math:`A[i, j]` can be accessed in constant time via :math:`D[i, j - i]`. This structure ensures random access in :math:`\mathcal{O}(1)` time, which is critical for performance-sensitive Hi-C analyses, particularly when memory constraints prohibit the use of fully dense matrices. Data access in ``band_hic_matrix`` is fully consistent with that of a dense matrix, as each entry is accessed via :math:`B[i, j] = D[i, j - i] = A[i, j]`, allowing users to interact with ``band_hic_matrix`` objects as if they were dense matrices without needing to consider the underlying implementation.
+
+Owing to this random-access capability, ``band_hic_matrix`` supports NumPy-like indexing semantics, including slicing, boolean indexing, and fancy indexing. This design allows users to easily query local chromatin contacts. For instance, a slice operation such as :code:`B[i:j, i:j]` retrieves a banded submatrix. Combined with the ``todense`` operation, this enables reconstruction of the dense submatrix for downstream analysis or visualization.
+
+In addition to flexible data access, ``band_hic_matrix`` also supports a wide range of numerical operations, including element-wise arithmetic operations and reduction operations. These operations are implemented using NumPy for efficiency. Standard reduction operations such as ``sum``, ``min``, and ``max`` are supported along conventional axes (rows or columns), as well as along the diagonal axis, which is particularly useful in summarizing interaction intensities by genomic distance. This feature facilitates common Hi-C analyses such as distance-decay profiling.
+
+Taken together, ``band_hic_matrix`` combines the memory efficiency of a banded storage model with the expressiveness of NumPy's interface. By mimicking both NumPy's ``ndarray`` and ``MaskedArray`` behaviors, it provides an intuitive and powerful interface for users, substantially lowering the barrier to adoption and promoting integration into existing Hi-C data analysis workflows.
+
+BandHiC reduces the memory consumption of TopDom
+----------------------------------------------------
+
+To evaluate the effectiveness of BandHiC, we benchmarked the TopDom algorithm on chromosome 1 of mouse embryonic stem cell (mESC) Micro-C data across multiple resolutions using both dense matrix and ``band_hic_matrix``. TopDom was reimplemented in Python to support both NumPy's ``ndarray`` and BandHiC's ``band_hic_matrix`` class. As shown in Fig. 1B, BandHiC substantially reduces memory usage at all tested resolutions. At 1000 bp and 500 bp resolution, the dense matrices require over 72 GB of memory, exceeding the available system memory (60 GB RAM and 12 GB swap space), and causing the program to terminate due to memory allocation failure. In contrast, the banded format completes successfully, with memory usage of only 5,989 MB and 23,902 MB at 1000 bp and 500 bp resolution, respectively. The banded format introduces modest additional runtime compared to the dense matrix (Fig. 1C). This overhead stems not from masking—which was disabled in this evaluation—but from index computation performed during element access in the ``band_hic_matrix`` object.
+
+These results indicate that ``band_hic_matrix`` enables domain-calling algorithms like TopDom to be applied to high-resolution Hi-C data on standard hardware, making large-scale analysis feasible without incurring significant computational cost. Owing to BandHiC's NumPy-like API, other Hi-C-based pattern identification methods can be reimplemented with minimal modifications to the original code, thereby significantly improving their scalability and adaptability to higher-resolution data.

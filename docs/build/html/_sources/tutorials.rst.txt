@@ -1,5 +1,11 @@
 Tutorials
-=========
+==========
+ 
+This section provides detailed tutorials on how to use the **BandHiC** package effectively.
+
+.. contents::
+   :local:
+   :depth: 2
 
 Prerequisites
 -------------

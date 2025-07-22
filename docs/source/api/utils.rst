@@ -1,5 +1,7 @@
 Other Functions
------------------
+---------------
+These functions provide additional utilities for BandHiC matrices, including matrix comparison, bias computation, and TAD calling.
+
 .. autosummary::
    :toctree: ../_autosummary
 
@@ -8,3 +10,10 @@ Other Functions
    bandhic.compute_bin_bias
    bandhic.call_tad
    bandhic.topdom
+
+..
+   .. autofunction:: bandhic.matrix_equal
+   .. autofunction:: bandhic.assert_band_matrix_equal
+   .. autofunction:: bandhic.compute_bin_bias
+   .. autofunction:: bandhic.call_tad
+   .. autofunction:: bandhic.topdom

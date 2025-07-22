@@ -3,11 +3,6 @@ import sys
 import os
 import numbers
 
-# Ensure project root is in Python path for module imports
-sys.path.insert(
-    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../bandhic"))
-)
-
 # Pytest-based test suite for band_hic_matrix
 import pytest
 import numpy as np
