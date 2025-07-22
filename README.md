@@ -28,7 +28,7 @@ If you already have Python ≥ 3.11 installed:
 > pip install bandhic
 ```
 
-### Option 2: Install from source with `conda`
+### Option 2: Install from source code with `conda`
 
 ```bash
 # 1. Clone the repository

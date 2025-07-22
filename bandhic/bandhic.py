@@ -23,6 +23,10 @@ import numpy.ma as ma
 from scipy.sparse import coo_array, coo_matrix, csr_array
 import collections.abc
 
+__all__ = [
+    "band_hic_matrix",
+]
+
 # -------------------------------------------------------------------------------
 # Registry and helper for NumPy top-level function dispatch in __array_function__
 _ARRAY_FUNCTION_DISPATCH: Dict[Callable, str] = {
