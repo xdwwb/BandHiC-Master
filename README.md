@@ -2,21 +2,61 @@
 
 [**BandHiC**](https:pypi.org/project/bandhic) is a Python package for efficient storage, manipulation, and analysis of Hi-C matrices using a banded matrix representation.
 
+---
+
 ## Overview
 Given that most informative chromatin contacts occur within a limited genomic distance (typically within 2 Mb), **BandHiC** adopts a banded storage scheme that stores only a configurable diagonal bandwidth of the dense Hi-C contact matrices. This design can reduce memory usage by up to 99% compared to dense matrices, while still supporting fast random access and user-friendly indexing operations. In addition, BandHiC supports flexible masking mechanisms to efficiently handle missing values, outliers, and unmappable genomic regions. It also provides a suite of vectorized operations optimized with NumPy, making it both scalable and practical for ultra-high-resolution Hi-C data analysis.
+
+---
+
+## Features
+
+1. Memory-efficient data structure for Hi-C matrices
+    - Optimized for large-scale chromatin interaction data
+    - Support random accessing
+2. NumPy-like API for ease of adoption
+    - Familiar interface to reduce learning curve
+3. Full NumPy compatibility
+    - Seamless interoperability with NumPy operations
+4. Efficient masking mechanisms
+    - Handle missing values, outliers, and unmappable regions
+5. Efficient vectorized operations optimized with NumPy
+    - Enabling scalable analysis of ultra-high-resolution Hi-C datasets
+6. Reduction functions with diagonal-axis support
+    - Supports mean, max, sum, etc.
+7. Input support for `.hic` (straw) and `.cool` (cooler) formats
+    - Builds banded matrices directly from standard Hi-C files
+8. Implementation of TopDom algorithm and KR normalization
+    - Banded-matrix-optimized Hi-C analysis methods
+
+---
+
+## 📖 Documentation
+
+For full tutorials and API reference, refer to the [BandHiC' Documentation](./docs/build/latex/bandhic.pdf) or [BandHiC' Website](https://xdwwb.github.io/BandHiC-Master/).
+
+---
+
+##  Data structure
+
+![Data structure illustration](./docs/source/_static/bandhic_illustration.svg)
+
+`BandHiC.band_hic_matrix` is the core class implemented in the BandHiC package. This figure shows how to convert a dense symmetric matrix $A\in R^{n\times n}$ into a `band_hic_matrix` object $B$ consisting of a data matrix $D\in R^{n\times k}$, an element-wise mask matrix $M\in R^{n\times k}$, a row/column mask matrix $X\in R^{n\times 1}$, and a default value $d$ for out-of-band entries. Diagonal elements from $A$ are reorganized into columns of $D$; $M$ marks missing or outlier entries; $X$ indicates masked rows or columns. `band_hic_matrix` retains only the diagonals within a user-defined bandwidth $k$, yielding a compact representation $D$. This ensures that each column in $D$ corresponds to a fixed diagonal of $A$, such that the mapping $\ A[i,\ j]=D[i,j-i]$ holds for $|i-j|<k$.
+
+---
 
 ## 🔧 Installation
 
 ### Required Package
 
-**BandHiC** could be installed in a linux-like system and requires the following dependencies. 
+**BandHiC** could be installed in a linux-like system and requires the following dependencies.
 
-1. python>=3.11
-2. numpy>=2.3
-3. pandas>=2.3
-4. scipy>=1.16
-5. [cooler>=0.10](https://cooler.readthedocs.io/en/latest/)
-6. [hic_straw>=1.3](https://pypi.org/project/hic-straw/)
+1. python >= 3.11
+2. numpy >= 2.3
+3. pandas >= 2.3
+4. scipy >= 1.16
+5. [cooler >= 0.10](https://cooler.readthedocs.io/en/latest/)
+6. [hic_straw >= 1.3](https://pypi.org/project/hic-straw/)
 
 There are two recommended ways to install **BandHiC**:
 
@@ -25,22 +65,32 @@ There are two recommended ways to install **BandHiC**:
 If you already have Python ≥ 3.11 installed:
 
 ```bash
-> pip install bandhic
+$ pip install bandhic
 ```
+
+If the installation fails due to dependency issues, please manually install the dependencies and then rerun the above command.
+
 
 ### Option 2: Install from source code with `conda`
 
+1. Clone the repository
+
 ```bash
-# 1. Clone the repository
->>> git clone https://github.com/xdwwb/BandHiC-Master.git
->>> cd BandHiC-Master
+$ git clone https://github.com/xdwwb/BandHiC-Master.git
+$ cd BandHiC-Master
+```
 
-# 2. Create the environment and activate it
->>> conda env create -f environment.yml
->>> conda activate bandhic
+2. Create the environment and activate it
 
-# 3. Install BandHiC
->>> pip install .
+```bash
+$ conda env create -f environment.yml
+$ conda activate bandhic
+```
+
+3. Install BandHiC
+
+```bash
+$ pip install .
 ```
 ### Build Troubleshooting for `hic-straw`
 
@@ -61,20 +111,20 @@ You need to install the `libcurl` development package before building:
 **On Ubuntu/Debian**:
 
 ```bash
-sudo apt-get update
-sudo apt-get install libcurl4-openssl-dev
+$ sudo apt-get update
+$ sudo apt-get install libcurl4-openssl-dev
 ```
 
 **On Fedora/CentOS/RHEL**:
 
 ```bash
-sudo dnf install libcurl-devel
+$ sudo dnf install libcurl-devel
 ```
 
 **On macOS** (with Homebrew):
 
 ```bash
-brew install curl
+$ brew install curl
 ```
 
 > If Homebrew's curl is not found automatically, you may need to set environment variables:
@@ -91,20 +141,20 @@ export LIBRARY_PATH="$(brew --prefix curl)/lib"
 Instead of building `hic-straw` from source, you can install a prebuilt binary via [Bioconda](https://bioconda.github.io/):
 
 ```bash
-conda install -c bioconda hic-straw
+$ conda install -c bioconda hic-straw
 ```
 
 To avoid conflicts and ensure reproducibility, we recommend installing it in a fresh Conda environment:
 
 ```bash
-conda create -n bandhic-env python=3.11
-conda activate bandhic-env
-conda install -c bioconda hic-straw
+$ conda create -n bandhic-env python=3.11
+$ conda activate bandhic-env
+$ conda install -c bioconda hic-straw
 ```
 
 ```bash
 # Install BandHiC
->>> pip install bandhic
+$ pip install bandhic
 ```
 -----
 
@@ -112,7 +162,7 @@ conda install -c bioconda hic-straw
 
 ### Prerequisites
 
-BandHiC can serve as an alternative to the NumPy package when managing and manipulating Hi-C data, aiming to address the issue of excessive memory usage caused by storing dense matrices using NumPy’s `ndarray`. At the same time, BandHiC supports masking operations similar to NumPy’s `ma.MaskedArray` module, with enhancements tailored for Hi-C data.
+BandHiC can serve as an alternative to the NumPy package when managing and manipulating Hi-C matrices, aiming to address the issue of excessive memory usage caused by storing dense matrices using NumPy’s `ndarray`. At the same time, BandHiC supports masking operations similar to NumPy’s `ma.MaskedArray` module, with enhancements tailored for Hi-C data.
 
 Users can leverage their experience with NumPy when using the BandHiC package, so it is recommended that users have some basic knowledge of NumPy. A link to NumPy is provided below: [https://numpy.org](https://numpy.org)
 
@@ -122,16 +172,14 @@ Users can leverage their experience with NumPy when using the BandHiC package, s
 ```
 
 ### Initialize a `band_hic_matrix` object
-Initialize from a SciPy `coo_matrix` object:
+Initialize from a SciPy [`coo_matrix`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.coo_matrix.html) object:
 ```Python
->>> import bandhic as bh
->>> import numpy as np
 >>> from scipy.sparse import coo_matrix
 >>> coo = coo_matrix(([1, 2, 3], ([0, 1, 2],[0, 1, 2])), shape=(3,3))
 >>> mat1 = bh.band_hic_matrix(coo, diag_num=2)
 ```
 
-Initialize from a tuple (data, (row, col)):
+Initialize from a tuple `(data, (row_indices, column_indices))`:
 ```Python
 >>> mat2 = bh.band_hic_matrix(([4, 5, 6], ([0, 1, 2],[2, 1, 0])), diag_num=1)
 ```
@@ -165,68 +213,112 @@ Load from `.mcool` file:
 ```
 
 ### Construct a `band_hic_matrix` object
+Create a `band_hic_matrix` object filled with zeros.
+
 ```Python
-# Create a band_hic_matrix object filled with zeros.
 >>> mat1 = bh.zeros((5, 5), diag_num=3, dtype=float)
+```
 
-# Create a band_hic_matrix object filled with ones.
+Create a `band_hic_matrix` object filled with ones.
+
+```Python
 >>> mat2 = bh.ones((5, 5), diag_num=3, dtype=float)
+```
 
-# Create a band_hic_matrix object filled as an identity matrix.
+Create a `band_hic_matrix` object filled as an identity matrix.
+
+```python
 >>> mat3 = bh.eye((5, 5), diag_num=3, dtype=float)
+```
 
-# Create a band_hic_matrix object filled with a specified value.
+Create a `band_hic_matrix` object filled with a specified value.
+
+```python
 >>> mat4 = bh.full((5, 5), fill_value=0.1, diag_num=3, dtype=float)
+```
 
-# Create a band_hic_matrix object matching another matrix, filled with zeros.
+Create a `band_hic_matrix` object matching another matrix, filled with zeros.
+
+```python
 >>> mat5 = bh.zeros_like(mat1, diag_num=3, dtype=float)
+```
 
-# Create a band_hic_matrix object matching another matrix, filled with ones.
+Create a `band_hic_matrix` object matching another matrix, filled with ones.
+
+```python
 >>> mat6 = bh.ones_like(mat1, diag_num=3, dtype=float)
+```
 
-# Create a band_hic_matrix object matching another matrix, filled as an identity matrix.
+Create a `band_hic_matrix` object matching another matrix, filled as an identity matrix.
+
+```python
 >>> mat7 = bh.eye_like(mat1, diag_num=3, dtype=float)
+```
 
-# Create a band_hic_matrix object matching another matrix, filled with a specified value.
+Create a `band_hic_matrix` object matching another matrix, filled with a specified value.
+
+```python
 >>> mat8 = bh.full_like(mat1, fill_value=0.1 diag_num=3, dtype=float)
 ```
 ### Indexing on `band_hic_matrix`
-```python
-# First, we create a band_hic_matrix object:
->>> import numpy as np
->>> import bandhic as bh
->>> mat = bh.band_hic_matrix(np.arange(16).reshape(4,4), diag_num=2)
 
-# Single-element access (scalar)
+First, we create a `band_hic_matrix` object:
+
+```python
+>>> mat = bh.band_hic_matrix(np.arange(16).reshape(4,4), diag_num=2)
+```
+
+Single-element access (scalar)
+
+```python
 >>> mat[1, 2]
 6
+```
 
-# Masked element returns masked
+Masked element returns `masked`
+
+```python
 >>> mat2 = bh.band_hic_matrix(np.eye(4), dtype=int, diag_num=2, mask=([0],[1]))
 >>> mat2[0, 1]
 masked
+```
 
-# Square submatrix via two-slice indexing returns band_hic_matrix
+Square submatrix via two-slice indexing returns `band_hic_matrix`
+
+```python
 >>> sub = mat[1:3, 1:3]
 >>> isinstance(sub, bh.band_hic_matrix)
 True
+```
 
-# Single-axis slice returns band_hic_matrix for square region
+Single-axis slice returns `band_hic_matrix` for square region
+
+```python
 >>> sub2 = mat[0:2]  # equivalent to mat[0:2, 0:2]
 >>> isinstance(sub2, bh.band_hic_matrix)
 True
+```
 
-# Fancy indexing returns ndarray or MaskedArray
+Fancy indexing returns `ndarray` or `MaskedArray`
+
+```python
 >>> arr = mat[[0,2,3], [1,2,0]]
 >>> isinstance(arr, np.ndarray)
 True
+```
 
->>> mat.add_mask([0,1],[1,2])  # Add mask to some entries
+Add mask to some entries
+
+```python
+>>> mat.add_mask([0,1],[1,2])
 >>> masked_arr = mat[[0,1], [1,2]]
 >>> isinstance(masked_arr, np.ma.MaskedArray)
 True
+```
 
-# Boolean indexing with band_hic_matrix
+Boolean indexing with `band_hic_matrix`
+
+```python
 >>> mat3 = bh.band_hic_matrix(np.eye(4), diag_num=2, mask=([0,1],[1,2]))
 >>> bool_mask = mat3 > 0  # Create a boolean mask
 >>> result = mat3[bool_mask]  # Use boolean mask for indexing
@@ -239,30 +331,52 @@ masked_array(data=[1.0, 1.0, 1.0, 1.0],
 ```
 
 ### Masking 
-```python
-# Add item-wise mask:
->>> mat.add_mask([0, 1], [1, 2])
+Add item-wise mask:
 
-# Add row/column mask:
+```python
+>>> mat.add_mask([0, 1], [1, 2])
+```
+
+Add row/column mask:
+
+```python
 >>> mask = np.array([True, False, False])
 >>> mat.add_mask_row_col(mask)
+```
 
-# Remove mask for specified indices.
+Remove mask for specified indices.
+
+```python
 >>> mat.unmask(( [0],[1] ))
+```
 
-# Remove all item-wise mask and row/column mask.
+Remove all item-wise mask and row/column mask.
+
+```python
 >>> mat.unmask()
+```
 
-# Remove all item-wise mask and row/column mask.
+Remove all item-wise mask and row/column mask.
+
+```python
 >>> mat.clear_mask()
+```
 
-# Drop all item-wise mask but preserve all row/column mask.
+Drop all item-wise mask but preserve all row/column mask.
+
+```python
 >>> mat.drop_mask()
+```
 
-# Drop all row/column mask.
+Drop all row/column mask.
+
+```python
 >>> mat.drop_mask_row_col()
+```
 
-# Access masked `band_hic_matrix` will obtain `np.ma.MaskedArray` object:
+Access masked `band_hic_matrix` will obtain `np.ma.MaskedArray` object:
+
+```python
 >>> mat.add_mask([0, 1], [1, 2])
 >>> masked_arr = mat[[0,1], [1,2]]
 >>> isinstance(masked_arr, np.ma.MaskedArray)
@@ -310,7 +424,8 @@ Universal functions that BandHiC support:
 | `tan`            | Tangent function                  | `tanh`           | Hyperbolic tangent                |
 | `true_divide`    | Division that returns float       |                  |                                   |
 
-BandHiC supports these universal functions, and they can be used in the following three ways:
+BandHiC supports these universal functions, and they can be used in the following four ways:
+
 1. As methods of the `band_hic_matrix` object:
 ```python
 # When two band_hic_matrix objects are involved, their shape and diag_num must match
@@ -318,21 +433,29 @@ BandHiC supports these universal functions, and they can be used in the followin
 >>> mat4 = mat1.less(mat2)
 >>> mat5 = mat1.negative()
 ```
-2. Using mathematical operators:
+
+2. As functions of the **BandHiC** package
+
+```python
+>>> mat3 = bh.add(mat1, mat2)
+>>> mat4 = bh.less(mat1, mat2)
+>>> mat5 = bh.negative(mat1)
+```
+3. Using mathematical operators:
 ```python
 >>> mat3 = mat1 + mat2
 >>> mat4 = mat1 < mat2
 >>> mat5 = - mat1
 ```
 
-3. Calling NumPy's universal functions:
+4. Calling NumPy's universal functions:
 ```python
 >>> mat3 = np.add(mat1, mat2)
 >>> mat4 = np.less(mat1, mat2)
 >>> mat5 = np.negative(mat1)
 ```
 
-### Other Array Functions
+### Array reduction and other Functions
 | Function | Description |
 |----------|-------------|
 | `sum`    | Compute the sum of all elements along the specified axis |
@@ -349,48 +472,45 @@ BandHiC supports these universal functions, and they can be used in the followin
 
 BandHiC supports these functions, and they can be used in the following two ways:
 1. As methods of the `band_hic_matrix` object:
+
+Compute the sum of all elements including out-of-band values filled with `default_value`.
+
 ```python
-# Compute the sum of all elements including out-of-band values filled with `default_value`.
-
 >>> result0 = mat1.sum()
+```
 
-# Compute the sum of all elements along the `row` axis
+Compute the sum of all elements along the `row` axis
+
+```python
 >>> result1 = mat1.sum(axis=0)
 >>> result1 = mat1.sum(axis='row')
+```
 
-# Compute the sum of all elements along the `diag` axis
+Compute the sum of all elements along the `diag` axis
+
+```python
 >>> result2 = mat1.sum(axis='diag')
+```
+
+2. Calling **BandHiC**'s functions:
+```python
+>>> result0 = bh.sum(mat1)
+
+>>> result1 = bh.sum(mat1, axis=0)
+
+>>> result2 = bh.sum(mat1, axis='diag')
 ```
 
 3. Calling NumPy's functions:
 ```python
-# Compute the sum of all elements including out-of-band values filled with `default_value`.
 >>> result0 = np.sum(mat1)
 
-# Compute the sum of all elements along the `row` axis
 >>> result1 = np.sum(mat1, axis=0)
 
-# Compute the sum of all elements along the `diag` axis
 >>> result2 = np.sum(mat1, axis='diag')
 ```
 ---
 
-## 📚 Features
-
-- Efficient band matrix structure for Hi-C data
-- Seamless NumPy integration (e.g., `sum`, `mean`, `clip`)
-- Built-in masking and diagonal access
-- Save/load via `.npz`
-- Sliding window and row/col iteration
-- Supports `.hic` (straw) and `.cool` inputs
-
----
-
-## 📖 Documentation
-
-For full tutorials and API reference, see the [📄 PDF documentation](./docs/build/latex/bandhic.pdf)
-
----
 
 ## 📝 License
 

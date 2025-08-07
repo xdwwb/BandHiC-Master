@@ -12,7 +12,8 @@
 #
 import os
 import sys
-# sys.path.insert(0, os.path.abspath('../../'))
+sys.path.insert(0, os.path.abspath('../../'))
+import bandhic as bh
 
 
 # -- Project information -----------------------------------------------------
@@ -22,7 +23,7 @@ copyright = '2025, Weibing Wang'
 author = 'Weibing Wang'
 
 # The full version, including alpha/beta/rc tags
-version = '0.1.2'
+version = bh.__version__
 
 
 # -- General configuration ---------------------------------------------------
