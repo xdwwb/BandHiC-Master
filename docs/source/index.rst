@@ -15,8 +15,9 @@ Author:  Wang Weibing
 Email: wangweibing@xidian.edu.cn
 
 Useful links: 
-`Website <https://xdwwb.github.io/BandHiC-Master/>`_ | 
-`PyPI <https://pypi.org/project/bandhic/>`_ | 
+`PDF Download <https://github.com/xdwwb/BandHiC-Master/blob/main/docs/build/latex/bandhic.pdf>`_ |
+`Website <https://xdwwb.github.io/BandHiC-Master/>`_ |
+`PyPI <https://pypi.org/project/bandhic/>`_ |
 `GitHub <https://github.com/xdwwb/BandHiC-Master>`_
 
 .. toctree::

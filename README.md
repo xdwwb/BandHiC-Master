@@ -31,15 +31,21 @@ Given that most informative chromatin contacts occur within a limited genomic di
 
 ---
 
-## 📖 Documentation
+## Useful links
 
-For full tutorials and API reference, refer to the [BandHiC' Documentation](./docs/build/latex/bandhic.pdf) or [BandHiC' Website](https://xdwwb.github.io/BandHiC-Master/).
+For full tutorials and API reference, please refer to:
+
+- [Documentation (PDF)](./docs/build/latex/bandhic.pdf)
+- [Website (online docs)](https://xdwwb.github.io/BandHiC-Master/)
+
+If you have any questions, please contact us:
+- [wangweibing@xidian.edu.cn](wangweibing@xidian.edu.cn)
 
 ---
 
 ##  Data structure
 
-![Data structure illustration](./docs/source/_static/bandhic_illustration.svg)
+![Data structure illustration](./docs/source/quickstart/_static/bandhic_illustration.svg)
 
 `BandHiC.band_hic_matrix` is the core class implemented in the BandHiC package. This figure shows how to convert a dense symmetric matrix $A\in R^{n\times n}$ into a `band_hic_matrix` object $B$ consisting of a data matrix $D\in R^{n\times k}$, an element-wise mask matrix $M\in R^{n\times k}$, a row/column mask matrix $X\in R^{n\times 1}$, and a default value $d$ for out-of-band entries. Diagonal elements from $A$ are reorganized into columns of $D$; $M$ marks missing or outlier entries; $X$ indicates masked rows or columns. `band_hic_matrix` retains only the diagonals within a user-defined bandwidth $k$, yielding a compact representation $D$. This ensures that each column in $D$ corresponds to a fixed diagonal of $A$, such that the mapping $\ A[i,\ j]=D[i,j-i]$ holds for $|i-j|<k$.
 
@@ -385,7 +391,7 @@ True
 
 ### Universal functions(`ufunc`)
 Universal functions that BandHiC support:
-| Function 1       | Description 1                     | Function 2       | Description 2                     |
+| Function        | Description                      | Function         | Description                       |
 |------------------|-----------------------------------|------------------|-----------------------------------|
 | `absolute`       | Absolute value                    | `add`            | Element-wise addition             |
 | `arccos`         | Inverse cosine                    | `arccosh`        | Inverse hyperbolic cosine         |
@@ -470,7 +476,7 @@ BandHiC supports these universal functions, and they can be used in the followin
 | `any`    | Return `True` if any element evaluates to `True` |
 | `clip`   | Limit values to a specified min and max range |
 
-BandHiC supports these functions, and they can be used in the following two ways:
+BandHiC supports these functions, and they can be used in the following three ways:
 1. As methods of the `band_hic_matrix` object:
 
 Compute the sum of all elements including out-of-band values filled with `default_value`.
@@ -495,18 +501,14 @@ Compute the sum of all elements along the `diag` axis
 2. Calling **BandHiC**'s functions:
 ```python
 >>> result0 = bh.sum(mat1)
-
 >>> result1 = bh.sum(mat1, axis=0)
-
 >>> result2 = bh.sum(mat1, axis='diag')
 ```
 
 3. Calling NumPy's functions:
 ```python
 >>> result0 = np.sum(mat1)
-
 >>> result1 = np.sum(mat1, axis=0)
-
 >>> result2 = np.sum(mat1, axis='diag')
 ```
 ---

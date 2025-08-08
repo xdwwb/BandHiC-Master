@@ -49,7 +49,7 @@
     <link rel="prev" title="Installation" href="installation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1.6" />
+  <meta name="docsearch:version" content="0.1.7" />
   </head>
   
   
@@ -347,24 +347,77 @@
                   
   <section id="what-is-bandhic">
 <h1>What is BandHiC?<a class="headerlink" href="#what-is-bandhic" title="Link to this heading">#</a></h1>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/bandhic_illustration.svg"><img alt="../_images/bandhic_illustration.svg" src="../_images/bandhic_illustration.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Data structure of BandHiC.
+Schematic illustration of converting a dense symmetric matrix <span class="math notranslate nohighlight">\(A\)</span> into a banded
+representation consisting of a data matrix <span class="math notranslate nohighlight">\(D\)</span>, an element-wise mask matrix
+<span class="math notranslate nohighlight">\(M\)</span>, a row/column mask matrix <span class="math notranslate nohighlight">\(X\)</span>, and a default value <span class="math notranslate nohighlight">\(d\)</span> for
+out-of-band entries. Diagonal elements from <span class="math notranslate nohighlight">\(A\)</span> are reorganized into columns
+of <span class="math notranslate nohighlight">\(D\)</span>; <span class="math notranslate nohighlight">\(M\)</span> marks missing or outlier entries; <span class="math notranslate nohighlight">\(X\)</span> indicates masked
+rows or columns.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 <section id="data-structure-of-bandhic">
 <h2>Data structure of BandHiC<a class="headerlink" href="#data-structure-of-bandhic" title="Link to this heading">#</a></h2>
-<p>To address the growing memory demands posed by high-resolution Hi-C data, we introduce <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code>, the core class implemented in the BandHiC package. For a Hi-C contact matrix <span class="math notranslate nohighlight">\(A \in \mathbb{R}^{n \times n}\)</span> at resolution <em>r</em>, <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> retains only the diagonals within a user-defined bandwidth <em>k</em>, yielding a compact representation <span class="math notranslate nohighlight">\(D \in \mathbb{R}^{n \times k}\)</span>. This format ensures that each column in <em>D</em> corresponds to a fixed diagonal of <em>A</em>, such that the mapping <span class="math notranslate nohighlight">\(A[i, j] = D[i, j - i]\)</span> holds for <span class="math notranslate nohighlight">\(|i - j| \le k\)</span>.</p>
-<p>The memory efficiency achieved by this strategy is substantial. When <span class="math notranslate nohighlight">\(k \ll n\)</span>, the memory footprint of <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> is reduced from <span class="math notranslate nohighlight">\(\mathcal{O}(n^2)\)</span> to <span class="math notranslate nohighlight">\(\mathcal{O}(nk)\)</span>. For example, assuming a resolution of 1 kb and a bandwidth of 2 Mb (k = 200), the representation of chromosome 1 of the human genome (~249 Mb) requires 3.7 GB of memory, less than 1% of the memory required by the dense matrix (~461.9 GB). This compression enables the use of high-resolution Hi-C data on commodity hardware without sacrificing random access efficiency.</p>
-<p>To further enhance flexibility of usage, <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> integrates an optional two-tier masking mechanism. The element-wise mask matrix <span class="math notranslate nohighlight">\(M \in \{0,1\}^{n \times k}\)</span> allows users to selectively ignore missing or outlier contacts, enabling robust statistical estimation on unmasked subsets. Additionally, a bin-level mask <span class="math notranslate nohighlight">\(X \in \{0,1\}^n\)</span> supports the exclusion of entire rows or columns, which is particularly useful for removing repetitive genomic regions devoid of a valid Hi-C signal. These masking features facilitate downstream tasks such as the estimation of average contact intensity at given distances, while confirming statistical validity.</p>
-<p>Lastly, a scalar default value <em>d</em> is defined to fill in the undefined entries of <em>A</em> not covered by the band matrix <em>D</em>. This default is typically set to 0, consistent with the assumption that long-range interactions are negligibly sparse. It also ensures that reconstruction of the full matrix <em>A</em> (if required) can be achieved seamlessly by combining <em>D</em>, <em>M</em>, <em>X</em>, and <em>d</em>. Overall, <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> provides an efficient, flexible data structure for scalable Hi-C data analysis.</p>
+<p>To address the growing memory demands posed by high-resolution Hi-C data,
+we introduce <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code>, the core class implemented in the BandHiC package.
+For a Hi-C contact matrix <span class="math notranslate nohighlight">\(A \in \mathbb{R}^{n \times n}\)</span> at resolution <span class="math notranslate nohighlight">\(r\)</span>,
+<code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> retains only the diagonals within a user-defined bandwidth <span class="math notranslate nohighlight">\(k\)</span>,
+yielding a compact representation <span class="math notranslate nohighlight">\(D \in \mathbb{R}^{n \times k}\)</span>.
+This format ensures that each column in <span class="math notranslate nohighlight">\(D\)</span> corresponds to a fixed diagonal of <span class="math notranslate nohighlight">\(A\)</span>,
+such that the mapping <span class="math notranslate nohighlight">\(A[i, j] = D[i, j - i]\)</span> holds for <span class="math notranslate nohighlight">\(|i - j| \le k\)</span>.</p>
+<p>The memory efficiency achieved by this strategy is substantial.
+When <span class="math notranslate nohighlight">\(k \ll n\)</span>, the memory footprint of <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> is reduced from
+<span class="math notranslate nohighlight">\(\mathcal{O}(n^2)\)</span> to <span class="math notranslate nohighlight">\(\mathcal{O}(nk)\)</span>.
+For example, assuming a resolution of 1 kb and a bandwidth of 2 Mb (<span class="math notranslate nohighlight">\(k = 200\)</span>),
+the representation of chromosome 1 of the human genome (~249 Mb) requires 3.7 GB of memory,
+less than 1% of the memory required by the dense matrix (~461.9 GB).
+This compression enables the use of high-resolution Hi-C data on commodity hardware
+without sacrificing random access efficiency.</p>
+<p>To further enhance flexibility of usage, <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> integrates an optional two-tier
+masking mechanism. The element-wise mask matrix <span class="math notranslate nohighlight">\(M \in \{0,1\}^{n \times k}\)</span> allows
+users to selectively ignore missing or outlier contacts, enabling robust statistical estimation
+on unmasked subsets. Additionally, a bin-level mask <span class="math notranslate nohighlight">\(X \in \{0,1\}^n\)</span> supports the exclusion of entire rows or columns, which is particularly useful for removing repetitive genomic regions devoid of a valid Hi-C signal. These masking features facilitate downstream tasks such as the estimation of average contact intensity at given distances, while confirming statistical validity.</p>
+<p>Lastly, a scalar default value <span class="math notranslate nohighlight">\(d\)</span> is defined to fill in the undefined entries of
+<span class="math notranslate nohighlight">\(A\)</span> not covered by the band matrix <span class="math notranslate nohighlight">\(D\)</span>. This default is typically set to 0,
+consistent with the assumption that long-range interactions are negligibly sparse.
+It also ensures that reconstruction of the full matrix <span class="math notranslate nohighlight">\(A\)</span> (if required) can be
+achieved seamlessly by combining <span class="math notranslate nohighlight">\(D\)</span>, <span class="math notranslate nohighlight">\(M\)</span>, <span class="math notranslate nohighlight">\(X\)</span>, and <span class="math notranslate nohighlight">\(d\)</span>. Overall,
+<code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> provides an efficient, flexible data structure for scalable Hi-C data
+analysis.</p>
 </section>
-<section id="features-of-bandhic">
-<h2>Features of BandHiC<a class="headerlink" href="#features-of-bandhic" title="Link to this heading">#</a></h2>
-<p>A key feature of <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> is its direct coordinate mapping between the banded matrix <em>B</em> and the full dense matrix <em>A</em>. For any pair of genomic loci <em>(i, j)</em> satisfying the band constraint <span class="math notranslate nohighlight">\(|i - j| \le k\)</span>, the interaction frequency <span class="math notranslate nohighlight">\(A[i, j]\)</span> can be accessed in constant time via <span class="math notranslate nohighlight">\(D[i, j - i]\)</span>. This structure ensures random access in <span class="math notranslate nohighlight">\(\mathcal{O}(1)\)</span> time, which is critical for performance-sensitive Hi-C analyses, particularly when memory constraints prohibit the use of fully dense matrices. Data access in <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> is fully consistent with that of a dense matrix, as each entry is accessed via <span class="math notranslate nohighlight">\(B[i, j] = D[i, j - i] = A[i, j]\)</span>, allowing users to interact with <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> objects as if they were dense matrices without needing to consider the underlying implementation.</p>
-<p>Owing to this random-access capability, <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> supports NumPy-like indexing semantics, including slicing, boolean indexing, and fancy indexing. This design allows users to easily query local chromatin contacts. For instance, a slice operation such as <code class="code docutils literal notranslate"><span class="pre">B[i:j,</span> <span class="pre">i:j]</span></code> retrieves a banded submatrix. Combined with the <code class="docutils literal notranslate"><span class="pre">todense</span></code> operation, this enables reconstruction of the dense submatrix for downstream analysis or visualization.</p>
-<p>In addition to flexible data access, <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> also supports a wide range of numerical operations, including element-wise arithmetic operations and reduction operations. These operations are implemented using NumPy for efficiency. Standard reduction operations such as <code class="docutils literal notranslate"><span class="pre">sum</span></code>, <code class="docutils literal notranslate"><span class="pre">min</span></code>, and <code class="docutils literal notranslate"><span class="pre">max</span></code> are supported along conventional axes (rows or columns), as well as along the diagonal axis, which is particularly useful in summarizing interaction intensities by genomic distance. This feature facilitates common Hi-C analyses such as distance-decay profiling.</p>
-<p>Taken together, <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> combines the memory efficiency of a banded storage model with the expressiveness of NumPy’s interface. By mimicking both NumPy’s <code class="docutils literal notranslate"><span class="pre">ndarray</span></code> and <code class="docutils literal notranslate"><span class="pre">MaskedArray</span></code> behaviors, it provides an intuitive and powerful interface for users, substantially lowering the barrier to adoption and promoting integration into existing Hi-C data analysis workflows.</p>
-</section>
-<section id="bandhic-reduces-the-memory-consumption-of-topdom">
-<h2>BandHiC reduces the memory consumption of TopDom<a class="headerlink" href="#bandhic-reduces-the-memory-consumption-of-topdom" title="Link to this heading">#</a></h2>
-<p>To evaluate the effectiveness of BandHiC, we benchmarked the TopDom algorithm on chromosome 1 of mouse embryonic stem cell (mESC) Micro-C data across multiple resolutions using both dense matrix and <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code>. TopDom was reimplemented in Python to support both NumPy’s <code class="docutils literal notranslate"><span class="pre">ndarray</span></code> and BandHiC’s <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> class. As shown in Fig. 1B, BandHiC substantially reduces memory usage at all tested resolutions. At 1000 bp and 500 bp resolution, the dense matrices require over 72 GB of memory, exceeding the available system memory (60 GB RAM and 12 GB swap space), and causing the program to terminate due to memory allocation failure. In contrast, the banded format completes successfully, with memory usage of only 5,989 MB and 23,902 MB at 1000 bp and 500 bp resolution, respectively. The banded format introduces modest additional runtime compared to the dense matrix (Fig. 1C). This overhead stems not from masking—which was disabled in this evaluation—but from index computation performed during element access in the <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> object.</p>
-<p>These results indicate that <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> enables domain-calling algorithms like TopDom to be applied to high-resolution Hi-C data on standard hardware, making large-scale analysis feasible without incurring significant computational cost. Owing to BandHiC’s NumPy-like API, other Hi-C-based pattern identification methods can be reimplemented with minimal modifications to the original code, thereby significantly improving their scalability and adaptability to higher-resolution data.</p>
+<section id="functions-of-bandhic">
+<h2>Functions of BandHiC<a class="headerlink" href="#functions-of-bandhic" title="Link to this heading">#</a></h2>
+<p>A key feature of <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> is its direct coordinate mapping between the banded
+matrix <em>B</em> and the full dense matrix <span class="math notranslate nohighlight">\(A\)</span>. For any pair of genomic loci <span class="math notranslate nohighlight">\((i, j)\)</span> satisfying
+the band constraint <span class="math notranslate nohighlight">\(|i - j| \le k\)</span>, the interaction frequency <span class="math notranslate nohighlight">\(A[i, j]\)</span>
+can be accessed in constant time via <span class="math notranslate nohighlight">\(D[i, j - i]\)</span>. This structure ensures random
+access in <span class="math notranslate nohighlight">\(\mathcal{O}(1)\)</span> time, which is critical for performance-sensitive Hi-C
+analyses, particularly when memory constraints prohibit the use of fully dense matrices.
+Data access in <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> is fully consistent with that of a dense matrix, as
+each entry is accessed via <span class="math notranslate nohighlight">\(B[i, j] = D[i, j - i] = A[i, j]\)</span>, allowing users to
+interact with <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> objects as if they were dense matrices without needing
+to consider the underlying implementation.</p>
+<p>Owing to this random-access capability, <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> supports NumPy-like indexing
+semantics, including slicing, boolean indexing, and fancy indexing. This design allows users
+to easily query local chromatin contacts. For instance, a slice operation such as
+<code class="code docutils literal notranslate"><span class="pre">B[i:j,</span> <span class="pre">i:j]</span></code> retrieves a banded submatrix. Combined with the <code class="docutils literal notranslate"><span class="pre">todense</span></code> operation,
+this enables reconstruction of the dense submatrix for downstream analysis or visualization.</p>
+<p>In addition to flexible data access, <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> also supports a wide range of
+numerical operations, including element-wise arithmetic operations and reduction operations.
+These operations are implemented using NumPy for efficiency. Standard reduction operations
+such as <code class="docutils literal notranslate"><span class="pre">sum</span></code>, <code class="docutils literal notranslate"><span class="pre">min</span></code>, and <code class="docutils literal notranslate"><span class="pre">max</span></code> are supported along conventional axes (rows or columns),
+as well as along the diagonal axis, which is particularly useful in summarizing interaction
+intensities by genomic distance. This feature facilitates common Hi-C analyses such as
+distance-decay profiling.</p>
+<p>Taken together, <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> combines the memory efficiency of a banded storage
+model with the expressiveness of NumPy’s interface. By mimicking both NumPy’s <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>
+and <code class="docutils literal notranslate"><span class="pre">MaskedArray</span></code> behaviors, it provides an intuitive and powerful interface for users,
+substantially lowering the barrier to adoption and promoting integration into existing
+Hi-C data analysis workflows.</p>
 </section>
 </section>
 
@@ -416,8 +469,7 @@
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-structure-of-bandhic">Data structure of BandHiC</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#features-of-bandhic">Features of BandHiC</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bandhic-reduces-the-memory-consumption-of-topdom">BandHiC reduces the memory consumption of TopDom</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions-of-bandhic">Functions of BandHiC</a></li>
 </ul>
   </nav></div>
 

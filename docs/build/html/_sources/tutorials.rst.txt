@@ -10,7 +10,7 @@ This section provides detailed tutorials on how to use the **BandHiC** package e
 Prerequisites
 -------------
 
-BandHiC can serve as an alternative to the NumPy package when managing and manipulating Hi-C data, aiming to address the issue of excessive memory usage caused by storing dense matrices using NumPy’s ``ndarray``. At the same time, BandHiC supports masking operations similar to NumPy’s ``ma.MaskedArray`` module, with enhancements tailored for Hi-C data.
+BandHiC can serve as an alternative to the NumPy package when managing and manipulating Hi-C data, aiming to address the issue of excessive memory usage caused by storing dense matrices using NumPy's ``ndarray``. At the same time, BandHiC supports masking operations similar to NumPy’s ``ma.MaskedArray`` module, with enhancements tailored for Hi-C data.
 
 Users can leverage their experience with NumPy when using the BandHiC package, so it is recommended that users have some basic knowledge of NumPy. A link to NumPy is provided below: https://numpy.org
 
@@ -78,62 +78,101 @@ Load from ``.mcool`` file:
 Construct a ``band_hic_matrix`` object
 --------------------------------------
 
+Create a band_hic_matrix object filled with zeros.
+
 .. code-block:: python
 
-   # Create a band_hic_matrix object filled with zeros.
    >>> mat1 = bh.zeros((5, 5), diag_num=3, dtype=float)
 
-   # Create a band_hic_matrix object filled with ones.
+Create a band_hic_matrix object filled with ones.
+
+.. code-block:: python
+
    >>> mat2 = bh.ones((5, 5), diag_num=3, dtype=float)
 
-   # Create a band_hic_matrix object filled as an identity matrix.
+Create a band_hic_matrix object filled as an identity matrix.
+
+.. code-block:: python
+
    >>> mat3 = bh.eye((5, 5), diag_num=3, dtype=float)
 
-   # Create a band_hic_matrix object filled with a specified value.
+Create a band_hic_matrix object filled with a specified value.
+
+.. code-block:: python
+
    >>> mat4 = bh.full((5, 5), fill_value=0.1, diag_num=3, dtype=float)
 
-   # Create a band_hic_matrix object matching another matrix, filled with zeros.
+Create a band_hic_matrix object matching another matrix, filled with zeros.
+
+.. code-block:: python
+
    >>> mat5 = bh.zeros_like(mat1, diag_num=3, dtype=float)
 
-   # Create a band_hic_matrix object matching another matrix, filled with ones.
+Create a band_hic_matrix object matching another matrix, filled with ones.
+
+.. code-block:: python
+
    >>> mat6 = bh.ones_like(mat1, diag_num=3, dtype=float)
 
-   # Create a band_hic_matrix object matching another matrix, filled as an identity matrix.
+Create a band_hic_matrix object matching another matrix, filled as an identity matrix.
+
+.. code-block:: python
+
    >>> mat7 = bh.eye_like(mat1, diag_num=3, dtype=float)
 
-   # Create a band_hic_matrix object matching another matrix, filled with a specified value.
+
+Create a band_hic_matrix object matching another matrix, filled with a specified value.
+
+.. code-block:: python
+
    >>> mat8 = bh.full_like(mat1, fill_value=0.1, diag_num=3, dtype=float)
 
 Indexing on ``band_hic_matrix``
 -------------------------------
 
+First, we create a band_hic_matrix object:
+
 .. code-block:: python
 
-   # First, we create a band_hic_matrix object:
    >>> import numpy as np
    >>> import bandhic as bh
    >>> mat = bh.band_hic_matrix(np.arange(16).reshape(4,4), diag_num=2)
 
-   # Single-element access (scalar)
+Single-element access (scalar)
+
+.. code-block:: python
+
    >>> mat[1, 2]
    6
 
-   # Masked element returns masked
+Masked element returns masked
+
+.. code-block:: python
+
    >>> mat2 = bh.band_hic_matrix(np.eye(4), dtype=int, diag_num=2, mask=([0],[1]))
    >>> mat2[0, 1]
    masked
 
-   # Square submatrix via two-slice indexing returns band_hic_matrix
+Square submatrix via two-slice indexing returns band_hic_matrix
+
+.. code-block:: python
+
    >>> sub = mat[1:3, 1:3]
    >>> isinstance(sub, bh.band_hic_matrix)
    True
 
-   # Single-axis slice returns band_hic_matrix for square region
+Single-axis slice returns band_hic_matrix for square region
+
+.. code-block:: python
+
    >>> sub2 = mat[0:2]  # equivalent to mat[0:2, 0:2]
    >>> isinstance(sub2, bh.band_hic_matrix)
    True
 
-   # Fancy indexing returns ndarray or MaskedArray
+Fancy indexing returns ndarray or MaskedArray
+
+.. code-block:: python
+
    >>> arr = mat[[0,2,3], [1,2,0]]
    >>> isinstance(arr, np.ndarray)
    True
@@ -143,7 +182,10 @@ Indexing on ``band_hic_matrix``
    >>> isinstance(masked_arr, np.ma.MaskedArray)
    True
 
-   # Boolean indexing with band_hic_matrix
+Boolean indexing with band_hic_matrix
+
+.. code-block:: python
+
    >>> mat3 = bh.band_hic_matrix(np.eye(4), diag_num=2, mask=([0,1],[1,2]))
    >>> bool_mask = mat3 > 0  # Create a boolean mask
    >>> result = mat3[bool_mask]  # Use boolean mask for indexing
@@ -157,31 +199,53 @@ Indexing on ``band_hic_matrix``
 Masking
 -------
 
+Add item-wise mask:
+
 .. code-block:: python
 
-   # Add item-wise mask:
    >>> mat.add_mask([0, 1], [1, 2])
 
-   # Add row/column mask:
+Add row/column mask:
+
+.. code-block:: python
+
    >>> mask = np.array([True, False, False])
    >>> mat.add_mask_row_col(mask)
 
-   # Remove mask for specified indices.
+Remove mask for specified indices.
+
+.. code-block:: python
+
    >>> mat.unmask(( [0],[1] ))
 
-   # Remove all item-wise mask and row/column mask.
+Remove all item-wise mask and row/column mask.
+
+.. code-block:: python
+
    >>> mat.unmask()
 
-   # Remove all item-wise mask and row/column mask.
+Remove all item-wise mask and row/column mask.
+
+.. code-block:: python
+
    >>> mat.clear_mask()
 
-   # Drop all item-wise mask but preserve all row/column mask.
+Drop all item-wise mask but preserve all row/column mask.
+
+.. code-block:: python
+
    >>> mat.drop_mask()
 
-   # Drop all row/column mask.
+Drop all row/column mask.
+
+.. code-block:: python
+
    >>> mat.drop_mask_row_col()
 
-   # Access masked `band_hic_matrix` will obtain `np.ma.MaskedArray` object:
+Access masked `band_hic_matrix` will obtain `np.ma.MaskedArray` object:
+
+.. code-block:: python
+
    >>> mat.add_mask([0, 1], [1, 2])
    >>> masked_arr = mat[[0,1], [1,2]]
    >>> isinstance(masked_arr, np.ma.MaskedArray)
@@ -193,7 +257,7 @@ Universal functions (ufunc)
 Universal functions that BandHiC supports:
 
 +------------------+-----------------------------------+------------------+-----------------------------------+
-| Function 1       | Description 1                     | Function 2       | Description 2                     |
+| Function         | Description                       | Function         | Description                       |
 +==================+===================================+==================+===================================+
 | absolute         | Absolute value                    | add              | Element-wise addition             |
 +------------------+-----------------------------------+------------------+-----------------------------------+
@@ -268,18 +332,27 @@ Universal functions that BandHiC supports:
 | true_divide      | Division that returns float       |                  |                                   |
 +------------------+-----------------------------------+------------------+-----------------------------------+
 
-BandHiC supports these universal functions, and they can be used in the following three ways:
+BandHiC supports these universal functions, and they can be used in the following four ways:
 
 1. As methods of the ``band_hic_matrix`` object:
 
+When two band_hic_matrix objects are involved, their shape and diag_num must match
+
 .. code-block:: python
 
-   # When two band_hic_matrix objects are involved, their shape and diag_num must match
    >>> mat3 = mat1.add(mat2)
    >>> mat4 = mat1.less(mat2)
    >>> mat5 = mat1.negative()
 
-2. Using mathematical operators:
+2. As functions of the ``BandHiC`` package
+
+.. code-block:: python
+
+   >>> mat3 = bh.add(mat1, mat2)
+   >>> mat4 = bh.less(mat1, mat2)
+   >>> mat5 = bh.negative(mat1)
+
+3. Using mathematical operators:
 
 .. code-block:: python
 
@@ -287,7 +360,7 @@ BandHiC supports these universal functions, and they can be used in the followin
    >>> mat4 = mat1 < mat2
    >>> mat5 = - mat1
 
-3. Calling NumPy's universal functions:
+4. Calling NumPy's universal functions:
 
 .. code-block:: python
 
@@ -324,31 +397,41 @@ Other Array Functions
 | clip     | Limit values to a specified min and max range                 |
 +----------+---------------------------------------------------------------+
 
-BandHiC supports these functions, and they can be used in the following two ways:
+BandHiC supports these functions, and they can be used in the following three ways:
 
 1. As methods of the ``band_hic_matrix`` object:
 
+Compute the sum of all elements including out-of-band values filled with `default_value`.
+
 .. code-block:: python
 
-   # Compute the sum of all elements including out-of-band values filled with `default_value`.
    >>> result0 = mat1.sum()
 
-   # Compute the sum of all elements along the `row` axis
+Compute the sum of all elements along the `row` axis
+
+.. code-block:: python
+
    >>> result1 = mat1.sum(axis=0)
    >>> result1 = mat1.sum(axis='row')
 
-   # Compute the sum of all elements along the `diag` axis
+Compute the sum of all elements along the `diag` axis
+
+.. code-block:: python
+   
    >>> result2 = mat1.sum(axis='diag')
 
-2. Calling NumPy's functions:
+2. Calling ``BandHiC``'s functions:
 
 .. code-block:: python
 
-   # Compute the sum of all elements including out-of-band values filled with `default_value`.
+   >>> result0 = bh.sum(mat1)
+   >>> result1 = bh.sum(mat1, axis=0)
+   >>> result2 = bh.sum(mat1, axis='diag')
+
+3. Calling NumPy's functions:
+
+.. code-block:: python
+
    >>> result0 = np.sum(mat1)
-
-   # Compute the sum of all elements along the `row` axis
    >>> result1 = np.sum(mat1, axis=0)
-
-   # Compute the sum of all elements along the `diag` axis
    >>> result2 = np.sum(mat1, axis='diag')

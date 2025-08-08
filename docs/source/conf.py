@@ -34,20 +34,27 @@ version = bh.__version__
 # docs/conf.py
 
 extensions = [
-    'sphinx.ext.autodoc',       # 从 docstring 提取文档
-    'sphinx.ext.autosummary',  # 自动生成 API 文档
-    'sphinx.ext.napoleon',      # 支持 NumPy / Google 风格
-    'sphinx.ext.viewcode',      # （可选）源码链接
-    'sphinx_autodoc_typehints',  # 类型提示支持
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
+    'sphinx_autodoc_typehints',
+    # 'sphinx.ext.imgconverter', 
+    # 'sphinxcontrib.inkscapeconverter',
 ]
 
 autosummary_generate = True
 
 napoleon_numpy_docstring = True
 napoleon_google_docstring = False
-
+numfig = True
 autodoc_typehints = "description"
 typehints_fully_qualified = False
+
+# image_converter = 'inkscape --export-filename={outfile} {infile}'
+# image_converter_format = 'pdf'
+
+# image_converter = 'convert {infile} {outfile}'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

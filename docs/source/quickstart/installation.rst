@@ -24,21 +24,30 @@ If you already have Python >= 3.11 installed:
 
    pip install bandhic
 
+If the installation fails due to dependency issues, please manually install the dependencies and then rerun the above command.
+
 Option 2: Install from source with conda
 ----------------------------------------
 
-.. code-block:: bash
+1. Clone the repository
 
-   # 1. Clone the repository
-   git clone https://github.com/xdwwb/BandHiC-Master.git
-   cd BandHiC-Master
+   .. code-block:: bash
 
-   # 2. Create the environment and activate it
-   conda env create -f environment.yml
-   conda activate bandhic
+      git clone https://github.com/xdwwb/BandHiC-Master.git
+      cd BandHiC-Master
 
-   # 3. Install BandHiC
-   pip install .
+2. Create the environment and activate it
+
+   .. code-block:: bash
+
+      conda env create -f environment.yml
+      conda activate bandhic
+
+3. Install BandHiC
+
+   .. code-block:: bash
+
+      pip install .
 
 Build Troubleshooting for hic-straw
 ------------------------------------
@@ -96,6 +105,4 @@ To avoid conflicts and ensure reproducibility, we recommend installing it in a f
    conda create -n bandhic-env python=3.11
    conda activate bandhic-env
    conda install -c bioconda hic-straw
-
-   # Install BandHiC
    pip install bandhic

@@ -48,7 +48,7 @@
     <link rel="prev" title="What is BandHiC?" href="quickstart/whatis.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1.6" />
+  <meta name="docsearch:version" content="0.1.7" />
   </head>
   
   
@@ -408,110 +408,130 @@
 </section>
 <section id="construct-a-band-hic-matrix-object">
 <h2><a class="toc-backref" href="#id5" role="doc-backlink">Construct a <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> object</a><a class="headerlink" href="#construct-a-band-hic-matrix-object" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a band_hic_matrix object filled with zeros.</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat1</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-
-<span class="c1"># Create a band_hic_matrix object filled with ones.</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat2</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-
-<span class="c1"># Create a band_hic_matrix object filled as an identity matrix.</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat3</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">eye</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-
-<span class="c1"># Create a band_hic_matrix object filled with a specified value.</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat4</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-
-<span class="c1"># Create a band_hic_matrix object matching another matrix, filled with zeros.</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat5</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-
-<span class="c1"># Create a band_hic_matrix object matching another matrix, filled with ones.</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat6</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-
-<span class="c1"># Create a band_hic_matrix object matching another matrix, filled as an identity matrix.</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat7</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">eye_like</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-
-<span class="c1"># Create a band_hic_matrix object matching another matrix, filled with a specified value.</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat8</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<p>Create a band_hic_matrix object filled with zeros.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat1</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create a band_hic_matrix object filled with ones.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat2</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create a band_hic_matrix object filled as an identity matrix.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat3</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">eye</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create a band_hic_matrix object filled with a specified value.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat4</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create a band_hic_matrix object matching another matrix, filled with zeros.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat5</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create a band_hic_matrix object matching another matrix, filled with ones.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat6</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create a band_hic_matrix object matching another matrix, filled as an identity matrix.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat7</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">eye_like</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create a band_hic_matrix object matching another matrix, filled with a specified value.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat8</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="indexing-on-band-hic-matrix">
 <h2><a class="toc-backref" href="#id6" role="doc-backlink">Indexing on <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code></a><a class="headerlink" href="#indexing-on-band-hic-matrix" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># First, we create a band_hic_matrix object:</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">bandhic</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bh</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">band_hic_matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<p>First, we create a band_hic_matrix object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">bandhic</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bh</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">band_hic_matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Single-element access (scalar)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="go">6</span>
+</pre></div>
+</div>
+<p>Masked element returns masked</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat2</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">band_hic_matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">([</span><span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat2</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="go">masked</span>
+</pre></div>
+</div>
+<p>Square submatrix via two-slice indexing returns band_hic_matrix</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sub</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">bh</span><span class="o">.</span><span class="n">band_hic_matrix</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Single-axis slice returns band_hic_matrix for square region</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sub2</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># equivalent to mat[0:2, 0:2]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">sub2</span><span class="p">,</span> <span class="n">bh</span><span class="o">.</span><span class="n">band_hic_matrix</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Fancy indexing returns ndarray or MaskedArray</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+<span class="go">True</span>
 
-<span class="c1"># Single-element access (scalar)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-<span class="mi">6</span>
-
-<span class="c1"># Masked element returns masked</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat2</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">band_hic_matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">([</span><span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">]))</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat2</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="n">masked</span>
-
-<span class="c1"># Square submatrix via two-slice indexing returns band_hic_matrix</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">sub</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">bh</span><span class="o">.</span><span class="n">band_hic_matrix</span><span class="p">)</span>
-<span class="kc">True</span>
-
-<span class="c1"># Single-axis slice returns band_hic_matrix for square region</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">sub2</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># equivalent to mat[0:2, 0:2]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sub2</span><span class="p">,</span> <span class="n">bh</span><span class="o">.</span><span class="n">band_hic_matrix</span><span class="p">)</span>
-<span class="kc">True</span>
-
-<span class="c1"># Fancy indexing returns ndarray or MaskedArray</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">arr</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
-<span class="kc">True</span>
-
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat</span><span class="o">.</span><span class="n">add_mask</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>  <span class="c1"># Add mask to some entries</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">masked_arr</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">masked_arr</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">)</span>
-<span class="kc">True</span>
-
-<span class="c1"># Boolean indexing with band_hic_matrix</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat3</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">band_hic_matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]))</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">bool_mask</span> <span class="o">=</span> <span class="n">mat3</span> <span class="o">&gt;</span> <span class="mi">0</span>  <span class="c1"># Create a boolean mask</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">mat3</span><span class="p">[</span><span class="n">bool_mask</span><span class="p">]</span>  <span class="c1"># Use boolean mask for indexing</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">)</span>
-<span class="kc">True</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">result</span>
-<span class="n">masked_array</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
-         <span class="n">mask</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>
-   <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span><span class="o">.</span><span class="n">add_mask</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>  <span class="c1"># Add mask to some entries</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">masked_arr</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">masked_arr</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Boolean indexing with band_hic_matrix</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat3</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">band_hic_matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bool_mask</span> <span class="o">=</span> <span class="n">mat3</span> <span class="o">&gt;</span> <span class="mi">0</span>  <span class="c1"># Create a boolean mask</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">mat3</span><span class="p">[</span><span class="n">bool_mask</span><span class="p">]</span>  <span class="c1"># Use boolean mask for indexing</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span>
+<span class="go">masked_array(data=[1.0, 1.0, 1.0, 1.0],</span>
+<span class="go">         mask=[False, False, False, False],</span>
+<span class="go">   fill_value=0.0)</span>
 </pre></div>
 </div>
 </section>
 <section id="masking">
 <h2><a class="toc-backref" href="#id7" role="doc-backlink">Masking</a><a class="headerlink" href="#masking" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add item-wise mask:</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat</span><span class="o">.</span><span class="n">add_mask</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-
-<span class="c1"># Add row/column mask:</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat</span><span class="o">.</span><span class="n">add_mask_row_col</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
-
-<span class="c1"># Remove mask for specified indices.</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat</span><span class="o">.</span><span class="n">unmask</span><span class="p">((</span> <span class="p">[</span><span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">]</span> <span class="p">))</span>
-
-<span class="c1"># Remove all item-wise mask and row/column mask.</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat</span><span class="o">.</span><span class="n">unmask</span><span class="p">()</span>
-
-<span class="c1"># Remove all item-wise mask and row/column mask.</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat</span><span class="o">.</span><span class="n">clear_mask</span><span class="p">()</span>
-
-<span class="c1"># Drop all item-wise mask but preserve all row/column mask.</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat</span><span class="o">.</span><span class="n">drop_mask</span><span class="p">()</span>
-
-<span class="c1"># Drop all row/column mask.</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat</span><span class="o">.</span><span class="n">drop_mask_row_col</span><span class="p">()</span>
-
-<span class="c1"># Access masked `band_hic_matrix` will obtain `np.ma.MaskedArray` object:</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat</span><span class="o">.</span><span class="n">add_mask</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">masked_arr</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">masked_arr</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">)</span>
-<span class="kc">True</span>
+<p>Add item-wise mask:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span><span class="o">.</span><span class="n">add_mask</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Add row/column mask:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span><span class="o">.</span><span class="n">add_mask_row_col</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Remove mask for specified indices.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span><span class="o">.</span><span class="n">unmask</span><span class="p">((</span> <span class="p">[</span><span class="mi">0</span><span class="p">],[</span><span class="mi">1</span><span class="p">]</span> <span class="p">))</span>
+</pre></div>
+</div>
+<p>Remove all item-wise mask and row/column mask.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span><span class="o">.</span><span class="n">unmask</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Remove all item-wise mask and row/column mask.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span><span class="o">.</span><span class="n">clear_mask</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Drop all item-wise mask but preserve all row/column mask.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span><span class="o">.</span><span class="n">drop_mask</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Drop all row/column mask.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span><span class="o">.</span><span class="n">drop_mask_row_col</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Access masked <cite>band_hic_matrix</cite> will obtain <cite>np.ma.MaskedArray</cite> object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span><span class="o">.</span><span class="n">add_mask</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">masked_arr</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">masked_arr</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">)</span>
+<span class="go">True</span>
 </pre></div>
 </div>
 </section>
@@ -520,10 +540,10 @@
 <p>Universal functions that BandHiC supports:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
-<tr class="row-odd"><th class="head"><p>Function 1</p></th>
-<th class="head"><p>Description 1</p></th>
-<th class="head"><p>Function 2</p></th>
-<th class="head"><p>Description 2</p></th>
+<tr class="row-odd"><th class="head"><p>Function</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Function</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
 <tbody>
@@ -710,17 +730,25 @@
 </tbody>
 </table>
 </div>
-<p>BandHiC supports these universal functions, and they can be used in the following three ways:</p>
+<p>BandHiC supports these universal functions, and they can be used in the following four ways:</p>
 <ol class="arabic simple">
 <li><p>As methods of the <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> object:</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># When two band_hic_matrix objects are involved, their shape and diag_num must match</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat3</span> <span class="o">=</span> <span class="n">mat1</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">mat2</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat4</span> <span class="o">=</span> <span class="n">mat1</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">mat2</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mat5</span> <span class="o">=</span> <span class="n">mat1</span><span class="o">.</span><span class="n">negative</span><span class="p">()</span>
+<p>When two band_hic_matrix objects are involved, their shape and diag_num must match</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat3</span> <span class="o">=</span> <span class="n">mat1</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">mat2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat4</span> <span class="o">=</span> <span class="n">mat1</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">mat2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat5</span> <span class="o">=</span> <span class="n">mat1</span><span class="o">.</span><span class="n">negative</span><span class="p">()</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
+<li><p>As functions of the <code class="docutils literal notranslate"><span class="pre">BandHiC</span></code> package</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat3</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span> <span class="n">mat2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat4</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span> <span class="n">mat2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat5</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="n">mat1</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
 <li><p>Using mathematical operators:</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat3</span> <span class="o">=</span> <span class="n">mat1</span> <span class="o">+</span> <span class="n">mat2</span>
@@ -728,7 +756,7 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mat5</span> <span class="o">=</span> <span class="o">-</span> <span class="n">mat1</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="3">
+<ol class="arabic simple" start="4">
 <li><p>Calling NumPy’s universal functions:</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span> <span class="n">mat2</span><span class="p">)</span>
@@ -782,32 +810,37 @@
 </tbody>
 </table>
 </div>
-<p>BandHiC supports these functions, and they can be used in the following two ways:</p>
+<p>BandHiC supports these functions, and they can be used in the following three ways:</p>
 <ol class="arabic simple">
 <li><p>As methods of the <code class="docutils literal notranslate"><span class="pre">band_hic_matrix</span></code> object:</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute the sum of all elements including out-of-band values filled with `default_value`.</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">result0</span> <span class="o">=</span> <span class="n">mat1</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-
-<span class="c1"># Compute the sum of all elements along the `row` axis</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">result1</span> <span class="o">=</span> <span class="n">mat1</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">result1</span> <span class="o">=</span> <span class="n">mat1</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;row&#39;</span><span class="p">)</span>
-
-<span class="c1"># Compute the sum of all elements along the `diag` axis</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">result2</span> <span class="o">=</span> <span class="n">mat1</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;diag&#39;</span><span class="p">)</span>
+<p>Compute the sum of all elements including out-of-band values filled with <cite>default_value</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result0</span> <span class="o">=</span> <span class="n">mat1</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Compute the sum of all elements along the <cite>row</cite> axis</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result1</span> <span class="o">=</span> <span class="n">mat1</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result1</span> <span class="o">=</span> <span class="n">mat1</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;row&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Compute the sum of all elements along the <cite>diag</cite> axis</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result2</span> <span class="o">=</span> <span class="n">mat1</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;diag&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
+<li><p>Calling <code class="docutils literal notranslate"><span class="pre">BandHiC</span></code>’s functions:</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result0</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mat1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result1</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result2</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;diag&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
 <li><p>Calling NumPy’s functions:</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute the sum of all elements including out-of-band values filled with `default_value`.</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">result0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mat1</span><span class="p">)</span>
-
-<span class="c1"># Compute the sum of all elements along the `row` axis</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">result1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-<span class="c1"># Compute the sum of all elements along the `diag` axis</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">result2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;diag&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mat1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;diag&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

@@ -48,7 +48,7 @@
     <link rel="prev" title="Overview" href="intro.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1.6" />
+  <meta name="docsearch:version" content="0.1.7" />
   </head>
   
   
@@ -365,21 +365,29 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>bandhic
 </pre></div>
 </div>
+<p>If the installation fails due to dependency issues, please manually install the dependencies and then rerun the above command.</p>
 </section>
 <section id="option-2-install-from-source-with-conda">
 <h2>Option 2: Install from source with conda<a class="headerlink" href="#option-2-install-from-source-with-conda" title="Link to this heading">#</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Clone the repository</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/xdwwb/BandHiC-Master.git
+<ol class="arabic">
+<li><p>Clone the repository</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/xdwwb/BandHiC-Master.git
 <span class="nb">cd</span><span class="w"> </span>BandHiC-Master
-
-<span class="c1"># 2. Create the environment and activate it</span>
-conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>environment.yml
-conda<span class="w"> </span>activate<span class="w"> </span>bandhic
-
-<span class="c1"># 3. Install BandHiC</span>
-pip<span class="w"> </span>install<span class="w"> </span>.
 </pre></div>
 </div>
+</li>
+<li><p>Create the environment and activate it</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>environment.yml
+conda<span class="w"> </span>activate<span class="w"> </span>bandhic
+</pre></div>
+</div>
+</li>
+<li><p>Install BandHiC</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>.
+</pre></div>
+</div>
+</li>
+</ol>
 </section>
 <section id="build-troubleshooting-for-hic-straw">
 <h2>Build Troubleshooting for hic-straw<a class="headerlink" href="#build-troubleshooting-for-hic-straw" title="Link to this heading">#</a></h2>
@@ -422,8 +430,6 @@ sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>bandhic-env<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.11
 conda<span class="w"> </span>activate<span class="w"> </span>bandhic-env
 conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>bioconda<span class="w"> </span>hic-straw
-
-<span class="c1"># Install BandHiC</span>
 pip<span class="w"> </span>install<span class="w"> </span>bandhic
 </pre></div>
 </div>

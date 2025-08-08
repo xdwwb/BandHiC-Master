@@ -17,7 +17,4 @@ bandhic/__pycache__/
 
 test/**
 !test/*_test.py
-!test/*_benchmark.py
-!test/samples.ipynb
-
 
