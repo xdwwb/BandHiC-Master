@@ -9,7 +9,7 @@ except FileNotFoundError:
 
 setup(
     name="bandhic",
-    version="0.1.9",
+    version="0.2.0",
     author="Weibing Wang",
     description="BandHiC: a memory-efficient Python package for managing and analyzing Hi-C data down to sub-kilobase resolution",
     long_description=long_description,
