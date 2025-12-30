@@ -152,8 +152,8 @@ __all__ = [
 ]
 
 # Automatically generate band_hic_matrix methods for common NumPy ufuncs
-_UFUNC_DISPATCH = { 
-    "add": _np_add, 
+_UFUNC_DISPATCH = {
+    "add": _np_add,
     "subtract": _np_subtract,
     "multiply": _np_multiply,
     "divide": _np_divide,
@@ -226,6 +226,7 @@ _UFUNC_DISPATCH = {
     "minimum": _np_minimum,
 }
 
+
 def _generate_ufunc_aliases():
     """
     Dynamically attach NumPy ufunc aliases to band_hic_matrix.
@@ -234,6 +235,7 @@ def _generate_ufunc_aliases():
 
         def make_ufunc_wrapper(uf):
             nin = uf.nin
+
             def wrapper(self, *args, **kwargs):
                 # Handle unary ufunc (nin=1)
                 if nin == 1:
@@ -298,18 +300,22 @@ def _generate_ufunc_aliases():
             return wrapper
 
         setattr(band_hic_matrix, method_name, make_ufunc_wrapper(ufunc))
-        
+
+
 def _generate_ufunc_module_aliases():
     """
     Dynamically attach NumPy ufunc aliases to bandhic module.
     """
     for method_name, ufunc in _UFUNC_DISPATCH.items():
+
         def make_ufunc_wrapper(uf):
             nin = uf.nin
+
             def wrapper(*args, **kwargs):
                 # Handle unary ufunc (nin=1)
                 # Build a NumPy-style docstring reflecting input count
                 return uf(*args, **kwargs)
+
             if nin == 1:
                 param_sig = "x, *args, **kwargs"
                 params_desc = "x : band_hic_matrix\n" "    Input matrix.\n"
@@ -356,10 +362,12 @@ def _generate_ufunc_module_aliases():
             wrapper.__name__ = method_name
             wrapper.__module__ = bandhic.__name__
             return wrapper
+
         # Attach to bandhic module
         func = make_ufunc_wrapper(ufunc)
         globals()[method_name] = func
-        
+
+
 def _make_numpy_ufunc_doc_url(func_name: str) -> str:
     """
     Construct the NumPy documentation URL for a given ufunc.
@@ -374,8 +382,9 @@ def _make_numpy_ufunc_doc_url(func_name: str) -> str:
     url : str
         The full URL to the function's documentation.
     """
-    version = '.'.join(np.__version__.split(".")[:2])
+    version = ".".join(np.__version__.split(".")[:2])
     return f"https://numpy.org/doc/{version}/reference/generated/numpy.{func_name}.html"
+
 
 # Execute ufunc alias generation
 _generate_ufunc_aliases()

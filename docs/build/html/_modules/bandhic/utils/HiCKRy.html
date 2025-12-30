@@ -1,8 +1,9 @@
 
+
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../../" >
+<html lang="en" data-content_root="" >
 
   <head>
     <meta charset="utf-8" />
@@ -29,7 +30,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -37,15 +38,17 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/bandhic/utils/HiCKRy';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1.7" />
+  <meta name="docsearch:version" content="0.1.9" />
   </head>
   
   
@@ -362,9 +365,7 @@
     <span class="s2">&quot;compute_bin_bias&quot;</span><span class="p">,</span>
 <span class="p">]</span>
 
-<div class="viewcode-block" id="compute_bin_bias">
-<a class="viewcode-back" href="../../../_autosummary/bandhic.compute_bin_bias.html#bandhic.compute_bin_bias">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_bin_bias</span><span class="p">(</span><span class="n">hic_coo</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_bin_bias"><a class="viewcode-back" href="../../../_autosummary/bandhic.compute_bin_bias.html#bandhic.compute_bin_bias">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">compute_bin_bias</span><span class="p">(</span><span class="n">hic_coo</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bias_lowerbound</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">bias_upperbound</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute bias values for Hi-C contact matrices using the Knight-Ruiz normalization algorithm.</span>
 <span class="sd">    </span>
@@ -396,7 +397,7 @@
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1"> of bins are removed&#39;</span> <span class="o">%</span> <span class="n">sparseToRemoveT</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">bias</span><span class="p">,</span><span class="n">is_valid</span> <span class="o">=</span> <span class="n">returnBias</span><span class="p">(</span><span class="n">hic_coo</span><span class="p">,</span> <span class="n">sparseToRemoveT</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+            <span class="n">bias</span><span class="p">,</span><span class="n">is_valid</span> <span class="o">=</span> <span class="n">returnBias</span><span class="p">(</span><span class="n">hic_coo</span><span class="p">,</span> <span class="n">sparseToRemoveT</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">bias_lowerbound</span><span class="p">,</span> <span class="n">bias_upperbound</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>    
@@ -408,7 +409,6 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING... Bias vector has a median or mean outside of typical range (0.8, 1.2).&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">bias</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span><span class="n">is_valid</span></div>
-
 
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_args</span><span class="p">(</span><span class="n">arguments</span><span class="p">):</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Check help flag&quot;</span><span class="p">)</span>
@@ -457,7 +457,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sparse matrix creation took </span><span class="si">%s</span><span class="s2"> seconds&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">endT</span><span class="o">-</span><span class="n">startT</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">sparseMatrix</span><span class="p">,</span> <span class="n">revFrag</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">returnBias</span><span class="p">(</span><span class="n">rawMatrix</span><span class="p">,</span> <span class="n">perc</span><span class="p">,</span> <span class="n">verbose</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">returnBias</span><span class="p">(</span><span class="n">rawMatrix</span><span class="p">,</span> <span class="n">perc</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">bias_lowerbound</span><span class="p">,</span> <span class="n">bias_upperbound</span><span class="p">):</span>
     <span class="n">rawMatrix</span><span class="o">=</span><span class="n">rawMatrix</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">rawMatrix</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
     <span class="n">mtxAndRemoved</span> <span class="o">=</span> <span class="n">removeZeroDiagonalCSR</span><span class="p">(</span><span class="n">rawMatrix</span><span class="p">,</span> <span class="n">perc</span><span class="p">,</span><span class="n">verbose</span><span class="p">)</span>
@@ -477,7 +477,7 @@
     <span class="c1">#x = sps.diags(colVec.flatten(), 0, format=&#39;csr&#39;)</span>
 
     <span class="n">bias</span> <span class="o">=</span> <span class="n">computeBiasVector</span><span class="p">(</span><span class="n">colVec</span><span class="p">)</span>
-    <span class="n">is_valid</span><span class="o">=</span><span class="n">checkBias</span><span class="p">(</span><span class="n">bias</span><span class="p">,</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="n">is_valid</span><span class="o">=</span><span class="n">checkBias</span><span class="p">(</span><span class="n">bias</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">bias_lowerbound</span><span class="p">,</span> <span class="n">bias_upperbound</span><span class="p">)</span>
     <span class="n">biasWZeros</span> <span class="o">=</span> <span class="n">addZeroBiases</span><span class="p">(</span><span class="n">removed</span><span class="p">,</span> <span class="n">bias</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">biasWZeros</span><span class="p">,</span><span class="n">is_valid</span>
 
@@ -521,7 +521,7 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">addZeroBiases</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">vctr</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">:</span>
-        <span class="n">vctr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">vctr</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">vctr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">vctr</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">vctr</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">dropcols_coo</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">idx_to_drop</span><span class="p">):</span>
@@ -653,28 +653,28 @@
 
     <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">k</span><span class="p">]</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">checkBias</span><span class="p">(</span><span class="n">biasvec</span><span class="p">,</span><span class="n">verbose</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">checkBias</span><span class="p">(</span><span class="n">biasvec</span><span class="p">,</span><span class="n">verbose</span><span class="p">,</span><span class="n">bias_lowerbound</span><span class="p">,</span><span class="n">bias_upperbound</span><span class="p">):</span>
     <span class="n">is_valid</span><span class="o">=</span><span class="kc">False</span>
     <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">biasvec</span><span class="p">)</span>
     <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">biasvec</span><span class="p">)</span>
     <span class="n">median</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">biasvec</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">mean</span> <span class="o">&lt;</span> <span class="mf">0.8</span> <span class="ow">or</span> <span class="n">mean</span> <span class="o">&gt;</span> <span class="mf">1.2</span><span class="p">):</span> 
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING... Bias vector has a mean outside of typical range (0.8, 1.2).&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING... Bias vector has a mean outside of typical range (</span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">).&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bias_lowerbound</span><span class="p">,</span> <span class="n">bias_upperbound</span><span class="p">))</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Consider running with a larger -x option if problems occur&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mean</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">mean</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Median</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">median</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Std. Dev.</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">std</span><span class="p">)</span>
         <span class="n">is_valid</span><span class="o">=</span><span class="kc">False</span>
-    <span class="k">elif</span> <span class="p">(</span><span class="n">median</span><span class="o">&lt;</span><span class="mf">0.8</span> <span class="ow">or</span> <span class="n">median</span> <span class="o">&gt;</span> <span class="mf">1.2</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">median</span><span class="o">&lt;</span><span class="n">bias_lowerbound</span> <span class="ow">or</span> <span class="n">median</span> <span class="o">&gt;</span> <span class="n">bias_upperbound</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING... Bias vector has a median outside of typical range (0.8, 1.2).&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING... Bias vector has a median outside of typical range (</span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">).&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bias_lowerbound</span><span class="p">,</span> <span class="n">bias_upperbound</span><span class="p">))</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Consider running with a larger -x option if problems occur&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mean</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">mean</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Median</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">median</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Std. Dev.</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">std</span><span class="p">)</span>
         <span class="n">is_valid</span><span class="o">=</span><span class="kc">False</span>
-    <span class="k">elif</span> <span class="p">(</span><span class="mf">0.8</span> <span class="o">&lt;=</span><span class="n">median</span> <span class="o">&lt;=</span><span class="mf">1.2</span> <span class="ow">and</span> <span class="mf">0.8</span> <span class="o">&lt;=</span><span class="n">mean</span> <span class="o">&lt;=</span><span class="mf">1.2</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">bias_lowerbound</span> <span class="o">&lt;=</span><span class="n">median</span> <span class="o">&lt;=</span><span class="n">bias_upperbound</span> <span class="ow">and</span> <span class="n">bias_lowerbound</span> <span class="o">&lt;=</span><span class="n">mean</span> <span class="o">&lt;=</span><span class="n">bias_upperbound</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mean</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">mean</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Median</span><span class="se">\t</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">median</span><span class="p">)</span>
@@ -758,7 +758,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
     <br/>
   </p>
 </div>

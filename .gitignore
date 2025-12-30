@@ -18,3 +18,5 @@ bandhic/__pycache__/
 test/**
 !test/*_test.py
 
+bandhic/_conv2d.py
+

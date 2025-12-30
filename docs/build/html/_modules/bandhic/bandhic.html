@@ -1,8 +1,9 @@
 
+
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../" >
+<html lang="en" data-content_root="" >
 
   <head>
     <meta charset="utf-8" />
@@ -29,7 +30,7 @@
   <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -37,15 +38,17 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/bandhic/bandhic';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1.7" />
+  <meta name="docsearch:version" content="0.1.9" />
   </head>
   
   
@@ -385,9 +388,7 @@
     <span class="n">_ARRAY_FUNCTION_DISPATCH</span><span class="p">[</span><span class="n">func</span><span class="p">]</span> <span class="o">=</span> <span class="n">method_name</span>
 <span class="c1"># -------------------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="band_hic_matrix">
-<a class="viewcode-back" href="../../api/bandhic.html#bandhic.band_hic_matrix">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">band_hic_matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">mixins</span><span class="o">.</span><span class="n">NDArrayOperatorsMixin</span><span class="p">):</span>
+<div class="viewcode-block" id="band_hic_matrix"><a class="viewcode-back" href="../../api/bandhic.html#bandhic.band_hic_matrix">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">band_hic_matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">mixins</span><span class="o">.</span><span class="n">NDArrayOperatorsMixin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Symmetric banded matrix stored in upper-triangular format.</span>
 <span class="sd">    This storage format is motivated by high-resolution Hi-C data characteristics:</span>
@@ -437,9 +438,7 @@
 <span class="sd">    (4, 4)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="band_hic_matrix.__init__">
-<a class="viewcode-back" href="../../api/bandhic.html#bandhic.band_hic_matrix.__init__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.__init__"><a class="viewcode-back" href="../../api/bandhic.html#bandhic.band_hic_matrix.__init__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">contacts</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">coo_array</span><span class="p">,</span> <span class="n">coo_matrix</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
         <span class="n">diag_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -684,7 +683,6 @@
         <span class="k">if</span> <span class="n">mask_row_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_mask_row_col</span><span class="p">(</span><span class="n">mask_row_col</span><span class="p">)</span></div>
 
-
     <span class="k">def</span><span class="w"> </span><span class="nf">_init_from_band_data</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">band_data</span><span class="p">,</span> <span class="n">mask_row_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
@@ -814,10 +812,13 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">row_idx_input</span><span class="p">,</span> <span class="nb">slice</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
             <span class="n">col_idx_input</span><span class="p">,</span> <span class="nb">slice</span>
         <span class="p">):</span>
-            <span class="c1"># Create a meshgrid for row and column indices</span>
-            <span class="n">row_idx</span><span class="p">,</span> <span class="n">col_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">row_range</span><span class="p">,</span> <span class="n">col_range</span><span class="p">)</span>
-            <span class="n">row_idx</span> <span class="o">=</span> <span class="n">row_idx</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>  <span class="c1"># Flatten the row index array</span>
-            <span class="n">col_idx</span> <span class="o">=</span> <span class="n">col_idx</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>  <span class="c1"># Flatten the column index array</span>
+            <span class="c1"># Create a meshgrid for row and column indices.</span>
+            <span class="c1"># Use matrix (ij) indexing so that the resulting shapes are</span>
+            <span class="c1"># (len(row_range), len(col_range)) and can be reshaped back to</span>
+            <span class="c1"># (row_num, col_num) consistently.</span>
+            <span class="n">row_idx</span><span class="p">,</span> <span class="n">col_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">row_range</span><span class="p">,</span> <span class="n">col_range</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s2">&quot;ij&quot;</span><span class="p">)</span>
+            <span class="n">row_idx</span> <span class="o">=</span> <span class="n">row_idx</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>  <span class="c1"># Flatten in row-major order</span>
+            <span class="n">col_idx</span> <span class="o">=</span> <span class="n">col_idx</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>  <span class="c1"># Flatten in row-major order</span>
             <span class="n">row_num</span> <span class="o">=</span> <span class="n">row_range</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">col_num</span> <span class="o">=</span> <span class="n">col_range</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">row_idx</span><span class="p">,</span> <span class="n">col_idx</span><span class="p">,</span> <span class="n">row_num</span><span class="p">,</span> <span class="n">col_num</span>
@@ -828,9 +829,7 @@
         <span class="k">return</span> <span class="n">row_idx</span><span class="p">,</span> <span class="n">col_idx</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
 
     <span class="c1"># init mask array by mask invalid entries for band data</span>
-<div class="viewcode-block" id="band_hic_matrix.init_mask">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.init_mask.html#bandhic.band_hic_matrix.init_mask">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">init_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="band_hic_matrix.init_mask"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.init_mask.html#bandhic.band_hic_matrix.init_mask">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">init_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize mask for invalid entries based on matrix shape.</span>
 
@@ -852,7 +851,6 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Mask already initialized. Use drop_mask() to clear the existing mask.&quot;</span>
             <span class="p">)</span></div>
-
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_extract_raw_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -880,9 +878,7 @@
         <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">rows</span> <span class="o">+</span> <span class="n">cols</span> <span class="o">&gt;=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">mask</span>
 
-<div class="viewcode-block" id="band_hic_matrix.add_mask">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.add_mask.html#bandhic.band_hic_matrix.add_mask">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_mask</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.add_mask"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.add_mask.html#bandhic.band_hic_matrix.add_mask">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_mask</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">row_idx</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
         <span class="n">col_idx</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
@@ -942,7 +938,6 @@
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">row_idx</span><span class="p">[</span><span class="n">in_range</span><span class="p">],</span> <span class="n">k_arr</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span></div>
 
-
     <span class="k">def</span><span class="w"> </span><span class="nf">_swap_indices</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">row_idx</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">col_idx</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
@@ -983,9 +978,7 @@
             <span class="n">col_idx</span><span class="p">[</span><span class="n">mask_swap</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
         <span class="k">return</span> <span class="n">row_idx</span><span class="p">,</span> <span class="n">col_idx</span>
 
-<div class="viewcode-block" id="band_hic_matrix.add_mask_row_col">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.add_mask_row_col.html#bandhic.band_hic_matrix.add_mask_row_col">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_mask_row_col</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.add_mask_row_col"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.add_mask_row_col.html#bandhic.band_hic_matrix.add_mask_row_col">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_mask_row_col</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">mask_row_col</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1050,22 +1043,29 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_raw_mask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="c1"># Set invalid rows and columns in the mask using vectorized implementation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">mask_row_col</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># cols = np.where(mask_row_col)[0]</span>
+        <span class="c1"># rows = np.arange(self.bin_num)</span>
+        <span class="c1"># grid_col, grid_row = np.meshgrid(cols, rows)</span>
+        <span class="c1"># diag_offset = grid_col - grid_row</span>
+        <span class="c1"># valid_mask = (diag_offset &gt;= 0) &amp; (diag_offset &lt; self.diag_num)</span>
+        <span class="c1"># row_idx_array = grid_row[valid_mask]</span>
+        <span class="c1"># col_idx_array = diag_offset[valid_mask]</span>
+        <span class="c1"># self.mask[row_idx_array, col_idx_array] = True</span>
+        <span class="c1"># self.mask = np.logical_or(</span>
+        <span class="c1">#     self.mask, self._extract_raw_mask(self.data.shape)</span>
+        <span class="c1"># )</span>
         <span class="n">cols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask_row_col</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_num</span><span class="p">)</span>
-        <span class="n">grid_col</span><span class="p">,</span> <span class="n">grid_row</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">rows</span><span class="p">)</span>
-        <span class="n">diag_offset</span> <span class="o">=</span> <span class="n">grid_col</span> <span class="o">-</span> <span class="n">grid_row</span>
-        <span class="n">valid_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">diag_offset</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">diag_offset</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">diag_num</span><span class="p">)</span>
-        <span class="n">row_idx_array</span> <span class="o">=</span> <span class="n">grid_row</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span>
-        <span class="n">col_idx_array</span> <span class="o">=</span> <span class="n">diag_offset</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">row_idx_array</span><span class="p">,</span> <span class="n">col_idx_array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_raw_mask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="p">)</span></div>
 
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">:</span>
+            <span class="n">i_start</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">diag_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">i_end</span>   <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_num</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
 
-<div class="viewcode-block" id="band_hic_matrix.unmask">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.unmask.html#bandhic.band_hic_matrix.unmask">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">unmask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span><span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i_start</span> <span class="o">&lt;</span> <span class="n">i_end</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">i_start</span><span class="p">,</span> <span class="n">i_end</span><span class="p">)</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">j</span> <span class="o">-</span> <span class="n">i</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="band_hic_matrix.unmask"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.unmask.html#bandhic.band_hic_matrix.unmask">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">unmask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span><span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove mask entries for specified indices or clear all.</span>
 
@@ -1119,7 +1119,6 @@
             <span class="c1"># Update mask for valid entries</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">row_idx</span><span class="p">[</span><span class="n">in_range_idx</span><span class="p">],</span> <span class="n">k_arr</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span></div>
 
-
     <span class="k">def</span><span class="w"> </span><span class="nf">_set_mask_by_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask_array</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Replace mask with provided boolean array.</span>
@@ -1167,9 +1166,7 @@
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask_array</span>
 
-<div class="viewcode-block" id="band_hic_matrix.get_mask">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.get_mask.html#bandhic.band_hic_matrix.get_mask">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="band_hic_matrix.get_mask"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.get_mask.html#bandhic.band_hic_matrix.get_mask">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get current mask array.</span>
 
@@ -1186,10 +1183,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.get_mask_row_col">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.get_mask_row_col.html#bandhic.band_hic_matrix.get_mask_row_col">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_mask_row_col</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="band_hic_matrix.get_mask_row_col"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.get_mask_row_col.html#bandhic.band_hic_matrix.get_mask_row_col">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_mask_row_col</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get current row/column mask.</span>
 
@@ -1206,10 +1200,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_row_col</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.clear_mask">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.clear_mask.html#bandhic.band_hic_matrix.clear_mask">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">clear_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="band_hic_matrix.clear_mask"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.clear_mask.html#bandhic.band_hic_matrix.clear_mask">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">clear_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clear all masks (both entry-level and row/column-level).</span>
 
@@ -1222,10 +1213,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mask_row_col</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.drop_mask">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.drop_mask.html#bandhic.band_hic_matrix.drop_mask">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">drop_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="band_hic_matrix.drop_mask"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.drop_mask.html#bandhic.band_hic_matrix.drop_mask">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">drop_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clear the current mask by entry-level,  but retain the row/column mask.</span>
 <span class="sd">        </span>
@@ -1244,11 +1232,8 @@
         <span class="c1"># If mask_row_col is set, we need to add the row/column mask to the mask array.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_row_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_mask_row_col</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_row_col</span><span class="p">)</span></div>
-
         
-<div class="viewcode-block" id="band_hic_matrix.drop_mask_row_col">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.drop_mask_row_col.html#bandhic.band_hic_matrix.drop_mask_row_col">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">drop_mask_row_col</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="band_hic_matrix.drop_mask_row_col"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.drop_mask_row_col.html#bandhic.band_hic_matrix.drop_mask_row_col">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">drop_mask_row_col</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clear the current row/column mask.</span>
 
@@ -1273,10 +1258,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">row_mask</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mask_row_col</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.count_masked">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.count_masked.html#bandhic.band_hic_matrix.count_masked">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">count_masked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="band_hic_matrix.count_masked"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.count_masked.html#bandhic.band_hic_matrix.count_masked">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">count_masked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Count the number of masked entries in the banded matrix.</span>
 <span class="sd">        </span>
@@ -1327,10 +1309,7 @@
             <span class="p">)</span>
             <span class="k">return</span> <span class="n">masked_count</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.count_unmasked">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.count_unmasked.html#bandhic.band_hic_matrix.count_unmasked">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">count_unmasked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="band_hic_matrix.count_unmasked"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.count_unmasked.html#bandhic.band_hic_matrix.count_unmasked">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">count_unmasked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Count the number of unmasked entries in the banded matrix.</span>
 
@@ -1351,10 +1330,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_num</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_masked</span><span class="p">()</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.count_in_band_masked">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.count_in_band_masked.html#bandhic.band_hic_matrix.count_in_band_masked">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">count_in_band_masked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="band_hic_matrix.count_in_band_masked"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.count_in_band_masked.html#bandhic.band_hic_matrix.count_in_band_masked">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">count_in_band_masked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Count the number of masked entries in the in-band region.</span>
 
@@ -1378,10 +1354,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.count_out_band_masked">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.count_out_band_masked.html#bandhic.band_hic_matrix.count_out_band_masked">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">count_out_band_masked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="band_hic_matrix.count_out_band_masked"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.count_out_band_masked.html#bandhic.band_hic_matrix.count_out_band_masked">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">count_out_band_masked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Count the number of masked entries in the out-of-band region.</span>
 
@@ -1402,10 +1375,7 @@
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_masked</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_in_band_masked</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.count_in_band">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.count_in_band.html#bandhic.band_hic_matrix.count_in_band">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">count_in_band</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="band_hic_matrix.count_in_band"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.count_in_band.html#bandhic.band_hic_matrix.count_in_band">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">count_in_band</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Count the number of valid entries in the in-band region.</span>
 
@@ -1427,10 +1397,7 @@
             <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_num</span>
         <span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.count_out_band">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.count_out_band.html#bandhic.band_hic_matrix.count_out_band">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">count_out_band</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="band_hic_matrix.count_out_band"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.count_out_band.html#bandhic.band_hic_matrix.count_out_band">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">count_out_band</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Count the number of valid entries in the out-of-band region.</span>
 
@@ -1448,11 +1415,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_num</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_in_band</span><span class="p">()</span></div>
 
-
     <span class="c1"># fill the masked values with default_value</span>
-<div class="viewcode-block" id="band_hic_matrix.filled">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.filled.html#bandhic.band_hic_matrix.filled">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">filled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">float</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span><span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;band_hic_matrix&quot;</span><span class="p">:</span>
+<div class="viewcode-block" id="band_hic_matrix.filled"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.filled.html#bandhic.band_hic_matrix.filled">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">filled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="nb">float</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span><span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;band_hic_matrix&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fill masked entries in data with default value.</span>
 
@@ -1491,7 +1455,6 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;default_values must be int or float&quot;</span><span class="p">)</span></div>
 
-
     <span class="k">def</span><span class="w"> </span><span class="nf">_process_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_input</span><span class="p">:</span> <span class="nb">slice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Process a slice input to extract start, stop, and step values.</span>
@@ -1515,9 +1478,7 @@
             <span class="n">step</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Default step is 1</span>
         <span class="k">return</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span>
 
-<div class="viewcode-block" id="band_hic_matrix.__getitem__">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__getitem__.html#bandhic.band_hic_matrix.__getitem__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.__getitem__"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__getitem__.html#bandhic.band_hic_matrix.__getitem__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">index</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">]],</span> 
                      <span class="nb">slice</span><span class="p">,</span> 
@@ -1715,10 +1676,59 @@
                 <span class="c1"># Return flat values</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="n">row_idx</span><span class="p">,</span> <span class="n">col_idx</span><span class="p">)</span></div>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">fetch_genomic_region</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x1</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">x2</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">y1</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">y2</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">resolution</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;band_hic_matrix&quot;</span><span class="p">,</span> <span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetch submatrix corresponding to genomic region.</span>
 
-<div class="viewcode-block" id="band_hic_matrix.__setitem__">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__setitem__.html#bandhic.band_hic_matrix.__setitem__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x1: int</span>
+<span class="sd">            Start position in base pairs along rows.</span>
+<span class="sd">        x2: int</span>
+<span class="sd">            End position in base pairs along rows.</span>
+<span class="sd">        y1: int</span>
+<span class="sd">            Start position in base pairs along columns.</span>
+<span class="sd">        y2: int</span>
+<span class="sd">            End position in base pairs along columns.</span>
+<span class="sd">        resolution : int</span>
+<span class="sd">            Bin size in base pairs.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        band_hic_matrix</span>
+<span class="sd">            Submatrix for the specified genomic region.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If start_bp or end_bp are out of bounds.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import bandhic as bh</span>
+<span class="sd">        &gt;&gt;&gt; mat = bh.band_hic_matrix(np.arange(16).reshape(4,4), diag_num=2)</span>
+<span class="sd">        &gt;&gt;&gt; sub_mat = mat.fetch_genomic_region(x1=1000, x2=3000, y1=1000, y2=3000, resolution=1000)</span>
+<span class="sd">        &gt;&gt;&gt; sub_mat.todense()</span>
+<span class="sd">        array([[ 5,  6],</span>
+<span class="sd">               [ 6, 10]])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+        
+        <span class="n">x1_bin</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">//</span> <span class="n">resolution</span>
+        <span class="n">x2_bin</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">x2</span> <span class="o">/</span> <span class="n">resolution</span><span class="p">)</span>
+        <span class="n">y1_bin</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">//</span> <span class="n">resolution</span>
+        <span class="n">y2_bin</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">y2</span> <span class="o">/</span> <span class="n">resolution</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">x1_bin</span><span class="p">:</span><span class="n">x2_bin</span><span class="p">,</span> <span class="n">y1_bin</span><span class="p">:</span><span class="n">y2_bin</span><span class="p">]</span>
+
+<div class="viewcode-block" id="band_hic_matrix.__setitem__"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__setitem__.html#bandhic.band_hic_matrix.__setitem__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">index</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">]],</span>
                      <span class="nb">slice</span><span class="p">,</span> 
@@ -1844,10 +1854,7 @@
             <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">row_idx</span><span class="p">,</span> <span class="n">col_idx</span><span class="p">,</span> <span class="n">values</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">))</span>  <span class="c1"># Set the values</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.get_values">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.get_values.html#bandhic.band_hic_matrix.get_values">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_values</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.get_values"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.get_values.html#bandhic.band_hic_matrix.get_values">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_values</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">row_idx</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
         <span class="n">col_idx</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
@@ -1917,10 +1924,7 @@
                 <span class="n">query_result</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_value</span>
             <span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.set_values">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.set_values.html#bandhic.band_hic_matrix.set_values">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_values</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.set_values"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.set_values.html#bandhic.band_hic_matrix.set_values">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">set_values</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">row_idx</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">col_idx</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
@@ -1994,10 +1998,7 @@
                         <span class="ne">UserWarning</span><span class="p">,</span>
                     <span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.diag">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.diag.html#bandhic.band_hic_matrix.diag">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">diag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">]:</span>
+<div class="viewcode-block" id="band_hic_matrix.diag"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.diag.html#bandhic.band_hic_matrix.diag">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">diag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieve the k-th diagonal from the matrix.</span>
 
@@ -2028,10 +2029,7 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.set_diag">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.set_diag.html#bandhic.band_hic_matrix.set_diag">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_diag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="band_hic_matrix.set_diag"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.set_diag.html#bandhic.band_hic_matrix.set_diag">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">set_diag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set values in the k-th diagonal of the matrix.</span>
 
@@ -2067,10 +2065,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;values must be number/list/np.ndarray.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>  <span class="c1"># Assign values to the diagonal</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.todense">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.todense.html#bandhic.band_hic_matrix.todense">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">todense</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">]:</span>
+<div class="viewcode-block" id="band_hic_matrix.todense"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.todense.html#bandhic.band_hic_matrix.todense">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">todense</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert the band matrix to a dense format.</span>
 
@@ -2120,18 +2115,12 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.tocoo">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.tocoo.html#bandhic.band_hic_matrix.tocoo">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">tocoo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drop_zeros</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">coo_array</span><span class="p">:</span>
+<div class="viewcode-block" id="band_hic_matrix.tocoo"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.tocoo.html#bandhic.band_hic_matrix.tocoo">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">tocoo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">coo_array</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert the matrix to COO format.</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        drop_zeros : bool, optional</span>
-<span class="sd">            If True, zero entries will be dropped from the COO format.</span>
-<span class="sd">            Default is True.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2146,24 +2135,30 @@
 <span class="sd">        &gt;&gt;&gt; coo.shape</span>
 <span class="sd">        (3, 3)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">row_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_num</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
-        <span class="p">)</span>
-        <span class="n">col_idx</span> <span class="o">=</span> <span class="n">row_idx</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">diag_num</span><span class="p">)</span>
-        <span class="n">is_valid</span> <span class="o">=</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">col_idx</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_num</span>
-        <span class="n">coo_result</span> <span class="o">=</span> <span class="n">coo_array</span><span class="p">(</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">is_valid</span><span class="p">],</span> <span class="p">(</span><span class="n">row_idx</span><span class="p">[</span><span class="n">is_valid</span><span class="p">],</span> <span class="n">col_idx</span><span class="p">[</span><span class="n">is_valid</span><span class="p">])),</span>
-            <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_num</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_num</span><span class="p">),</span>
-            <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="n">drop_zeros</span><span class="p">:</span>
-            <span class="n">coo_result</span><span class="o">.</span><span class="n">eliminate_zeros</span><span class="p">()</span>  <span class="c1"># Drop zero entries if specified</span>
-        <span class="k">return</span> <span class="n">coo_result</span>  <span class="c1"># Return COO format</span></div>
+        <span class="c1"># row_idx = np.repeat(</span>
+        <span class="c1">#     np.arange(0, self.bin_num).reshape(-1, 1), self.diag_num, axis=1</span>
+        <span class="c1"># )</span>
+        <span class="c1"># col_idx = row_idx + np.arange(0, self.diag_num)</span>
+        <span class="c1"># is_valid = ~self.mask if self.mask is not None else col_idx &lt; self.bin_num</span>
+        <span class="c1"># coo_result = coo_array(</span>
+        <span class="c1">#     (self.data[is_valid], (row_idx[is_valid], col_idx[is_valid])),</span>
+        <span class="c1">#     shape=(self.bin_num, self.bin_num),</span>
+        <span class="c1">#     dtype=self.dtype,</span>
+        <span class="c1"># )</span>
+        <span class="c1"># if drop_zeros:</span>
+        <span class="c1">#     coo_result.eliminate_zeros()  # Drop zero entries if specified</span>
+        <span class="c1"># return coo_result  # Return COO format</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_raw_mask</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_num</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">diag_num</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="n">mask</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">row_idx</span><span class="p">,</span> <span class="n">col_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">valid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">coo_array</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">valid</span><span class="p">],</span> <span class="p">(</span><span class="n">row_idx</span><span class="p">,</span> <span class="n">col_idx</span><span class="p">)),</span>
+                         <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                         <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.tocsr">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.tocsr.html#bandhic.band_hic_matrix.tocsr">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">tocsr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_array</span><span class="p">:</span>
+<div class="viewcode-block" id="band_hic_matrix.tocsr"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.tocsr.html#bandhic.band_hic_matrix.tocsr">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">tocsr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_array</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert the matrix to CSR format.</span>
 
@@ -2180,12 +2175,9 @@
 <span class="sd">        &gt;&gt;&gt; csr.shape</span>
 <span class="sd">        (3, 3)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tocoo</span><span class="p">(</span><span class="n">drop_zeros</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>  <span class="c1"># Convert to CSR format</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tocoo</span><span class="p">()</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>  <span class="c1"># Convert to CSR format</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.copy">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.copy.html#bandhic.band_hic_matrix.copy">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;band_hic_matrix&quot;</span><span class="p">:</span>
+<div class="viewcode-block" id="band_hic_matrix.copy"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.copy.html#bandhic.band_hic_matrix.copy">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;band_hic_matrix&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Deep copy the object.</span>
 
@@ -2203,10 +2195,7 @@
         <span class="n">copy_obj</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">copy_obj</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.memory_usage">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.memory_usage.html#bandhic.band_hic_matrix.memory_usage">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">memory_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="band_hic_matrix.memory_usage"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.memory_usage.html#bandhic.band_hic_matrix.memory_usage">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">memory_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute memory usage of `band_hic_matirx` object.</span>
 
@@ -2234,10 +2223,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">total_bytes</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.astype">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.astype.html#bandhic.band_hic_matrix.astype">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">astype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;band_hic_matrix&quot;</span><span class="p">:</span>
+<div class="viewcode-block" id="band_hic_matrix.astype"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.astype.html#bandhic.band_hic_matrix.astype">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">astype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;band_hic_matrix&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cast data to new dtype.</span>
 
@@ -2261,10 +2247,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.clip">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.clip.html#bandhic.band_hic_matrix.clip">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">clip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_val</span><span class="p">:</span> <span class="n">Number</span><span class="p">,</span> <span class="n">max_val</span><span class="p">:</span> <span class="n">Number</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="band_hic_matrix.clip"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.clip.html#bandhic.band_hic_matrix.clip">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">clip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_val</span><span class="p">:</span> <span class="n">Number</span><span class="p">,</span> <span class="n">max_val</span><span class="p">:</span> <span class="n">Number</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clip data values to given range.</span>
 
@@ -2284,10 +2267,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span>  <span class="c1"># Update dtype if changed</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.__repr__">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__repr__.html#bandhic.band_hic_matrix.__repr__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="band_hic_matrix.__repr__"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__repr__.html#bandhic.band_hic_matrix.__repr__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a string representation of the band_hic_matrix object.</span>
 
@@ -2305,10 +2285,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;band_hic_matrix(shape=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, diag_num=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">diag_num</span><span class="si">}</span><span class="s2">, dtype=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">)&quot;</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.__str__">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__str__.html#bandhic.band_hic_matrix.__str__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="band_hic_matrix.__str__"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__str__.html#bandhic.band_hic_matrix.__str__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a string representation of the band_hic_matrix object.</span>
 
@@ -2321,10 +2298,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;band_hic_matrix(shape=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, diag_num=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">diag_num</span><span class="si">}</span><span class="s2">, dtype=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">)&quot;</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.__len__">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__len__.html#bandhic.band_hic_matrix.__len__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="band_hic_matrix.__len__"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__len__.html#bandhic.band_hic_matrix.__len__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the number of rows in the band_hic_matrix object.</span>
 
@@ -2342,10 +2316,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.__iter__">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__iter__.html#bandhic.band_hic_matrix.__iter__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<div class="viewcode-block" id="band_hic_matrix.__iter__"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__iter__.html#bandhic.band_hic_matrix.__iter__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Iterate over diagonals of the matrix.</span>
 
@@ -2366,10 +2337,7 @@
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diag_num</span><span class="p">):</span>
             <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">k</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.iterwindows">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.iterwindows.html#bandhic.band_hic_matrix.iterwindows">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">iterwindows</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.iterwindows"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.iterwindows.html#bandhic.band_hic_matrix.iterwindows">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">iterwindows</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="s2">&quot;band_hic_matrix&quot;</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2405,10 +2373,7 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_num</span> <span class="o">-</span> <span class="n">width</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
             <span class="k">yield</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">width</span><span class="p">]</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.iterrows">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.iterrows.html#bandhic.band_hic_matrix.iterrows">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">iterrows</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<div class="viewcode-block" id="band_hic_matrix.iterrows"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.iterrows.html#bandhic.band_hic_matrix.iterrows">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">iterrows</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Iterate over the rows of the band_hic_matrix object.</span>
 
@@ -2431,10 +2396,7 @@
             <span class="c1"># Extract and yield the full row band (symmetric)</span>
             <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_row</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">extract_out_of_band</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.itercols">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.itercols.html#bandhic.band_hic_matrix.itercols">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">itercols</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<div class="viewcode-block" id="band_hic_matrix.itercols"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.itercols.html#bandhic.band_hic_matrix.itercols">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">itercols</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Iterate over the columns of the band_hic_matrix object.</span>
 
@@ -2457,10 +2419,7 @@
             <span class="c1"># Columns mirror rows due to symmetry</span>
             <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_row</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">extract_out_of_band</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.dump">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.dump.html#bandhic.band_hic_matrix.dump">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="band_hic_matrix.dump"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.dump.html#bandhic.band_hic_matrix.dump">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save the band_hic_matrix object to a file.</span>
 
@@ -2484,10 +2443,7 @@
             <span class="n">default_value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_value</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.extract_row">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.extract_row.html#bandhic.band_hic_matrix.extract_row">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">extract_row</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.extract_row"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.extract_row.html#bandhic.band_hic_matrix.extract_row">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">extract_row</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">extract_out_of_band</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2600,10 +2556,7 @@
                 <span class="n">vals_row</span><span class="p">[</span><span class="n">idx</span> <span class="p">:</span> <span class="n">idx</span> <span class="o">+</span> <span class="n">k_f</span><span class="p">]</span> <span class="o">=</span> <span class="n">vals_f</span>
             <span class="k">return</span> <span class="n">vals_row</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.min">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.min.html#bandhic.band_hic_matrix.min">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.min"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.min.html#bandhic.band_hic_matrix.min">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2689,10 +2642,7 @@
                 <span class="s2">&quot;Unsupported axis for min: choose 0,1,&#39;row&#39;,&#39;col&#39;,&#39;diag&#39;, or None&quot;</span>
             <span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.max">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.max.html#bandhic.band_hic_matrix.max">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.max"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.max.html#bandhic.band_hic_matrix.max">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2772,10 +2722,7 @@
                 <span class="s2">&quot;Unsupported axis for max: choose 0,1,&#39;row&#39;,&#39;col&#39;,&#39;diag&#39;, or None&quot;</span>
             <span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.sum">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.sum.html#bandhic.band_hic_matrix.sum">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.sum"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.sum.html#bandhic.band_hic_matrix.sum">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2860,10 +2807,7 @@
                 <span class="s2">&quot;Unsupported axis for sum: choose 0,1,&#39;row&#39;,&#39;col&#39;,&#39;diag&#39;, or None&quot;</span>
             <span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.mean">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.mean.html#bandhic.band_hic_matrix.mean">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.mean"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.mean.html#bandhic.band_hic_matrix.mean">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2939,12 +2883,9 @@
                 <span class="s2">&quot;Unsupported axis for sum: choose 0,1,&#39;row&#39;,&#39;col&#39;,&#39;diag&#39;, or None&quot;</span>
             <span class="p">)</span></div>
 
-
         <span class="c1"># Elementwise mean: for None returns scalar, for diag/row returns array</span>
 
-<div class="viewcode-block" id="band_hic_matrix.prod">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.prod.html#bandhic.band_hic_matrix.prod">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">prod</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.prod"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.prod.html#bandhic.band_hic_matrix.prod">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">prod</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3027,10 +2968,7 @@
                 <span class="s2">&quot;Unsupported axis for prod: choose 0,1,&#39;row&#39;,&#39;col&#39;,&#39;diag&#39;, or None&quot;</span>
             <span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.var">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.var.html#bandhic.band_hic_matrix.var">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.var"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.var.html#bandhic.band_hic_matrix.var">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3101,10 +3039,7 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">sum_sq</span> <span class="o">/</span> <span class="n">counts</span> <span class="o">-</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.std">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.std.html#bandhic.band_hic_matrix.std">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">std</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.std"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.std.html#bandhic.band_hic_matrix.std">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">std</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3144,10 +3079,7 @@
         <span class="c1"># standard deviation = sqrt(var)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">))</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.normalize">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.normalize.html#bandhic.band_hic_matrix.normalize">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="band_hic_matrix.normalize"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.normalize.html#bandhic.band_hic_matrix.normalize">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Normalize each diagonal of the matrix to have zero mean and unit variance.</span>
 <span class="sd">        This modifies the matrix in place.</span>
@@ -3190,10 +3122,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.ptp">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.ptp.html#bandhic.band_hic_matrix.ptp">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">ptp</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.ptp"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.ptp.html#bandhic.band_hic_matrix.ptp">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">ptp</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3234,10 +3163,7 @@
         <span class="n">min_vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">max_vals</span> <span class="o">-</span> <span class="n">min_vals</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.all">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.all.html#bandhic.band_hic_matrix.all">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">all</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.all"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.all.html#bandhic.band_hic_matrix.all">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">all</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">banded_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3348,10 +3274,7 @@
                 <span class="s2">&quot;Unsupported axis for all: choose 0,1,&#39;row&#39;,&#39;col&#39;,&#39;diag&#39;, or None&quot;</span>
             <span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.any">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.any.html#bandhic.band_hic_matrix.any">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">any</span><span class="p">(</span>
+<div class="viewcode-block" id="band_hic_matrix.any"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.any.html#bandhic.band_hic_matrix.any">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">any</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">banded_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3462,7 +3385,6 @@
                 <span class="s2">&quot;Unsupported axis for any: choose 0,1,&#39;row&#39;,&#39;col&#39;,&#39;diag&#39;, or None&quot;</span>
             <span class="p">)</span></div>
 
-
     <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check whether a value exists in the band_hic_matrix.</span>
@@ -3493,9 +3415,7 @@
             <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_raw_mask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span> <span class="o">==</span> <span class="n">item</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_value</span> <span class="o">==</span> <span class="n">item</span>
 
-<div class="viewcode-block" id="band_hic_matrix.__hash__">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__hash__.html#bandhic.band_hic_matrix.__hash__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="band_hic_matrix.__hash__"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__hash__.html#bandhic.band_hic_matrix.__hash__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a hash value for the band_hic_matrix object.</span>
 
@@ -3531,10 +3451,7 @@
                 <span class="p">)</span>
             <span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.__bool__">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__bool__.html#bandhic.band_hic_matrix.__bool__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="band_hic_matrix.__bool__"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__bool__.html#bandhic.band_hic_matrix.__bool__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Truth value of the band_hic_matrix, following NumPy semantics.</span>
 
@@ -3560,10 +3477,7 @@
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.__array__">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__array__.html#bandhic.band_hic_matrix.__array__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">__array__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="band_hic_matrix.__array__"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__array__.html#bandhic.band_hic_matrix.__array__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">__array__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the data as a NumPy array.</span>
 
@@ -3585,10 +3499,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span></div>
 
-
-<div class="viewcode-block" id="band_hic_matrix.__array_priority__">
-<a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__array_priority__.html#bandhic.band_hic_matrix.__array_priority__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">__array_priority__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="band_hic_matrix.__array_priority__"><a class="viewcode-back" href="../../_autosummary/bandhic.band_hic_matrix.__array_priority__.html#bandhic.band_hic_matrix.__array_priority__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">__array_priority__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the priority for array operations.</span>
 
@@ -3605,7 +3516,6 @@
 <span class="sd">        100</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mi">100</span></div>
-
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_ufunc_handle_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3875,7 +3785,6 @@
                 <span class="k">return</span> <span class="n">out</span>
 
         <span class="k">return</span> <span class="n">result</span></div>
-
 </pre></div>
 
                 </article>
@@ -3926,7 +3835,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
     <br/>
   </p>
 </div>

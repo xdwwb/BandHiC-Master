@@ -1,12 +1,13 @@
 
+
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../" >
+<html lang="en" data-content_root="" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Input/Output Functions &#8212; BandHiC  documentation</title>
   
@@ -30,7 +31,7 @@
   <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -38,9 +39,11 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/io';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -426,8 +429,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../_autosummary/bandhic.straw_all_chrs.html">bandhic.straw_all_chrs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../_autosummary/bandhic.cooler_chr.html">bandhic.cooler_chr</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../_autosummary/bandhic.cooler_all_chrs.html">bandhic.cooler_all_chrs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../_autosummary/bandhic.cooler_chr_all_cells.html">bandhic.cooler_chr_all_cells</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../_autosummary/bandhic.cooler_all_cells_all_chrs.html">bandhic.cooler_all_cells_all_chrs</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="ufunc.html">Vectorized operations for BandHiC matrices</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -525,6 +526,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../_autosummary/bandhic.compute_bin_bias.html">bandhic.compute_bin_bias</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../_autosummary/bandhic.call_tad.html">bandhic.call_tad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../_autosummary/bandhic.topdom.html">bandhic.topdom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/bandhic.apa.html">bandhic.apa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/bandhic.hiccups.html">bandhic.hiccups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/bandhic.load_norm_vector_from_hic.html">bandhic.load_norm_vector_from_hic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/bandhic.load_norm_vector_from_cooler.html">bandhic.load_norm_vector_from_cooler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/bandhic.scc.html">bandhic.scc</a></li>
 </ul>
 </details></li>
 </ul>
@@ -588,9 +594,9 @@
                 <article class="bd-article">
                   
   <section id="input-output-functions">
-<h1>Input/Output Functions<a class="headerlink" href="#input-output-functions" title="Link to this heading">#</a></h1>
+<h1>Input/Output Functions<a class="headerlink" href="#input-output-functions" title="Permalink to this heading">#</a></h1>
 <p>These functions handle input and output operations for BandHiC matrices, including saving and loading from various formats.</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="../_autosummary/bandhic.save_npz.html#bandhic.save_npz" title="bandhic.save_npz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bandhic.save_npz</span></code></a>(file_name, mat)</p></td>
 <td><p>Save a band_hic_matrix to a .npz file.</p></td>
@@ -609,12 +615,6 @@
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="../_autosummary/bandhic.cooler_all_chrs.html#bandhic.cooler_all_chrs" title="bandhic.cooler_all_chrs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bandhic.cooler_all_chrs</span></code></a>(file_path, diag_num)</p></td>
 <td><p>Read Hi-C data from a .cool or .mcool file for all chromosomes and return a dictionary of band_hic_matrix objects.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_autosummary/bandhic.cooler_chr_all_cells.html#bandhic.cooler_chr_all_cells" title="bandhic.cooler_chr_all_cells"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bandhic.cooler_chr_all_cells</span></code></a>(file_path, ...)</p></td>
-<td><p>Read Hi-C data from a .scool file for a specific chromosome and return a dictionary of band_hic_matrix objects for all cells.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_autosummary/bandhic.cooler_all_cells_all_chrs.html#bandhic.cooler_all_cells_all_chrs" title="bandhic.cooler_all_cells_all_chrs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bandhic.cooler_all_cells_all_chrs</span></code></a>(file_path, ...)</p></td>
-<td><p>Read Hi-C data from a .scool file for all cells and return a dictionary of dictionaries of band_hic_matrix objects.</p></td>
 </tr>
 </tbody>
 </table>
@@ -719,7 +719,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
     <br/>
   </p>
 </div>

@@ -25,6 +25,7 @@ __all__ = [
     "full_like",
 ]
 
+
 def ones(
     shape: Tuple[int, int], diag_num: int = 1, dtype: type = np.float64
 ) -> band_hic_matrix:

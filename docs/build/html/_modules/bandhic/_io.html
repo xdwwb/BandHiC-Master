@@ -1,8 +1,9 @@
 
+
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../" >
+<html lang="en" data-content_root="" >
 
   <head>
     <meta charset="utf-8" />
@@ -29,7 +30,7 @@
   <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -37,15 +38,17 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/bandhic/_io';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1.7" />
+  <meta name="docsearch:version" content="0.1.9" />
   </head>
   
   
@@ -342,7 +345,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.bandhic</span><span class="w"> </span><span class="kn">import</span> <span class="n">band_hic_matrix</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">hicstraw</span>
+<span class="c1"># import hicstraw</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">cooler</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
@@ -352,13 +355,11 @@
     <span class="s2">&quot;straw_all_chrs&quot;</span><span class="p">,</span>
     <span class="s2">&quot;cooler_chr&quot;</span><span class="p">,</span>
     <span class="s2">&quot;cooler_all_chrs&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;cooler_chr_all_cells&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;cooler_all_cells_all_chrs&quot;</span><span class="p">,</span>
+    <span class="c1"># &quot;cooler_chr_all_cells&quot;,</span>
+    <span class="c1"># &quot;cooler_all_cells_all_chrs&quot;,</span>
 <span class="p">]</span>
 
-<div class="viewcode-block" id="save_npz">
-<a class="viewcode-back" href="../../_autosummary/bandhic.save_npz.html#bandhic.save_npz">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">save_npz</span><span class="p">(</span><span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mat</span><span class="p">:</span> <span class="n">band_hic_matrix</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="save_npz"><a class="viewcode-back" href="../../_autosummary/bandhic.save_npz.html#bandhic.save_npz">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">save_npz</span><span class="p">(</span><span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mat</span><span class="p">:</span> <span class="n">band_hic_matrix</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Save a band_hic_matrix to a .npz file.</span>
 
@@ -383,12 +384,9 @@
         <span class="n">default_value</span><span class="o">=</span><span class="n">mat</span><span class="o">.</span><span class="n">default_value</span><span class="p">,</span>
         <span class="n">dtype</span><span class="o">=</span><span class="n">mat</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
     <span class="p">)</span></div>
-
     <span class="c1"># Save the band_hic_matrix to a .npz file</span>
 
-<div class="viewcode-block" id="load_npz">
-<a class="viewcode-back" href="../../_autosummary/bandhic.load_npz.html#bandhic.load_npz">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">load_npz</span><span class="p">(</span><span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">band_hic_matrix</span><span class="p">:</span>
+<div class="viewcode-block" id="load_npz"><a class="viewcode-back" href="../../_autosummary/bandhic.load_npz.html#bandhic.load_npz">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">load_npz</span><span class="p">(</span><span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">band_hic_matrix</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load a band_hic_matrix from a .npz file.</span>
 
@@ -438,11 +436,8 @@
         <span class="n">default_value</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;default_value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
         <span class="n">band_data_input</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span></div>
-
     
-<div class="viewcode-block" id="straw_chr">
-<a class="viewcode-back" href="../../_autosummary/bandhic.straw_chr.html#bandhic.straw_chr">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">straw_chr</span><span class="p">(</span>
+<div class="viewcode-block" id="straw_chr"><a class="viewcode-back" href="../../_autosummary/bandhic.straw_chr.html#bandhic.straw_chr">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">straw_chr</span><span class="p">(</span>
     <span class="n">hic_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">chrom</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">resolution</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -495,6 +490,13 @@
 <span class="sd">    &gt;&gt;&gt; isinstance(mat, band_hic_matrix)</span>
 <span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">hicstraw</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="s2">&quot;hicstraw is required for reading .hic files. Please install it via &#39;pip install hic-straw&#39;.&quot;</span>
+        <span class="p">)</span>
+    
     <span class="n">chrom_short</span> <span class="o">=</span> <span class="n">chrom</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;chr&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">chrom</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;chr&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">chrom</span>
     <span class="n">records</span> <span class="o">=</span> <span class="n">hicstraw</span><span class="o">.</span><span class="n">straw</span><span class="p">(</span>
         <span class="n">data_type</span><span class="p">,</span>
@@ -507,13 +509,13 @@
     <span class="p">)</span>
 
 <span class="c1">#TODO: can more fast?</span>
-    <span class="n">row_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">record</span><span class="o">.</span><span class="n">binX</span> <span class="o">//</span> <span class="n">resolution</span> <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">]</span>
-    <span class="p">)</span>
-    <span class="n">col_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">record</span><span class="o">.</span><span class="n">binY</span> <span class="o">//</span> <span class="n">resolution</span> <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">]</span>
-    <span class="p">)</span>
-    <span class="n">coo_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">record</span><span class="o">.</span><span class="n">counts</span> <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">])</span>
+
+    <span class="n">row_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="n">rec</span><span class="o">.</span><span class="n">binX</span> <span class="o">//</span> <span class="n">resolution</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">col_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="n">rec</span><span class="o">.</span><span class="n">binY</span> <span class="o">//</span> <span class="n">resolution</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s2">&quot;observed&quot;</span><span class="p">:</span>
+        <span class="n">coo_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="n">rec</span><span class="o">.</span><span class="n">counts</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">coo_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="n">rec</span><span class="o">.</span><span class="n">counts</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
     <span class="n">mat</span> <span class="o">=</span> <span class="n">band_hic_matrix</span><span class="p">(</span>
         <span class="p">(</span><span class="n">coo_data</span><span class="p">,</span> <span class="p">(</span><span class="n">row_idx</span><span class="p">,</span> <span class="n">col_idx</span><span class="p">)),</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span>
@@ -521,10 +523,7 @@
     <span class="c1"># Set the mask for invalid rows and columns</span>
     <span class="k">return</span> <span class="n">mat</span></div>
 
-
-<div class="viewcode-block" id="straw_all_chrs">
-<a class="viewcode-back" href="../../_autosummary/bandhic.straw_all_chrs.html#bandhic.straw_all_chrs">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">straw_all_chrs</span><span class="p">(</span>
+<div class="viewcode-block" id="straw_all_chrs"><a class="viewcode-back" href="../../_autosummary/bandhic.straw_all_chrs.html#bandhic.straw_all_chrs">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">straw_all_chrs</span><span class="p">(</span>
     <span class="n">hic_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">resolution</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">diag_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -569,6 +568,12 @@
 <span class="sd">    &gt;&gt;&gt; isinstance(mats[&#39;chr1&#39;], band_hic_matrix)</span>
 <span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">hicstraw</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="s2">&quot;hicstraw is required for reading .hic files. Please install it via &#39;pip install hic-straw&#39;.&quot;</span>
+        <span class="p">)</span>
     <span class="n">chroms</span> <span class="o">=</span> <span class="n">hicstraw</span><span class="o">.</span><span class="n">HiCFile</span><span class="p">(</span><span class="n">hic_file</span><span class="p">)</span><span class="o">.</span><span class="n">getChromosomes</span><span class="p">()</span>
     <span class="n">mats</span> <span class="o">=</span> <span class="p">{}</span>
     
@@ -589,10 +594,7 @@
     
     <span class="k">return</span> <span class="n">mats</span></div>
 
-
-<div class="viewcode-block" id="cooler_chr">
-<a class="viewcode-back" href="../../_autosummary/bandhic.cooler_chr.html#bandhic.cooler_chr">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">cooler_chr</span><span class="p">(</span>
+<div class="viewcode-block" id="cooler_chr"><a class="viewcode-back" href="../../_autosummary/bandhic.cooler_chr.html#bandhic.cooler_chr">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">cooler_chr</span><span class="p">(</span>
     <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">chrom</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">diag_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -667,10 +669,7 @@
     <span class="n">mat</span> <span class="o">=</span> <span class="n">band_hic_matrix</span><span class="p">(</span><span class="n">contacts</span><span class="o">=</span><span class="n">coo_matrix</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mat</span></div>
 
-
-<div class="viewcode-block" id="cooler_all_chrs">
-<a class="viewcode-back" href="../../_autosummary/bandhic.cooler_all_chrs.html#bandhic.cooler_all_chrs">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">cooler_all_chrs</span><span class="p">(</span>
+<div class="viewcode-block" id="cooler_all_chrs"><a class="viewcode-back" href="../../_autosummary/bandhic.cooler_all_chrs.html#bandhic.cooler_all_chrs">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">cooler_all_chrs</span><span class="p">(</span>
     <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">diag_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">resolution</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -726,119 +725,112 @@
     
     <span class="k">return</span> <span class="n">mats</span></div>
 
+<span class="c1"># # TODO: need test for scool files</span>
+<span class="c1"># def cooler_chr_all_cells(</span>
+<span class="c1">#     file_path: str,</span>
+<span class="c1">#     chrom: str,</span>
+<span class="c1">#     diag_num: int,</span>
+<span class="c1">#     balance: bool = True,</span>
+<span class="c1"># ) -&gt; Dict[str, band_hic_matrix]:</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Read Hi-C data from a .scool file for a specific chromosome and return a dictionary of band_hic_matrix objects for all cells.</span>
 
-<span class="c1"># TODO: need test for scool files</span>
-<div class="viewcode-block" id="cooler_chr_all_cells">
-<a class="viewcode-back" href="../../_autosummary/bandhic.cooler_chr_all_cells.html#bandhic.cooler_chr_all_cells">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">cooler_chr_all_cells</span><span class="p">(</span>
-    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">chrom</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">diag_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">balance</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">band_hic_matrix</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Read Hi-C data from a .scool file for a specific chromosome and return a dictionary of band_hic_matrix objects for all cells.</span>
+<span class="c1">#     Parameters</span>
+<span class="c1">#     ----------</span>
+<span class="c1">#     file_path : str</span>
+<span class="c1">#         Path to the .scool file.</span>
+<span class="c1">#     chrom : str</span>
+<span class="c1">#         Chromosome name.</span>
+<span class="c1">#     diag_num : int</span>
+<span class="c1">#         Number of diagonals to consider.</span>
+<span class="c1">#     balance : bool, optional</span>
+<span class="c1">#         If True, use balanced data. Default is False. This parameter is specific to cooler files.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    file_path : str</span>
-<span class="sd">        Path to the .scool file.</span>
-<span class="sd">    chrom : str</span>
-<span class="sd">        Chromosome name.</span>
-<span class="sd">    diag_num : int</span>
-<span class="sd">        Number of diagonals to consider.</span>
-<span class="sd">    balance : bool, optional</span>
-<span class="sd">        If True, use balanced data. Default is False. This parameter is specific to cooler files.</span>
+<span class="c1">#     Returns</span>
+<span class="c1">#     -------</span>
+<span class="c1">#     Dict[str, band_hic_matrix]</span>
+<span class="c1">#         A dictionary mapping cell IDs to band_hic_matrix objects for the specified chromosome.</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    Dict[str, band_hic_matrix]</span>
-<span class="sd">        A dictionary mapping cell IDs to band_hic_matrix objects for the specified chromosome.</span>
+<span class="c1">#     Raises</span>
+<span class="c1">#     ------</span>
+<span class="c1">#     ValueError</span>
+<span class="c1">#         If the scool file is invalid or parameters are incorrect.</span>
 
-<span class="sd">    Raises</span>
-<span class="sd">    ------</span>
-<span class="sd">    ValueError</span>
-<span class="sd">        If the scool file is invalid or parameters are incorrect.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import bandhic as bh</span>
-<span class="sd">    &gt;&gt;&gt; mats = bh.cooler_chr_all_cells(&#39;/Users/wwb/Documents/workspace/BandHiC-Master/data/yeast.10kb.scool&#39;, &#39;chrI&#39;, diag_num=10, resolution=10000)</span>
-<span class="sd">    &gt;&gt;&gt; isinstance(mats[&#39;cell1&#39;], band_hic_matrix)</span>
-<span class="sd">    True</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="c1">#     Examples</span>
+<span class="c1">#     --------</span>
+<span class="c1">#     &gt;&gt;&gt; import bandhic as bh</span>
+<span class="c1">#     &gt;&gt;&gt; mats = bh.cooler_chr_all_cells(&#39;/Users/wwb/Documents/workspace/BandHiC-Master/data/yeast.10kb.scool&#39;, &#39;chrI&#39;, diag_num=10)</span>
+<span class="c1">#     &gt;&gt;&gt; isinstance(mats[&#39;cell1&#39;], band_hic_matrix)</span>
+<span class="c1">#     True</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
     
-    <span class="n">clr</span> <span class="o">=</span> <span class="n">cooler</span><span class="o">.</span><span class="n">Cooler</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
-    <span class="n">mats</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">cell_id</span> <span class="ow">in</span> <span class="n">clr</span><span class="o">.</span><span class="n">cell_ids</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">mats</span><span class="p">[</span><span class="n">cell_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">cooler_chr</span><span class="p">(</span>
-                <span class="n">file_path</span><span class="p">,</span>
-                <span class="n">chrom</span><span class="p">,</span>
-                <span class="n">cell_id</span><span class="o">=</span><span class="n">cell_id</span><span class="p">,</span>
-                <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">,</span>
-                <span class="n">balance</span><span class="o">=</span><span class="n">balance</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Failed to read cooler group &#39;</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&#39; for chromosome &#39;</span><span class="si">{</span><span class="n">chrom</span><span class="si">}</span><span class="s2">&#39; and cell &#39;</span><span class="si">{</span><span class="n">cell_id</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span></div>
+<span class="c1">#     clr = cooler.Cooler(file_path)</span>
+<span class="c1">#     mats = {}</span>
+<span class="c1">#     for cell_id in clr.cell_ids:</span>
+<span class="c1">#         try:</span>
+<span class="c1">#             mats[cell_id] = cooler_chr(</span>
+<span class="c1">#                 file_path,</span>
+<span class="c1">#                 chrom,</span>
+<span class="c1">#                 cell_id=cell_id,</span>
+<span class="c1">#                 diag_num=diag_num,</span>
+<span class="c1">#                 balance=balance,</span>
+<span class="c1">#             )</span>
+<span class="c1">#         except ValueError as e:</span>
+<span class="c1">#             raise ValueError(</span>
+<span class="c1">#                 f&quot;Failed to read cooler group &#39;{file_path}&#39; for chromosome &#39;{chrom}&#39; and cell &#39;{cell_id}&#39;: {e}&quot;</span>
+<span class="c1">#             )</span>
 
+<span class="c1"># # TODO: need test for scool files</span>
+<span class="c1"># def cooler_all_cells_all_chrs(</span>
+<span class="c1">#     file_path: str,</span>
+<span class="c1">#     diag_num: int,</span>
+<span class="c1">#     resolution: Optional[int] = None,</span>
+<span class="c1">#     ) -&gt; Dict[str, Dict[str, band_hic_matrix]]:</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Read Hi-C data from a .scool file for all cells and return a dictionary of dictionaries of band_hic_matrix objects.</span>
 
-<span class="c1"># TODO: need test for scool files</span>
-<div class="viewcode-block" id="cooler_all_cells_all_chrs">
-<a class="viewcode-back" href="../../_autosummary/bandhic.cooler_all_cells_all_chrs.html#bandhic.cooler_all_cells_all_chrs">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">cooler_all_cells_all_chrs</span><span class="p">(</span>
-    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">diag_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">resolution</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">band_hic_matrix</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Read Hi-C data from a .scool file for all cells and return a dictionary of dictionaries of band_hic_matrix objects.</span>
+<span class="c1">#     Parameters</span>
+<span class="c1">#     ----------</span>
+<span class="c1">#     file_path : str</span>
+<span class="c1">#         Path to the .scool file.</span>
+<span class="c1">#     diag_num : int</span>
+<span class="c1">#         Number of diagonals to consider.</span>
+<span class="c1">#     resolution : int, optional</span>
+<span class="c1">#         Resolution of the Hi-C data. </span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    file_path : str</span>
-<span class="sd">        Path to the .scool file.</span>
-<span class="sd">    diag_num : int</span>
-<span class="sd">        Number of diagonals to consider.</span>
-<span class="sd">    resolution : int, optional</span>
-<span class="sd">        Resolution of the Hi-C data. </span>
+<span class="c1">#     Returns</span>
+<span class="c1">#     -------</span>
+<span class="c1">#     Dict[str, Dict[str, band_hic_matrix]]</span>
+<span class="c1">#         A dictionary mapping cell IDs to dictionaries mapping chromosome names to band_hic_matrix objects.</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    Dict[str, Dict[str, band_hic_matrix]]</span>
-<span class="sd">        A dictionary mapping cell IDs to dictionaries mapping chromosome names to band_hic_matrix objects.</span>
+<span class="c1">#     Raises</span>
+<span class="c1">#     ------</span>
+<span class="c1">#     ValueError</span>
+<span class="c1">#         If the scool file is invalid or parameters are incorrect.</span>
 
-<span class="sd">    Raises</span>
-<span class="sd">    ------</span>
-<span class="sd">    ValueError</span>
-<span class="sd">        If the scool file is invalid or parameters are incorrect.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import bandhic as bh</span>
-<span class="sd">    &gt;&gt;&gt; mats = bh.cooler_all_cells(&#39;/Users/wwb/Documents/workspace/BandHiC-Master/data/yeast.10kb.scool&#39;, diag_num=10, resolution=10000)</span>
-<span class="sd">    &gt;&gt;&gt; isinstance(mats[&#39;cell1&#39;][&#39;chrI&#39;], band_hic_matrix)</span>
-<span class="sd">    True</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">clr</span> <span class="o">=</span> <span class="n">cooler</span><span class="o">.</span><span class="n">Cooler</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+<span class="c1">#     Examples</span>
+<span class="c1">#     --------</span>
+<span class="c1">#     &gt;&gt;&gt; import bandhic as bh</span>
+<span class="c1">#     &gt;&gt;&gt; mats = bh.cooler_all_cells(&#39;/Users/wwb/Documents/workspace/BandHiC-Master/data/yeast.10kb.scool&#39;, diag_num=10, resolution=10000)</span>
+<span class="c1">#     &gt;&gt;&gt; isinstance(mats[&#39;cell1&#39;][&#39;chrI&#39;], band_hic_matrix)</span>
+<span class="c1">#     True</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     clr = cooler.Cooler(file_path)</span>
     
-    <span class="n">mats</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="c1">#     mats = {}</span>
     
-    <span class="k">for</span> <span class="n">cell_id</span> <span class="ow">in</span> <span class="n">clr</span><span class="o">.</span><span class="n">cell_ids</span><span class="p">:</span>
-        <span class="n">mats</span><span class="p">[</span><span class="n">cell_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">chrom</span> <span class="ow">in</span> <span class="n">clr</span><span class="o">.</span><span class="n">chromnames</span><span class="p">:</span>
-            <span class="n">mats</span><span class="p">[</span><span class="n">cell_id</span><span class="p">][</span><span class="n">chrom</span><span class="p">]</span> <span class="o">=</span> <span class="n">cooler_chr</span><span class="p">(</span>
-                <span class="n">file_path</span><span class="p">,</span>
-                <span class="n">chrom</span><span class="p">,</span>
-                <span class="n">cell_id</span><span class="o">=</span><span class="n">cell_id</span><span class="p">,</span>
-                <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">,</span>
-                <span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span><span class="p">,</span>
-            <span class="p">)</span>
+<span class="c1">#     for cell_id in clr.cell_ids:</span>
+<span class="c1">#         mats[cell_id] = {}</span>
+<span class="c1">#         for chrom in clr.chromnames:</span>
+<span class="c1">#             mats[cell_id][chrom] = cooler_chr(</span>
+<span class="c1">#                 file_path,</span>
+<span class="c1">#                 chrom,</span>
+<span class="c1">#                 cell_id=cell_id,</span>
+<span class="c1">#                 diag_num=diag_num,</span>
+<span class="c1">#                 resolution=resolution,</span>
+<span class="c1">#             )</span>
     
-    <span class="k">return</span> <span class="n">mats</span></div>
-
+<span class="c1">#     return mats</span>
 </pre></div>
 
                 </article>
@@ -889,7 +881,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
     <br/>
   </p>
 </div>

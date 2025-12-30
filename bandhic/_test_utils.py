@@ -18,6 +18,7 @@ __all__ = [
     "assert_band_matrix_equal",
 ]
 
+
 def matrix_equal(a: band_hic_matrix, b: band_hic_matrix) -> bool:
     """
     Check if two band_hic_matrix objects are equal.
@@ -59,6 +60,7 @@ def matrix_equal(a: band_hic_matrix, b: band_hic_matrix) -> bool:
             return True
     else:
         return False
+
 
 def assert_band_matrix_equal(a: band_hic_matrix, b: band_hic_matrix) -> bool:
     """

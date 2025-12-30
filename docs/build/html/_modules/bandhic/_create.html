@@ -1,8 +1,9 @@
 
+
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../" >
+<html lang="en" data-content_root="" >
 
   <head>
     <meta charset="utf-8" />
@@ -29,7 +30,7 @@
   <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -37,15 +38,17 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/bandhic/_create';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1.7" />
+  <meta name="docsearch:version" content="0.1.9" />
   </head>
   
   
@@ -353,9 +356,7 @@
     <span class="s2">&quot;full_like&quot;</span><span class="p">,</span>
 <span class="p">]</span>
 
-<div class="viewcode-block" id="ones">
-<a class="viewcode-back" href="../../_autosummary/bandhic.ones.html#bandhic.ones">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">ones</span><span class="p">(</span>
+<div class="viewcode-block" id="ones"><a class="viewcode-back" href="../../_autosummary/bandhic.ones.html#bandhic.ones">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">ones</span><span class="p">(</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">diag_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">type</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">band_hic_matrix</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -392,10 +393,7 @@
     <span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="zeros">
-<a class="viewcode-back" href="../../_autosummary/bandhic.zeros.html#bandhic.zeros">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">zeros</span><span class="p">(</span>
+<div class="viewcode-block" id="zeros"><a class="viewcode-back" href="../../_autosummary/bandhic.zeros.html#bandhic.zeros">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">zeros</span><span class="p">(</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">diag_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">type</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">band_hic_matrix</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -432,10 +430,7 @@
     <span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="eye">
-<a class="viewcode-back" href="../../_autosummary/bandhic.eye.html#bandhic.eye">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">eye</span><span class="p">(</span>
+<div class="viewcode-block" id="eye"><a class="viewcode-back" href="../../_autosummary/bandhic.eye.html#bandhic.eye">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">eye</span><span class="p">(</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">diag_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">type</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">band_hic_matrix</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -472,10 +467,7 @@
     <span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="full">
-<a class="viewcode-back" href="../../_autosummary/bandhic.full.html#bandhic.full">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">full</span><span class="p">(</span>
+<div class="viewcode-block" id="full"><a class="viewcode-back" href="../../_autosummary/bandhic.full.html#bandhic.full">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">full</span><span class="p">(</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
     <span class="n">fill_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
     <span class="n">diag_num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -517,10 +509,7 @@
     <span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="zeros_like">
-<a class="viewcode-back" href="../../_autosummary/bandhic.zeros_like.html#bandhic.zeros_like">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">zeros_like</span><span class="p">(</span><span class="n">other</span><span class="p">:</span> <span class="n">band_hic_matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">band_hic_matrix</span><span class="p">:</span>
+<div class="viewcode-block" id="zeros_like"><a class="viewcode-back" href="../../_autosummary/bandhic.zeros_like.html#bandhic.zeros_like">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">zeros_like</span><span class="p">(</span><span class="n">other</span><span class="p">:</span> <span class="n">band_hic_matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">band_hic_matrix</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a band_hic_matrix object matching another matrix, filled with zeros.</span>
 
@@ -546,10 +535,7 @@
     <span class="k">return</span> <span class="n">zeros</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">other</span><span class="o">.</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="ones_like">
-<a class="viewcode-back" href="../../_autosummary/bandhic.ones_like.html#bandhic.ones_like">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">ones_like</span><span class="p">(</span><span class="n">other</span><span class="p">:</span> <span class="n">band_hic_matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">band_hic_matrix</span><span class="p">:</span>
+<div class="viewcode-block" id="ones_like"><a class="viewcode-back" href="../../_autosummary/bandhic.ones_like.html#bandhic.ones_like">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">ones_like</span><span class="p">(</span><span class="n">other</span><span class="p">:</span> <span class="n">band_hic_matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">band_hic_matrix</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a band_hic_matrix object matching another matrix, filled with ones.</span>
 
@@ -575,10 +561,7 @@
     <span class="k">return</span> <span class="n">ones</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">other</span><span class="o">.</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="eye_like">
-<a class="viewcode-back" href="../../_autosummary/bandhic.eye_like.html#bandhic.eye_like">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">eye_like</span><span class="p">(</span><span class="n">other</span><span class="p">:</span> <span class="n">band_hic_matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">band_hic_matrix</span><span class="p">:</span>
+<div class="viewcode-block" id="eye_like"><a class="viewcode-back" href="../../_autosummary/bandhic.eye_like.html#bandhic.eye_like">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">eye_like</span><span class="p">(</span><span class="n">other</span><span class="p">:</span> <span class="n">band_hic_matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">band_hic_matrix</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a band_hic_matrix object matching another matrix, filled as an identity matrix.</span>
 
@@ -604,10 +587,7 @@
     <span class="k">return</span> <span class="n">eye</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">other</span><span class="o">.</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="full_like">
-<a class="viewcode-back" href="../../_autosummary/bandhic.full_like.html#bandhic.full_like">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">full_like</span><span class="p">(</span>
+<div class="viewcode-block" id="full_like"><a class="viewcode-back" href="../../_autosummary/bandhic.full_like.html#bandhic.full_like">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">full_like</span><span class="p">(</span>
     <span class="n">other</span><span class="p">:</span> <span class="n">band_hic_matrix</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">band_hic_matrix</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -635,7 +615,6 @@
     <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">dtype</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">dtype</span>
     <span class="k">return</span> <span class="n">full</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">other</span><span class="o">.</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span></div>
-
 </pre></div>
 
                 </article>
@@ -686,7 +665,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
     <br/>
   </p>
 </div>

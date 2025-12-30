@@ -2,34 +2,34 @@
 """
 CPU HiCCUPS pipeline for a single chromosome (banded version).
 
-假设：
-- 输入是 BandHiC 的 band_hic_matrix 对象 C_raw (float, 未KR)、KR向量 kr（len=N）、距离依赖的 expected 向量 expected_dist。
-- 归一化方式：逐条带宽内元素相乘 C_norm[i,j] = C_raw[i,j]*kr[i]*kr[j]，仍以带状存储。
-- 只在带宽范围内直接计算（不做分块，不做 margin）。
+Assumptions:
+- Input is a BandHiC `band_hic_matrix` C_raw (float, unnormalized), KR vector `kr` (len=N), and distance-dependent expected vector `expected_dist`.
+- Normalization: elementwise within the stored band C_norm[i,j] = C_raw[i,j] * kr[i] * kr[j], still band-stored.
+- Operates directly on the band (no tiling, no margin).
 
 Pipeline:
-1) 单分辨率：
-   - 对每个像素(i,j)计算 BL/Donut/H/V 掩膜对应的期望 eBL/eDonut/eH/eV。
-   - 按 e 的 log-binning 计算 bin 索引 (bBL,bDonut,bH,bV)。
-   - 记录 observed = round(C_norm[i,j])，构建 hist[bin, obs]。
-   - 用 Poisson + 反累积分布估计各 bin 的阈值 + FDR 表。
-   - 按像素计算 peak = observed - max(thresholds)，得到 peak 矩阵。
-   - 第二遍扫描：对 peak>0 的像素，要求：
-       * 远离对角线 (|i-j| > peak_width)
-       * local maxima（在 peakWidth 邻域内是最大值）
-       * expected 都有效 (>1e-6)
-       * OE 阈值 + FDR 条件都满足
-     → 生成 Feature2D。
-   - 对 Feature2D 做 centroid 聚类合并。
-2) 多分辨率：
-   - 对每个 resolution 跑一遍单分辨率 HiCCUPS。
-   - 用 merge_all_resolutions 规则合并（仿 Juicer: 5kb/10kb/25kb 优先）。
-3) 输出 BEDPE。
+1) Single resolution:
+   - For each pixel (i,j) compute expected eBL/eDonut/eH/eV for BL/Donut/H/V masks.
+   - Log-binning on expected to get bin indices (bBL,bDonut,bH,bV).
+   - Record observed = round(C_norm[i,j]) and build hist[bin, obs].
+   - Estimate per-bin thresholds + FDR tables via Poisson + reverse cumulative.
+   - Compute peak = observed - max(thresholds) to obtain a peak matrix.
+   - Second pass: for peak>0 pixels require
+       * far from diagonal (|i-j| > peak_width)
+       * local maxima within peak_width window
+       * valid expected values (>1e-6)
+       * OE thresholds + FDR satisfied
+     → generate Feature2D.
+   - Centroid-cluster Feature2D.
+2) Multi-resolution:
+   - Run single-resolution HiCCUPS per resolution.
+   - Merge via merge_all_resolutions (Juicer-like 5kb/10kb/25kb priority).
+3) Output BEDPE.
 
-注意：这是概念/测试实现，性能不适合超大矩阵。
+Note: conceptual/testing implementation; not optimized for huge matrices.
 
-- 只在 |i-j| * resolution <= max_loop_dist_bp 的范围内搜索 loops（默认 8 Mb，仿 CPU HiCCUPS）。
-- 使用 KR 邻域掩膜（kr_neighborhood）过滤低质量 bin（仿 Java HiCCUPS 的 removeLowMapQFeatures）。
+- Only search loops where |i-j| * resolution <= max_loop_dist_bp (default 8 Mb, like CPU HiCCUPS).
+- Use KR neighborhood mask (kr_neighborhood) to filter low-quality bins (mirrors Java HiCCUPS removeLowMapQFeatures).
 """
 
 from __future__ import annotations
@@ -37,13 +37,122 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Tuple
 import numpy as np
 import math
+
+import scipy as sp
 import bandhic as bh
 import numpy.ma as ma
 import os
+import time
+
+# Parallel/Numba imports for fast HiCCUPS pass
+from joblib import Parallel, delayed
+from numba import njit
+import multiprocessing as mp
+
+__all__ = [
+    "hiccups",
+    "load_norm_vector_from_hic",
+    "load_norm_vector_from_cooler",
+]
+
+
+# =========================================================
+# Normalization vector loaders
+# =========================================================
+
+
+def load_norm_vector_from_hic(hic_file, chrom, resolution, norm):
+    """
+    Load a normalization vector from a .hic file for a given chromosome and resolution.
+
+    Parameters
+    ----------
+    hic_file : str
+        Path to the .hic file.
+    chrom : str
+        Chromosome name, e.g., 'chr1' or '1'.
+    resolution : int
+        Bin size in base pairs.
+    norm : str
+        Normalization method, e.g., 'KR', 'VC', etc.
+
+    Returns
+    -------
+    np.ndarray
+        Normalization vector for the specified chromosome and resolution.
+
+    Raises
+    ------
+    RuntimeError
+        If the normalization vector cannot be found for the specified parameters.
+    """
+    try:
+        import hicstraw
+    except ImportError:
+        raise ImportError(
+            "hicstraw is required for reading .hic files. Please install it via 'pip install hic-straw'."
+        )
+    chrom_short = (
+        chrom.replace("chr", "") if chrom.startswith("chr") else chrom
+    )
+    try:
+        hic = hicstraw.HiCFile(hic_file)
+        chrom_short_specific = (
+            int(chrom_short)
+            if chrom_short not in ["X", "Y", "M"]
+            else chrom_short
+        )
+        kr = hic.getMatrixZoomData(
+            chrom_short, chrom_short, "observed", norm, "BP", resolution
+        ).getNormVector(chrom_short_specific)
+    except Exception:
+        raise RuntimeError(
+            f"Normalization vector not found in .hic for {chrom} at {resolution} bp, norm={norm}"
+        )
+    return np.asarray(kr, dtype=float)
+
+
+def load_norm_vector_from_cooler(cool_path, chrom, resolution, norm):
+    """
+    Load a normalization vector from a .cool or .mcool file for a given chromosome and resolution.
+
+    Parameters
+    ----------
+    cool_path : str
+        Path to the .cool or .mcool file.
+    chrom : str
+        Chromosome name, e.g., 'chr1'.
+    resolution : int
+        Bin size in base pairs.
+    norm : str
+        Normalization method, e.g., 'KR', 'VC', etc.
+
+    Returns
+    -------
+    np.ndarray
+        Normalization vector for the specified chromosome and resolution.
+
+    Raises
+    ------
+    RuntimeError
+        If the normalization vector cannot be found for the specified parameters.
+    """
+    import cooler
+
+    try:
+        clr = cooler.Cooler(f"{cool_path}::/resolutions/{resolution}")
+        kr = clr.bins()[norm][clr.bins()["chrom"] == chrom][norm].values
+    except Exception:
+        raise RuntimeError(
+            f"Normalization vector not found in cooler for {chrom} at {resolution} bp, norm={norm}"
+        )
+    return np.asarray(kr, dtype=float)
+
 
 # =========================================================
 # Data structures
 # =========================================================
+
 
 @dataclass(order=True)
 class Feature2D:
@@ -65,27 +174,32 @@ class Feature2D:
     def get_float(self, key: str) -> float:
         return float(self.attrs[key])
 
+    def has_attr(self, key: str) -> bool:
+        return key in self.attrs
+
 
 @dataclass
 class HiCCUPSConfig:
-    resolution: int               # bp
-    window: int = 10              # donut window (in bins)
-    peak_width: int = 2           # peak half-width (in bins)
-    w1: int = 300                 # max bin index (for log-binning)
-    fdr: float = 0.1              # FDR 目标（与 Juicer 相似）
-    max_count: int = 1000         # hist 中追踪的最大 observed
-    cluster_radius_bp: int = 20000  # centroid 合并半径（bp）
-    # OE thresholds，仿 Juicer 的 oeThreshold1/2/3
+    resolution: int  # bp
+    window: int = 10  # donut window (in bins)
+    peak_width: int = 2  # peak half-width (in bins)
+    w1: int = 40  # max bin index (for log-binning)
+    fdr: float = 0.1  # FDR target (Juicer-like)
+    max_count: int = 10000  # max observed tracked in hist
+    cluster_radius_bp: int = 20000  # centroid merge radius (bp)
+    # OE thresholds, similar to Juicer oeThreshold1/2/3
+    fdrsum: float = 0.02
     oe1: float = 1.5
-    oe2: float = 2.0
-    oe3: float = 3.0
-    # 最大 loop 搜索距离（单位：bp），CPU HiCCUPS 默认 8 Mb 附近
-    max_loop_dist_bp: int = 8_000_000
-    # KR 邻域半径（bin），用于模拟 Java HiCCUPS.krNeighborhood 掩膜
-    kr_neighborhood: int = 2
+    oe2: float = 1.75
+    oe3: float = 2.0
+    max_loop_dist_bp: int = 8_000_000  # max loop search distance (bp)
+    kr_neighborhood: int = (
+        5  # KR neighborhood radius (bins), like Java HiCCUPS.krNeighborhood
+    )
+    norm: str = "KR"
+    n_jobs: int = -1  # Number of parallel jobs
 
 
-# 属性键（参考 Juicer Translation）
 OBSERVED = "observed"
 PEAK = "peak"
 EXPECTEDBL = "expectedBL"
@@ -106,30 +220,36 @@ CENTROID2 = "centroid2"
 NUMCOLLAPSED = "numCollapsed"
 
 
-# =========================================================
-# Utility: Poisson, reverse-cumulative
-# =========================================================
-
-def poisson_pmf(lmbda: float, max_k: int) -> np.ndarray:
-    """Poisson(λ) PMF for k=0..max_k; 递推实现 + 归一化。"""
-    pmf = np.zeros(max_k + 1, dtype=np.float64)
-    pmf[0] = math.exp(-lmbda)
-    for k in range(1, max_k + 1):
-        pmf[k] = pmf[k - 1] * lmbda / k
-    s = pmf.sum()
-    if s > 0:
-        pmf /= s
-    return pmf
-
-
-def reverse_cumulative(arr: np.ndarray) -> np.ndarray:
-    """f[k] -> g[k] = sum_{x>=k} f[x]."""
-    return arr[::-1].cumsum()[::-1]
+def reverse_cumulative(arr: np.ndarray, axis: int = 1) -> np.ndarray:
+    if arr.ndim == 1:
+        return arr[::-1].cumsum()[::-1]
+    elif arr.ndim == 2:
+        return np.flip(np.flip(arr, axis=axis).cumsum(axis=axis), axis=axis)
+    else:
+        raise ValueError("reverse_cumulative only supports 1D or 2D arrays.")
 
 
 def _iter_band_indices(mat: bh.band_hic_matrix):
     """
-    Iterate over valid upper-triangular band positions (i<j, in-band).
+    Iterate over valid upper-triangular banded matrix entries.
+
+    Parameters
+    ----------
+    mat : band_hic_matrix
+        Input banded Hi-C matrix.
+
+    Yields
+    ------
+    i : int
+        Row index (bin index).
+    j : int
+        Column index (bin index), j > i.
+    k : int
+        Diagonal offset (j - i).
+
+    Notes
+    -----
+    Yields all valid upper-triangular (i < j) entries within the stored band, skipping masked entries.
     """
     bin_num = mat.bin_num
     diag_num = mat.diag_num
@@ -143,69 +263,99 @@ def _iter_band_indices(mat: bh.band_hic_matrix):
             yield i, j, k
 
 
-# =========================================================
-# Step 1: compute per-pixel expected / bins / observed / hist
-# =========================================================
+# ----------------------------------------------------------
+# Numba + joblib accelerated diagonal worker for HiCCUPS
+# ----------------------------------------------------------
 
-def compute_evalues_and_hist(
-    C_norm: bh.band_hic_matrix,
-    expected_dist: np.ndarray,
-    conf: HiCCUPSConfig,
-    kr: np.ndarray,
+from numba import njit
+import numpy as np
+import math
+
+
+@njit(cache=True, fastmath=True)
+def _hiccups_diag_worker_numba(
+    data,
+    mask,
+    expected_dist,
+    kr,
+    k_start,
+    k_end,
+    window,
+    peak_w,
+    max_loop_k,
+    w1,
+    max_count,
 ):
     """
-    第一遍扫描：
-      - 对每个像素 (i,j) (只看上三角 i<j) 计算 eBL/eDonut/eH/eV，
-        bin 索引、observed，并构建 hist[bin,obs]。
+    Efficient diagonal worker for HiCCUPS banded matrix computation.
+
+    Parameters
+    ----------
+    data : np.ndarray
+        Normalized Hi-C banded data array of shape (N, diag_num).
+    mask : np.ndarray
+        Boolean mask array of the same shape as `data`, True for masked entries.
+    expected_dist : np.ndarray
+        Expected values as a function of diagonal offset, length >= diag_num.
+    kr : np.ndarray
+        Normalization vector of length N.
+    k_start : int
+        Starting diagonal offset (inclusive).
+    k_end : int
+        Ending diagonal offset (exclusive).
+    window : int
+        Donut window size (in bins).
+    peak_w : int
+        Peak half-width (in bins).
+    max_loop_k : int
+        Maximum diagonal offset to consider (in bins).
+    w1 : int
+        Number of log-binned expected bins.
+    max_count : int
+        Maximum observed count tracked in histograms.
+
+    Returns
+    -------
+    histBL : np.ndarray
+        BL box histogram (w1, max_count+1).
+    histDonut : np.ndarray
+        Donut histogram (w1, max_count+1).
+    histH : np.ndarray
+        Horizontal crosshair histogram (w1, max_count+1).
+    histV : np.ndarray
+        Vertical crosshair histogram (w1, max_count+1).
+    updates : list
+        List of tuples per valid pixel with (i, diagDist, o, bBL, bDo, bH, bV, e_bl, e_dn, e_h, e_v).
+
+    Notes
+    -----
+    This function is Numba-accelerated and processes a range of diagonal offsets for the banded matrix.
+    It computes expected values for BL box, Donut, Horizontal, and Vertical crosshair masks, assigns log-binned indices,
+    and accumulates observed counts and expected values for downstream thresholding and FDR.
     """
-    N = C_norm.bin_num
-    diag_num = C_norm.diag_num
-    window = conf.window
-    peak_w = conf.peak_width
-    w1 = conf.w1
-    max_count = conf.max_count
-    
-        # KR 掩膜：仿 HiCCUPSUtils.removeLowMapQFeatures 中 nearbyValuesClear
-    kr_arr = np.asarray(kr, dtype=float)
-    kr_nan = np.isnan(kr_arr) | (kr_arr == 0)
-    valid_kr = np.ones(N, dtype=bool)
-    r = conf.kr_neighborhood
-    if r > 0:
-        for i in range(N):
-            i0 = max(0, i - r)
-            i1 = min(N, i + r + 1)
-            if np.any(kr_nan[i0:i1]):
-                valid_kr[i] = False
-
-    observed = bh.zeros((N, diag_num), dtype=np.int32)
-    observed.add_mask_row_col(~valid_kr)
-    eBL = bh.zeros((N, diag_num), dtype=np.float32)
-    eBL.add_mask_row_col(~valid_kr)
-    eDonut = bh.zeros((N, diag_num), dtype=np.float32)
-    eDonut.add_mask_row_col(valid_kr)
-    eH = bh.zeros((N, diag_num), dtype=np.float32)
-    eH.add_mask_row_col(~valid_kr)
-    eV = bh.zeros((N, diag_num), dtype=np.float32)
-    eV.add_mask_row_col(~valid_kr)
-    binBL = bh.zeros((N, diag_num), dtype=np.int32)
-    binBL.add_mask_row_col(~valid_kr)
-    binDonut = bh.zeros((N, diag_num), dtype=np.int32)
-    binDonut.add_mask_row_col(~valid_kr)
-    binH = bh.zeros((N, diag_num), dtype=np.int32)
-    binH.add_mask_row_col(~valid_kr)
-    binV = bh.zeros((N, diag_num), dtype=np.int32)
-    binV.add_mask_row_col(~valid_kr)
-
-    histBL = np.zeros((w1, max_count + 1), dtype=np.int64)
-    histDonut = np.zeros((w1, max_count + 1), dtype=np.int64)
-    histH = np.zeros((w1, max_count + 1), dtype=np.int64)
-    histV = np.zeros((w1, max_count + 1), dtype=np.int64)
-
-    lognorm = math.log(2.0 ** 0.33)
+    N, diag_num = data.shape
     Nexp = len(expected_dist)
+    histBL = np.zeros((w1, max_count + 1), np.int64)
+    histDonut = np.zeros_like(histBL)
+    histH = np.zeros_like(histBL)
+    histV = np.zeros_like(histBL)
+    # Parallel arrays for updates
+    ii_arr = np.empty((N * (k_end - k_start),), dtype=np.int32)
+    kk_arr = np.empty_like(ii_arr)
+    oo_arr = np.empty_like(ii_arr)
+    e_bl_arr = np.empty((N * (k_end - k_start),), dtype=np.float32)
+    e_dn_arr = np.empty_like(e_bl_arr)
+    e_h_arr = np.empty_like(e_bl_arr)
+    e_v_arr = np.empty_like(e_bl_arr)
+    bBL_arr = np.empty((N * (k_end - k_start),), dtype=np.int16)
+    bDo_arr = np.empty_like(bBL_arr)
+    bH_arr = np.empty_like(bBL_arr)
+    bV_arr = np.empty_like(bBL_arr)
+    upd_ptr = 0
+    lognorm = math.log(2.0**0.33)
 
-    def bin_val(e: float) -> int:
-        if e <= 1 or math.isnan(e) or math.isinf(e):
+    def bin_val(e):
+        if e <= 1.0 or math.isnan(e) or math.isinf(e):
             return 0
         idx = int(math.floor(math.log(e) / lognorm))
         if idx < 0:
@@ -214,238 +364,426 @@ def compute_evalues_and_hist(
             idx = w1 - 1
         return idx
 
-    valid_mask = np.zeros((N, diag_num), dtype=bool)
-
-    for t_row, t_col, offset in _iter_band_indices(C_norm):
-        diagDist = offset
+    for k in range(k_start, k_end):
+        diagDist = k
         if diagDist <= peak_w:
             continue
-        if not (valid_kr[t_row] and valid_kr[t_col]):
-                    continue
-        if diagDist * conf.resolution > conf.max_loop_dist_bp:
+        if diagDist >= max_loop_k:
             continue
         if diagDist >= Nexp:
             continue
-        if expected_dist[diagDist] <= 0 or np.isnan(expected_dist[diagDist]):
+        if expected_dist[diagDist] <= 0.0 or math.isnan(
+            expected_dist[diagDist]
+        ):
             continue
-
         d_diag = expected_dist[diagDist]
-
-        if diagDist > 1:
-            wsize = min(window, (diagDist - 1) // 2)
-        else:
-            wsize = peak_w + 1
-        if wsize <= peak_w:
-            wsize = peak_w + 1
-
-        # ---------------- BL box ----------------
-        E_bl = 0.0
-        Ed_bl = 0.0
-        for i in range(t_row + 1, min(t_row + wsize + 1, N)):
-            for j in range(max(t_col - wsize, 0), t_col):
-                v = C_norm[i, j]
-                if ma.is_masked(v):
-                    continue
-                dist = j - i
-                if dist < Nexp:
-                    E_bl += v
-                    Ed_bl += expected_dist[dist]
-
-        for i in range(t_row + 1, min(t_row + peak_w + 1, N)):
-            for j in range(max(t_col - peak_w, 0), t_col):
-                v = C_norm[i, j]
-                if ma.is_masked(v):
-                    continue
-                dist = j - i
-                if dist < Nexp:
-                    E_bl -= v
-                    Ed_bl -= expected_dist[dist]
-
-        while E_bl < 16 and 2 * wsize < diagDist:
+        for i in range(N - diagDist):
+            j = i + diagDist
+            if mask[i, diagDist]:
+                continue
+            if kr[i] == 0.0 or kr[j] == 0.0:
+                continue
+            # window size
+            if diagDist > 1:
+                wsize = min(window, (diagDist - 1) // 2)
+            else:
+                wsize = peak_w + 1
+            if wsize <= peak_w:
+                wsize = peak_w + 1
+            # ----- BL box -----
             E_bl = 0.0
             Ed_bl = 0.0
-            wsize += 1
-            for i in range(t_row + 1, min(t_row + wsize + 1, N)):
-                for j in range(max(t_col - wsize, 0), t_col):
-                    v = C_norm[i, j]
-                    if ma.is_masked(v):
-                        continue
-                    dist = j - i
+            for ii in range(i + 1, min(i + wsize + 1, N)):
+                for jj in range(max(j - wsize, 0), j):
+                    if ii < jj:
+                        dist = jj - ii
+                        if dist < Nexp:
+                            v = data[ii, dist]
+                            if not mask[ii, dist]:
+                                E_bl += v
+                                Ed_bl += expected_dist[dist]
+            for ii in range(i + 1, min(i + peak_w + 1, N)):
+                for jj in range(max(j - peak_w, 0), j):
+                    if ii < jj:
+                        dist = jj - ii
+                        if dist < Nexp:
+                            v = data[ii, dist]
+                            if not mask[ii, dist]:
+                                E_bl -= v
+                                Ed_bl -= expected_dist[dist]
+            while E_bl < 16.0 and 2 * wsize < diagDist:
+                E_bl = 0.0
+                Ed_bl = 0.0
+                wsize += 1
+                for ii in range(i + 1, min(i + wsize + 1, N)):
+                    for jj in range(max(j - wsize, 0), j):
+                        if ii < jj:
+                            dist = jj - ii
+                            if dist < Nexp:
+                                v = data[ii, dist]
+                                if not mask[ii, dist]:
+                                    E_bl += v
+                                    Ed_bl += expected_dist[dist]
+                                    if (
+                                        i + 1 <= ii < i + peak_w + 1
+                                        and j - peak_w <= jj < j
+                                    ):
+                                        E_bl -= v
+                                        Ed_bl -= expected_dist[dist]
+            # ----- Donut -----
+            E_donut = 0.0
+            Ed_donut = 0.0
+            for ii in range(max(i - wsize, 0), min(i + wsize + 1, N)):
+                for jj in range(max(j - wsize, 0), min(j + wsize + 1, N)):
+                    if ii < jj:
+                        dist = jj - ii
+                        if dist < Nexp:
+                            v = data[ii, dist]
+                            if not mask[ii, dist]:
+                                E_donut += v
+                                Ed_donut += expected_dist[dist]
+            for ii in range(max(i - peak_w, 0), min(i + peak_w + 1, N)):
+                for jj in range(max(j - peak_w, 0), min(j + peak_w + 1, N)):
+                    if ii < jj:
+                        dist = jj - ii
+                        if dist < Nexp:
+                            v = data[ii, dist]
+                            if not mask[ii, dist]:
+                                E_donut -= v
+                                Ed_donut -= expected_dist[dist]
+            # ----- Vertical crosshair -----
+            E_v = 0.0
+            Ed_v = 0.0
+            for ii in range(max(i - wsize, 0), max(i - peak_w, 0)):
+                dist = j - ii
+                v_mid = data[ii, dist]
+                if not mask[ii, dist]:
                     if dist < Nexp:
-                        E_bl += v
-                        Ed_bl += expected_dist[dist]
-                        if (t_row + 1 <= i < t_row + peak_w + 1 and
-                            t_col - peak_w <= j < t_col):
-                            E_bl -= v
-                            Ed_bl -= expected_dist[dist]
-
-        # ---------------- Donut ----------------
-        E_donut = 0.0
-        Ed_donut = 0.0
-        for i in range(max(t_row - wsize, 0), min(t_row + wsize + 1, N)):
-            for j in range(max(t_col - wsize, 0), min(t_col + wsize + 1, N)):
-                v = C_norm[i, j]
-                if ma.is_masked(v):
-                    continue
-                if i < j:
-                    dist = j - i
-                    if dist < Nexp:
-                        E_donut += v
-                        Ed_donut += expected_dist[dist]
-
-        for i in range(max(t_row - peak_w, 0), min(t_row + peak_w + 1, N)):
-            for j in range(max(t_col - peak_w, 0), min(t_col + peak_w + 1, N)):
-                v = C_norm[i, j]
-                if ma.is_masked(v):
-                    continue
-                if i < j:
-                    dist = j - i
-                    if dist < Nexp:
-                        E_donut -= v
+                        E_donut -= v_mid
                         Ed_donut -= expected_dist[dist]
-
-        # ---------------- Vertical crosshair ----------------
-        E_v = 0.0
-        Ed_v = 0.0
-        for i in range(max(t_row - wsize, 0), max(t_row - peak_w, 0)):
-            v_mid = C_norm[i, t_col]
-            if not ma.is_masked(v_mid):
-                dist = abs(i - t_col)
-                if dist < Nexp:
-                    E_donut -= v_mid
-                    Ed_donut -= expected_dist[dist]
-            for dj in (-1, 0, 1):
-                j = t_col + dj
-                v = C_norm[i, j]
-                if ma.is_masked(v):
-                    continue
-                dist = j - i
-                if dist < Nexp:
-                    E_v += v
-                    Ed_v += expected_dist[dist]
-
-        for i in range(min(t_row + peak_w + 1, N), min(t_row + wsize + 1, N)):
-            v_mid = C_norm[i, t_col]
-            if not ma.is_masked(v_mid):
-                dist = abs(i - t_col)
-                if dist < Nexp:
-                    E_donut -= v_mid
-                    Ed_donut -= expected_dist[dist]
-            for dj in (-1, 0, 1):
-                j = t_col + dj
-                v = C_norm[i, j]
-                if ma.is_masked(v):
-                    continue
-                dist = j - i
-                if dist < Nexp:
-                    E_v += v
-                    Ed_v += expected_dist[dist]
-
-        # ---------------- Horizontal crosshair ----------------
-        E_h = 0.0
-        Ed_h = 0.0
-        for j in range(max(t_col - wsize, 0), max(t_col - peak_w, 0)):
-            v_mid = C_norm[t_row, j]
-            if not ma.is_masked(v_mid):
-                dist = abs(t_row - j)
-                if dist < Nexp:
-                    E_donut -= v_mid
-                    Ed_donut -= expected_dist[dist]
-            for di in (-1, 0, 1):
-                i = t_row + di
-                v = C_norm[i, j]
-                if ma.is_masked(v):
-                    continue
-                dist = j - i
-                if dist < Nexp:
-                    E_h += v
-                    Ed_h += expected_dist[dist]
-
-        for j in range(min(t_col + peak_w + 1, N), min(t_col + wsize + 1, N)):
-            v_mid = C_norm[t_row, j]
-            if not ma.is_masked(v_mid):
-                dist = abs(t_row - j)
-                if dist < Nexp:
-                    E_donut -= v_mid
-                    Ed_donut -= expected_dist[dist]
-            for di in (-1, 0, 1):
-                i = t_row + di
-                v = C_norm[i, j]
-                if ma.is_masked(v):
-                    continue
-                dist = j - i
-                if dist < Nexp:
-                    E_h += v
-                    Ed_h += expected_dist[dist]
-
-        def safe_e(E, Ed):
-            if Ed <= 0:
-                return 0.0
-            return (E * d_diag) / Ed
-
-        e_bl = safe_e(E_bl, Ed_bl)
-        e_dn = safe_e(E_donut, Ed_donut)
-        e_hh = safe_e(E_h, Ed_h)
-        e_vv = safe_e(E_v, Ed_v)
-
-        eBL[t_row, t_col] = e_bl
-        eDonut[t_row, t_col] = e_dn
-        eH[t_row, t_col] = e_hh
-        eV[t_row, t_col] = e_vv
-
-        bBL = bin_val(e_bl)
-        bDo = bin_val(e_dn)
-        bH = bin_val(e_hh)
-        bV = bin_val(e_vv)
-        binBL[t_row, t_col] = bBL
-        binDonut[t_row, t_col] = bDo
-        binH[t_row, t_col] = bH
-        binV[t_row, t_col] = bV
-
-        o = int(round(C_norm.data[t_row, offset]))
-        if o < 0:
-            o = 0
-        if o > max_count:
-            o = max_count
-        observed[t_row, t_col] = o
-
-        histBL[bBL, o] += 1
-        histDonut[bDo, o] += 1
-        histH[bH, o] += 1
-        histV[bV, o] += 1
-        valid_mask[t_row, offset] = True
-
-    return (observed,
-            eBL,
-            eDonut,
-            eH,
-            eV,
-            binBL,
-            binDonut,
-            binH,
-            binV,
-            histBL,
-            histDonut,
-            histH,
-            histV,
-            valid_mask,
-            row_col_mask,
+                for dj in (-1, 0, 1):
+                    jj = j + dj
+                    if jj < 0 or jj >= N:
+                        continue
+                    if ii < jj:
+                        dist = jj - ii
+                        if dist < Nexp:
+                            v = data[ii, dist]
+                            if not mask[ii, dist]:
+                                E_v += v
+                                Ed_v += expected_dist[dist]
+            for ii in range(min(i + peak_w + 1, N), min(i + wsize + 1, N)):
+                dist = j - ii
+                v_mid = data[ii, dist]
+                if not mask[ii, dist]:
+                    if dist < Nexp:
+                        E_donut -= v_mid
+                        Ed_donut -= expected_dist[dist]
+                for dj in (-1, 0, 1):
+                    jj = j + dj
+                    if jj < 0 or jj >= N:
+                        continue
+                    if ii < jj:
+                        dist = jj - ii
+                        if dist < Nexp:
+                            v = data[ii, dist]
+                            if not mask[ii, dist]:
+                                E_v += v
+                                Ed_v += expected_dist[dist]
+            # ----- Horizontal crosshair -----
+            E_h = 0.0
+            Ed_h = 0.0
+            for jj in range(max(j - wsize, 0), max(j - peak_w, 0)):
+                dist = jj - i
+                v_mid = data[i, dist]
+                if not mask[i, dist]:
+                    if dist < Nexp:
+                        E_donut -= v_mid
+                        Ed_donut -= expected_dist[dist]
+                for di in (-1, 0, 1):
+                    ii = i + di
+                    if ii < 0 or ii >= N:
+                        continue
+                    if ii < jj:
+                        dist = jj - ii
+                        if dist < Nexp:
+                            v = data[ii, dist]
+                            if not mask[ii, dist]:
+                                E_h += v
+                                Ed_h += expected_dist[dist]
+            for jj in range(min(j + peak_w + 1, N), min(j + wsize + 1, N)):
+                dist = jj - i
+                v_mid = data[i, dist]
+                if not mask[i, dist]:
+                    if dist < Nexp:
+                        E_donut -= v_mid
+                        Ed_donut -= expected_dist[dist]
+                for di in (-1, 0, 1):
+                    ii = i + di
+                    if ii < 0 or ii >= N:
+                        continue
+                    if ii < jj:
+                        dist = jj - ii
+                        if dist < Nexp:
+                            v = data[ii, dist]
+                            if not mask[ii, dist]:
+                                E_h += v
+                                Ed_h += expected_dist[dist]
+            # normalize
+            e_bl = (
+                (E_bl * d_diag / Ed_bl) * kr[i] * kr[j] if Ed_bl > 0 else 0.0
             )
+            e_dn = (
+                (E_donut * d_diag / Ed_donut) * kr[i] * kr[j]
+                if Ed_donut > 0
+                else 0.0
+            )
+            e_h = (E_h * d_diag / Ed_h) * kr[i] * kr[j] if Ed_h > 0 else 0.0
+            e_v = (E_v * d_diag / Ed_v) * kr[i] * kr[j] if Ed_v > 0 else 0.0
+            bBL = bin_val(e_bl)
+            bDo = bin_val(e_dn)
+            bH = bin_val(e_h)
+            bV = bin_val(e_v)
+            o = int(round(data[i, diagDist] * kr[i] * kr[j]))
+            if o < 0:
+                o = 0
+            if o > max_count:
+                o = max_count
+            histBL[bBL, o] += 1
+            histDonut[bDo, o] += 1
+            histH[bH, o] += 1
+            histV[bV, o] += 1
+            ii_arr[upd_ptr] = i
+            kk_arr[upd_ptr] = diagDist
+            oo_arr[upd_ptr] = o
+            e_bl_arr[upd_ptr] = e_bl
+            e_dn_arr[upd_ptr] = e_dn
+            e_h_arr[upd_ptr] = e_h
+            e_v_arr[upd_ptr] = e_v
+            bBL_arr[upd_ptr] = bBL
+            bDo_arr[upd_ptr] = bDo
+            bH_arr[upd_ptr] = bH
+            bV_arr[upd_ptr] = bV
+            upd_ptr += 1
+    return (
+        histBL,
+        histDonut,
+        histH,
+        histV,
+        upd_ptr,
+        ii_arr,
+        kk_arr,
+        oo_arr,
+        e_bl_arr,
+        e_dn_arr,
+        e_h_arr,
+        e_v_arr,
+        bBL_arr,
+        bDo_arr,
+        bH_arr,
+        bV_arr,
+    )
+
+
+def compute_evalues_and_hist_parallel(
+    C_norm: bh.band_hic_matrix,
+    expected_dist: np.ndarray,
+    conf: HiCCUPSConfig,
+    kr: np.ndarray,
+    n_jobs: int = -1,
+    chunk_size: int = 64,
+):
+    """
+    Compute expected values, log-binned indices, observed counts, and histograms for HiCCUPS in parallel.
+
+    Parameters
+    ----------
+    C_norm : band_hic_matrix
+        Normalized banded Hi-C matrix (elementwise normalized).
+    expected_dist : np.ndarray
+        Expected counts as a function of diagonal offset (distance dependency).
+    conf : HiCCUPSConfig
+        HiCCUPS configuration parameters.
+    kr : np.ndarray
+        Normalization vector (length N).
+    n_jobs : int, optional
+        Number of parallel jobs to use (default: -1, all CPUs).
+    chunk_size : int, optional
+        Number of diagonals per parallel worker (default: 64).
+
+    Returns
+    -------
+    observed : band_hic_matrix
+        Matrix of observed counts (rounded).
+    eBL : band_hic_matrix
+        Matrix of BL box expected values.
+    eDo : band_hic_matrix
+        Matrix of Donut expected values.
+    eH : band_hic_matrix
+        Matrix of Horizontal crosshair expected values.
+    eV : band_hic_matrix
+        Matrix of Vertical crosshair expected values.
+    binBL : band_hic_matrix
+        BL box log-binned indices.
+    binDo : band_hic_matrix
+        Donut log-binned indices.
+    binH : band_hic_matrix
+        Horizontal crosshair log-binned indices.
+    binV : band_hic_matrix
+        Vertical crosshair log-binned indices.
+    histBL : np.ndarray
+        BL box histogram (w1, max_count+1).
+    histDo : np.ndarray
+        Donut histogram (w1, max_count+1).
+    histH : np.ndarray
+        Horizontal crosshair histogram (w1, max_count+1).
+    histV : np.ndarray
+        Vertical crosshair histogram (w1, max_count+1).
+
+    Notes
+    -----
+    This function runs the main HiCCUPS diagonal pass in parallel, using Numba-accelerated workers.
+    It computes per-pixel expected values, log-binned indices, and builds histograms for downstream thresholding.
+    """
+    norm_data = C_norm.data
+    mask = C_norm.mask
+    if mask is None:
+        mask = C_norm._extract_raw_mask(norm_data.shape)
+    N, diag_num = norm_data.shape
+
+    max_loop_k = conf.max_loop_dist_bp // conf.resolution
+
+    chunks = [
+        (k, min(k + chunk_size, diag_num))
+        for k in range(1, diag_num, chunk_size)
+    ]
+
+    ctx = mp.get_context("fork")
+    results = Parallel(
+        n_jobs=n_jobs,
+        backend="multiprocessing",
+        prefer="processes",
+    )(
+        delayed(_hiccups_diag_worker_numba)(
+            norm_data,
+            mask,
+            expected_dist,
+            kr,
+            k0,
+            k1,
+            conf.window,
+            conf.peak_width,
+            max_loop_k,
+            conf.w1,
+            conf.max_count,
+        )
+        for (k0, k1) in chunks
+    )
+
+    histBL = np.zeros((conf.w1, conf.max_count + 1), dtype=np.int64)
+    histDo = np.zeros_like(histBL)
+    histH = np.zeros_like(histBL)
+    histV = np.zeros_like(histBL)
+
+    observed = bh.zeros((N, N), diag_num=diag_num, dtype=np.int32)
+    eBL = bh.zeros((N, N), diag_num=diag_num, dtype=np.float32)
+    eDo = bh.zeros((N, N), diag_num=diag_num, dtype=np.float32)
+    eH = bh.zeros((N, N), diag_num=diag_num, dtype=np.float32)
+    eV = bh.zeros((N, N), diag_num=diag_num, dtype=np.float32)
+
+    binBL = bh.zeros((N, N), diag_num=diag_num, dtype=np.int16)
+    binDo = bh.zeros((N, N), diag_num=diag_num, dtype=np.int16)
+    binH = bh.zeros((N, N), diag_num=diag_num, dtype=np.int16)
+    binV = bh.zeros((N, N), diag_num=diag_num, dtype=np.int16)
+
+    for (
+        hBL,
+        hDo,
+        hH,
+        hV,
+        p,
+        ii,
+        kk,
+        oo,
+        e_bl_arr,
+        e_dn_arr,
+        e_h_arr,
+        e_v_arr,
+        bBL_arr,
+        bDo_arr,
+        bH_arr,
+        bV_arr,
+    ) in results:
+        histBL += hBL
+        histDo += hDo
+        histH += hH
+        histV += hV
+
+        if p == 0:
+            continue
+
+        ii = ii[:p]
+        kk = kk[:p]
+        observed.data[ii, kk] = oo[:p]
+        eBL.data[ii, kk] = e_bl_arr[:p]
+        eDo.data[ii, kk] = e_dn_arr[:p]
+        eH.data[ii, kk] = e_h_arr[:p]
+        eV.data[ii, kk] = e_v_arr[:p]
+        binBL.data[ii, kk] = bBL_arr[:p]
+        binDo.data[ii, kk] = bDo_arr[:p]
+        binH.data[ii, kk] = bH_arr[:p]
+        binV.data[ii, kk] = bV_arr[:p]
+
+    return (
+        observed,
+        eBL,
+        eDo,
+        eH,
+        eV,
+        binBL,
+        binDo,
+        binH,
+        binV,
+        histBL,
+        histDo,
+        histH,
+        histV,
+    )
 
 
 # =========================================================
 # Step 2: thresholds + FDR tables
 # =========================================================
 
+
 def compute_thresholds_and_fdr(
     hist: np.ndarray,
     conf: HiCCUPSConfig,
+    pmf: np.ndarray = None,
 ):
     """
-    hist: (w1, max_count+1)
-    返回:
-      threshold: (w1,)
-      fdrLog: (w1, max_count+1)
+    Compute per-bin thresholds and FDR tables for HiCCUPS using Poisson statistics.
+
+    Parameters
+    ----------
+    hist : np.ndarray
+        Histogram array of shape (w1, max_count+1), where w1 is the number of log-binned expected bins.
+    conf : HiCCUPSConfig
+        HiCCUPS configuration object.
+    pmf : np.ndarray, optional
+        Precomputed Poisson PMF (not used; computed internally).
+
+    Returns
+    -------
+    threshold : np.ndarray
+        Array of per-bin count thresholds (length w1).
+    fdrLog : np.ndarray
+        Array of FDR values for each bin and observed count (shape w1, max_count+1).
+
+    Notes
+    -----
+    For each log-binned expected bin, thresholds and FDRs are estimated using Poisson statistics
+    and the observed histogram, following the HiCCUPS approach.
     """
     w1, width = hist.shape
     threshold = np.zeros(w1, dtype=np.float32)
@@ -454,10 +792,7 @@ def compute_thresholds_and_fdr(
     rcsHist = reverse_cumulative(hist)
 
     for idx in range(w1):
-        if rcsHist[idx, 0] <= 0:
-            continue
-
-        cnt = hist[idx].sum()
+        cnt = rcsHist[idx, 0]
         if cnt <= 0:
             continue
 
@@ -465,12 +800,14 @@ def compute_thresholds_and_fdr(
         if mean_obs <= 0:
             mean_obs = 1e-3
 
-        pmf = poisson_pmf(mean_obs, width - 1)
+        # pmf = poisson_pmf(mean_obs, width - 1)
+        pmf = sp.stats.poisson.pmf(np.arange(width), mean_obs)
         expected = rcsHist[idx, 0] * pmf
         rcsExpected = reverse_cumulative(expected)
 
         for j in range(width):
-            if conf.fdr * rcsExpected[j] <= rcsHist[idx, j]:
+            if rcsExpected[j] / rcsHist[idx, j] <= conf.fdr:
+                # if conf.fdr * rcsExpected[j] <= rcsHist[idx, j]:
                 threshold[idx] = (width - 2) if j == 0 else (j - 1)
                 break
 
@@ -488,6 +825,7 @@ def compute_thresholds_and_fdr(
 # Step 3: Feature2D + FDR + centroid合并
 # =========================================================
 
+
 def generate_peak_feature(
     chr_name: str,
     res: int,
@@ -504,6 +842,45 @@ def generate_peak_feature(
     b_h: int,
     b_v: int,
 ) -> Feature2D:
+    """
+    Generate a Feature2D object representing a candidate HiCCUPS peak.
+
+    Parameters
+    ----------
+    chr_name : str
+        Chromosome name.
+    res : int
+        Bin size in base pairs.
+    i : int
+        First bin index.
+    j : int
+        Second bin index.
+    observed : int
+        Observed count at (i, j).
+    peak_val : float
+        Peak value (observed minus threshold).
+    e_bl : float
+        BL box expected value.
+    e_dn : float
+        Donut expected value.
+    e_h : float
+        Horizontal crosshair expected value.
+    e_v : float
+        Vertical crosshair expected value.
+    b_bl : int
+        BL box log-binned index.
+    b_dn : int
+        Donut log-binned index.
+    b_h : int
+        Horizontal crosshair log-binned index.
+    b_v : int
+        Vertical crosshair log-binned index.
+
+    Returns
+    -------
+    Feature2D
+        Feature2D object with all relevant attributes set.
+    """
     pos1 = min(i, j) * res
     pos2 = max(i, j) * res
     f = Feature2D(
@@ -533,8 +910,24 @@ def add_fdr_to_feature(
     fdrLogBL: np.ndarray,
     fdrLogDonut: np.ndarray,
     fdrLogH: np.ndarray,
-    fdrLogV: np.ndarray
+    fdrLogV: np.ndarray,
 ):
+    """
+    Assign FDR values to a Feature2D object.
+
+    Parameters
+    ----------
+    f : Feature2D
+        Feature2D object to update.
+    fdrLogBL : np.ndarray
+        BL box FDR table.
+    fdrLogDonut : np.ndarray
+        Donut FDR table.
+    fdrLogH : np.ndarray
+        Horizontal crosshair FDR table.
+    fdrLogV : np.ndarray
+        Vertical crosshair FDR table.
+    """
     obs = int(f.get_float(OBSERVED))
     bBL = int(f.get_float(BINBL))
     bDo = int(f.get_float(BINDONUT))
@@ -552,6 +945,25 @@ def fdr_thresholds_satisfied(
     f: Feature2D,
     conf: HiCCUPSConfig,
 ) -> bool:
+    """
+    Evaluate whether a Feature2D passes HiCCUPS FDR and OE thresholds.
+
+    Parameters
+    ----------
+    f : Feature2D
+        Feature2D object with all relevant attributes.
+    conf : HiCCUPSConfig
+        HiCCUPS configuration parameters.
+
+    Returns
+    -------
+    bool
+        True if the feature passes all FDR and observed/expected thresholds, False otherwise.
+
+    Notes
+    -----
+    This function implements the combined FDR and OE thresholding logic for HiCCUPS loop candidates.
+    """
     obs = round(f.get_float(OBSERVED))
     expBL = f.get_float(EXPECTEDBL)
     expDn = f.get_float(EXPECTEDDONUT)
@@ -561,16 +973,20 @@ def fdr_thresholds_satisfied(
     fDn = f.get_float(FDRDONUT)
     fH = f.get_float(FDRH)
     fV = f.get_float(FDRV)
+    numCollapsed = (
+        int(f.get_float(NUMCOLLAPSED)) if f.has_attr(NUMCOLLAPSED) else 1
+    )
 
     if min(expBL, expDn, expH, expV) <= 1e-6:
         return False
 
     if not (
-        obs > conf.oe2 * expBL and
-        obs > conf.oe2 * expDn and
-        obs > conf.oe1 * expH and
-        obs > conf.oe1 * expV and
-        (obs > conf.oe3 * expBL or obs > conf.oe3 * expDn)
+        obs > conf.oe2 * expBL
+        and obs > conf.oe2 * expDn
+        and obs > conf.oe1 * expH
+        and obs > conf.oe1 * expV
+        and (obs > conf.oe3 * expBL or obs > conf.oe3 * expDn)
+        and (numCollapsed > 1 or (fBL + fDn + fH + fV) <= conf.fdrsum)
     ):
         return False
 
@@ -581,14 +997,86 @@ def fdr_thresholds_satisfied(
     return True
 
 
+def fdr_thresholds_satisfied(
+    f: Feature2D,
+    conf: HiCCUPSConfig,
+) -> bool:
+    """
+    Evaluate whether a Feature2D passes HiCCUPS FDR and OE thresholds.
+
+    Parameters
+    ----------
+    f : Feature2D
+        Feature2D object with all relevant attributes.
+    conf : HiCCUPSConfig
+        HiCCUPS configuration parameters.
+
+    Returns
+    -------
+    bool
+        True if the feature passes all FDR and observed/expected thresholds, False otherwise.
+
+    Notes
+    -----
+    This function implements the combined FDR and OE thresholding logic for HiCCUPS loop candidates.
+    """
+    obs = round(f.get_float(OBSERVED))
+    expBL = f.get_float(EXPECTEDBL)
+    expDn = f.get_float(EXPECTEDDONUT)
+    expH = f.get_float(EXPECTEDH)
+    expV = f.get_float(EXPECTEDV)
+    fBL = f.get_float(FDRBL)
+    fDn = f.get_float(FDRDONUT)
+    fH = f.get_float(FDRH)
+    fV = f.get_float(FDRV)
+    numCollapsed = (
+        int(f.get_float(NUMCOLLAPSED)) if f.has_attr(NUMCOLLAPSED) else 1
+    )
+
+    # if min(expBL, expDn, expH, expV) <= 1e-6:
+    #     return False
+
+    if not (
+        #     obs > conf.oe2 * expBL and
+        #     obs > conf.oe2 * expDn and
+        #     obs > conf.oe1 * expH and
+        #     obs > conf.oe1 * expV and
+        #     (obs > conf.oe3 * expBL or obs > conf.oe3 * expDn) and
+        (numCollapsed > 1 or (fBL + fDn + fH + fV) <= conf.fdrsum)
+    ):
+        return False
+
+    # fdr_total = max(fBL, fDn, fH, fV)
+    # if fdr_total > conf.fdr:
+    #     return False
+
+    return True
+
+
 def coalesce_pixels_to_centroid(
     feats: List[Feature2D],
     conf: HiCCUPSConfig,
 ) -> List[Feature2D]:
     """
-    centroid 合并：
-      - 在 (start1,start2) 平面上，用 cluster_radius_bp 做半径的聚类。
-      - 每次以 observed 最大的像素为种子，吸收邻域内的所有像素，更新质心。
+    Cluster candidate loop pixels into centroids using a fixed radius.
+
+    Parameters
+    ----------
+    feats : list of Feature2D
+        List of candidate loop Feature2D objects.
+    conf : HiCCUPSConfig
+        HiCCUPS configuration parameters.
+
+    Returns
+    -------
+    merged : list of Feature2D
+        List of merged centroid Feature2D objects, each with centroid coordinates and cluster attributes.
+
+    Notes
+    -----
+    This function clusters pixels in the (start1, start2) plane using a fixed radius (`cluster_radius_bp`).
+    The pixel with the highest observed count is used as the seed; all pixels within the radius are merged,
+    and the centroid is updated iteratively.
     """
     if not feats:
         return []
@@ -596,7 +1084,9 @@ def coalesce_pixels_to_centroid(
     uniq = {}
     for f in feats:
         key = (f.chr1, f.start1, f.start2)
-        if key not in uniq or f.get_float(OBSERVED) > uniq[key].get_float(OBSERVED):
+        if key not in uniq or f.get_float(OBSERVED) > uniq[key].get_float(
+            OBSERVED
+        ):
             uniq[key] = f
     feats = list(uniq.values())
 
@@ -646,141 +1136,136 @@ def coalesce_pixels_to_centroid(
 # Step 4: Single-resolution HiCCUPS
 # =========================================================
 
+
 def run_hiccups_single_resolution(
+    hic_file: str,
     chr_name: str,
-    C_raw: bh.band_hic_matrix,
-    kr: np.ndarray,
-    expected_dist: np.ndarray,
     conf: HiCCUPSConfig,
 ):
     """
-    单分辨率 HiCCUPS：
-      - C_raw: raw Hi-C band matrix (band_hic_matrix)
-      - kr: KR vector (len=N)
-      - expected_dist: distance expected (len>=N)
-    返回：
-      - merged_loops: List[Feature2D]
-      - peak matrix: np.ndarray (N×N)
+    Run the single-resolution HiCCUPS pipeline for a given chromosome.
+
+    Parameters
+    ----------
+    hic_file : str
+        Path to the input Hi-C file (.hic, .cool, or .mcool).
+    chr_name : str
+        Chromosome name (e.g., 'chr1').
+    conf : HiCCUPSConfig
+        HiCCUPS configuration parameters.
+
+    Returns
+    -------
+    merged_loops : list of Feature2D
+        List of merged loop features detected at this resolution.
+    peak : band_hic_matrix
+        Peak matrix (observed minus threshold) for all pixels.
+
+    Notes
+    -----
+    This function runs the full single-resolution HiCCUPS pipeline:
+    loads the matrix, computes normalization, expected values, thresholds, peaks, and merges loops.
     """
-    N = C_raw.bin_num
-    diag_num = C_raw.diag_num
+    res = conf.resolution
+    diag = conf.max_loop_dist_bp // res
+    # Load matrix, KR, expected
+    t_load0 = time.perf_counter()
+    print(f"Loading Hi-C matrix for {chr_name} at {res} bp resolution...")
+    C_norm = bh.straw_chr(
+        hic_file,
+        chrom=chr_name,
+        resolution=res,
+        normalization=conf.norm,
+        diag_num=diag,
+    )
+    ext = os.path.splitext(hic_file)[1].lower()
+    if ext == ".hic":
+        kr = load_norm_vector_from_hic(hic_file, chr_name, res, conf.norm)
+    elif ext in [".cool", ".mcool"]:
+        kr = load_norm_vector_from_cooler(hic_file, chr_name, res, conf.norm)
+    else:
+        raise ValueError(f"Unsupported Hi-C file format: {ext}")
 
-    # 带状归一化：C_norm[i,k] = C_raw[i,k] * kr[i] * kr[i+k]
-    norm_data = np.zeros_like(C_raw.data, dtype=np.float32)
-    idx_rows = np.arange(N)
-    for k in range(diag_num):
-        j_idx = idx_rows + k
-        valid = j_idx < N
-        norm_data[valid, k] = (
-            C_raw.data[valid, k] * kr[valid] * kr[j_idx[valid]]
-        )
-
-    C_norm = bh.band_hic_matrix(
-        norm_data,
-        diag_num=diag_num,
-        mask=C_raw.mask,
-        mask_row_col=C_raw.mask_row_col,
-        band_data_input=True,
+    t_load1 = time.perf_counter()
+    print(
+        f"[TIME] data loading ({chr_name}, {res} bp): {t_load1 - t_load0:.3f} s"
     )
 
+    N = C_norm.bin_num
+    kr = kr[:N]
+    mask_row_col = np.isnan(kr) | (kr <= 0) | (np.isinf(kr))
+    C_norm.add_mask_row_col(mask_row_col=mask_row_col)
+    diag_num = C_norm.diag_num
+    # # Banded normalization: C_norm[i,k] = C_raw[i,k] / kr[i] / kr[i+k]
+    # norm_data = np.zeros_like(C_norm.data, dtype=np.float32)
+    # idx_rows = np.arange(N)
+    # for k in range(diag_num):
+    #     j_idx = idx_rows + k
+    #     valid = j_idx < N
+    #     norm_data[valid, k] = (
+    #         C_raw.data[valid, k] / kr[valid] / kr[j_idx[valid]]
+    #     )
+
+    # C_norm = bh.band_hic_matrix(
+    #     norm_data,
+    #     diag_num=diag_num,
+    #     mask=C_norm.mask,
+    #     mask_row_col=C_raw.mask_row_col,
+    #     band_data_input=True,
+    # )
+    expected_dist = C_norm.mean(axis="diag").data
+    print("Computing expected values and histograms...")
+    t0 = time.perf_counter()
     (
-        observed_arr, eBL_arr, eDonut_arr, eH_arr, eV_arr,
-        binBL_arr, binDonut_arr, binH_arr, binV_arr,
-        histBL, histDonut, histH, histV,
-        valid_mask,
-        row_col_mask,
-    ) = compute_evalues_and_hist(C_norm, expected_dist, conf, kr)
+        observed,
+        eBL,
+        eDonut,
+        eH,
+        eV,
+        binBL,
+        binDonut,
+        binH,
+        binV,
+        histBL,
+        histDonut,
+        histH,
+        histV,
+    ) = compute_evalues_and_hist_parallel(
+        C_norm, expected_dist, conf, kr, n_jobs=conf.n_jobs
+    )
+    t1 = time.perf_counter()
+    print(f"[TIME] compute_evalues_and_hist_parallel: {t1 - t0:.3f} s")
 
-    observed = bh.band_hic_matrix(
-        observed_arr,
-        diag_num=diag_num,
-        mask=C_norm.mask,
-        mask_row_col=row_col_mask,
-        band_data_input=True,
-    )
-    eBL = bh.band_hic_matrix(
-        eBL_arr,
-        diag_num=diag_num,
-        mask=C_norm.mask,
-        mask_row_col=row_col_mask,
-        band_data_input=True,
-    )
-    eDonut = bh.band_hic_matrix(
-        eDonut_arr,
-        diag_num=diag_num,
-        mask=C_norm.mask,
-        mask_row_col=row_col_mask,
-        band_data_input=True,
-    )
-    eH = bh.band_hic_matrix(
-        eH_arr,
-        diag_num=diag_num,
-        mask=C_norm.mask,
-        mask_row_col=row_col_mask,
-        band_data_input=True,
-    )
-    eV = bh.band_hic_matrix(
-        eV_arr,
-        diag_num=diag_num,
-        mask=C_norm.mask,
-        mask_row_col=row_col_mask,
-        band_data_input=True,
-    )
-    binBL = bh.band_hic_matrix(
-        binBL_arr,
-        diag_num=diag_num,
-        mask=C_norm.mask,
-        mask_row_col=row_col_mask,
-        dtype=int,
-        band_data_input=True,
-    )
-    binDonut = bh.band_hic_matrix(
-        binDonut_arr,
-        diag_num=diag_num,
-        mask=C_norm.mask,
-        mask_row_col=row_col_mask,
-        dtype=int,
-        band_data_input=True,
-    )
-    binH = bh.band_hic_matrix(
-        binH_arr,
-        diag_num=diag_num,
-        mask=C_norm.mask,
-        mask_row_col=row_col_mask,
-        dtype=int,
-        band_data_input=True,
-    )
-    binV = bh.band_hic_matrix(
-        binV_arr,
-        diag_num=diag_num,
-        mask=C_norm.mask,
-        mask_row_col=row_col_mask,
-        dtype=int,
-        band_data_input=True,
-    )
-
+    t0 = time.perf_counter()
+    print("Computing thresholds and FDR tables...")
     thrBL, fdrBL = compute_thresholds_and_fdr(histBL, conf)
     thrDo, fdrDo = compute_thresholds_and_fdr(histDonut, conf)
     thrH, fdrH = compute_thresholds_and_fdr(histH, conf)
     thrV, fdrV = compute_thresholds_and_fdr(histV, conf)
+    t1 = time.perf_counter()
+    print(f"[TIME] thresholds + FDR: {t1 - t0:.3f} s")
 
-    # 第一遍：计算 peak 矩阵
+    t0 = time.perf_counter()
+    print("Identifying peaks...")
+    # First pass: compute peak matrix (observed minus threshold), vectorized
     peak_data = np.zeros((N, diag_num), dtype=np.float32)
-    for i, j, k in _iter_band_indices(observed):
-        if not valid_mask[i, k]:
-            continue
-        o = observed.data[i, k]
-        bBL = int(binBL.data[i, k])
-        bDo = int(binDonut.data[i, k])
-        bH = int(binH.data[i, k])
-        bV = int(binV.data[i, k])
-        sb = max(
-            thrBL[bBL],
-            thrDo[bDo],
-            thrH[bH],
-            thrV[bV],
-        )
-        peak_data[i, k] = o - sb
+
+    # gather bin-specific thresholds
+    thr_bl_mat = thrBL[binBL.data]
+    thr_do_mat = thrDo[binDonut.data]
+    thr_h_mat = thrH[binH.data]
+    thr_v_mat = thrV[binV.data]
+
+    sb_mat = np.maximum.reduce(
+        [
+            thr_bl_mat,
+            thr_do_mat,
+            thr_h_mat,
+            thr_v_mat,
+        ]
+    )
+
+    peak_data = observed.data - sb_mat
 
     peak = bh.band_hic_matrix(
         peak_data,
@@ -789,43 +1274,79 @@ def run_hiccups_single_resolution(
         mask_row_col=C_norm.mask_row_col,
         band_data_input=True,
     )
+    t1 = time.perf_counter()
+    print(f"[TIME] peak matrix construction: {t1 - t0:.3f} s")
 
-    # 第二遍：local maxima + FDR + OE 阈值筛选
+    t0 = time.perf_counter()
+    print("Filtering peaks...")
+    # Second pass: local maxima, FDR, and OE threshold filtering
+
+    peak.mask[
+        :, : conf.peak_width + 1
+    ] = True  # mask out diagonals within peak_width
+    peak.mask = np.logical_or(peak.mask, peak.data <= 0)
+    peak.mask = np.logical_or(peak.mask, np.isnan(peak.data))
+    peak.mask = np.logical_or(peak.mask, np.isinf(peak.data))
+
+    peak.mask = np.logical_or(
+        np.minimum.reduce([eBL.data, eDonut.data, eH.data, eV.data]) <= 1e-6,
+        peak.mask,
+    )
+
+    peak.mask = np.logical_or(observed.data <= conf.oe2 * eBL.data, peak.mask)
+    peak.mask = np.logical_or(
+        observed.data <= conf.oe2 * eDonut.data, peak.mask
+    )
+    peak.mask = np.logical_or(observed.data <= conf.oe1 * eH.data, peak.mask)
+    peak.mask = np.logical_or(observed.data <= conf.oe1 * eV.data, peak.mask)
+
+    peak.mask = np.logical_or(
+        np.logical_and(
+            observed.data <= conf.oe3 * eBL.data,
+            observed.data <= conf.oe3 * eDonut.data,
+        ),
+        peak.mask,
+    )
+
+    observed_clip = np.clip(observed.data, 0, conf.max_count)
+    peak.mask = np.logical_or(
+        np.maximum.reduce(
+            [
+                fdrBL[binBL.data, observed_clip],
+                fdrDo[binDonut.data, observed_clip],
+                fdrH[binH.data, observed_clip],
+                fdrV[binV.data, observed_clip],
+            ]
+        )
+        > conf.fdr,
+        peak.mask,
+    )
+    del observed_clip
+
     candidates: List[Feature2D] = []
 
-    for i, j, k in _iter_band_indices(peak):
-        if not valid_mask[i, k]:
-            continue
-
+    rows, cols = np.where(~peak.mask)
+    for i, k in zip(rows, cols):
         diagDist = k
-        if diagDist * conf.resolution > conf.max_loop_dist_bp:
-            continue
-        if diagDist <= conf.peak_width:
-            continue
-
+        j = i + diagDist
         val = peak.data[i, k]
-        if val <= 0:
-            continue
-
-        # local maxima 检查（仅在带状区域内比较）
-        pw = conf.peak_width
-        max_val = -np.inf
-        for ii in range(max(0, i - pw), min(N, i + pw + 1)):
-            for jj in range(max(0, j - pw), min(N, j + pw + 1)):
-                vv = peak[ii, jj]
-                if ma.is_masked(vv):
-                    continue
-                if vv > max_val:
-                    max_val = vv
-        if val < max_val:
-            continue
+        # # Local maxima check (only compare within banded region)
+        # pw = conf.peak_width
+        # max_val = -np.inf
+        # for ii in range(max(0, i - pw), min(N, i + pw + 1)):
+        #     for jj in range(max(0, j - pw), min(N, j + pw + 1)):
+        #         vv = peak[ii, jj]
+        #         if ma.is_masked(vv):
+        #             continue
+        #         if vv > max_val:
+        #             max_val = vv
+        # if val < max_val:
+        #     continue
 
         e_bl = eBL.data[i, k]
         e_dn = eDonut.data[i, k]
         e_hh = eH.data[i, k]
         e_vv = eV.data[i, k]
-        if min(e_bl, e_dn, e_hh, e_vv) <= 1e-6:
-            continue
 
         o = observed.data[i, k]
         bBL = int(binBL.data[i, k])
@@ -834,23 +1355,44 @@ def run_hiccups_single_resolution(
         bV = int(binV.data[i, k])
 
         f = generate_peak_feature(
-            chr_name, conf.resolution, i, j,
-            o, val,
-            e_bl, e_dn, e_hh, e_vv,
-            bBL, bDo, bH, bV,
+            chr_name,
+            conf.resolution,
+            i,
+            j,
+            o,
+            val,
+            e_bl,
+            e_dn,
+            e_hh,
+            e_vv,
+            bBL,
+            bDo,
+            bH,
+            bV,
         )
+
         add_fdr_to_feature(f, fdrBL, fdrDo, fdrH, fdrV)
+        candidates.append(f)
 
-        if fdr_thresholds_satisfied(f, conf):
-            candidates.append(f)
+    t1 = time.perf_counter()
+    print(f"[TIME] local maxima + filtering: {t1 - t0:.3f} s")
 
+    t0 = time.perf_counter()
     merged_loops = coalesce_pixels_to_centroid(candidates, conf)
-    return merged_loops, peak
+    filtered_loops = []
+    for loop in merged_loops:
+        if fdr_thresholds_satisfied(loop, conf):
+            filtered_loops.append(loop)
+    t1 = time.perf_counter()
+    print(f"[TIME] centroid merging: {t1 - t0:.3f} s")
+    # merged_loops = candidates
+    return filtered_loops, peak
 
 
 # =========================================================
 # Step 5: multi-resolution HiCCUPS + merging
 # =========================================================
+
 
 def euclid_bp(f1: Feature2D, f2: Feature2D) -> float:
     dx = f1.start1 - f2.start1
@@ -859,9 +1401,7 @@ def euclid_bp(f1: Feature2D, f2: Feature2D) -> float:
 
 
 def extract_reproducible_centroids(
-    list_a: List[Feature2D],
-    list_b: List[Feature2D],
-    radius_bp: int
+    list_a: List[Feature2D], list_b: List[Feature2D], radius_bp: int
 ) -> List[Feature2D]:
     centroids = []
     for fb in list_b:
@@ -875,9 +1415,7 @@ def extract_reproducible_centroids(
 
 
 def extract_peaks_near_centroids(
-    peaks: List[Feature2D],
-    centroids: List[Feature2D],
-    radius_bp: int
+    peaks: List[Feature2D], centroids: List[Feature2D], radius_bp: int
 ) -> List[Feature2D]:
     out = []
     for f in peaks:
@@ -889,9 +1427,7 @@ def extract_peaks_near_centroids(
 
 
 def extract_peaks_not_near_centroids(
-    peaks: List[Feature2D],
-    centroids: List[Feature2D],
-    radius_bp: int
+    peaks: List[Feature2D], centroids: List[Feature2D], radius_bp: int
 ) -> List[Feature2D]:
     out = []
     for f in peaks:
@@ -906,8 +1442,7 @@ def extract_peaks_not_near_centroids(
 
 
 def get_peaks_near_diagonal(
-    peaks: List[Feature2D],
-    max_dist_bp: int
+    peaks: List[Feature2D], max_dist_bp: int
 ) -> List[Feature2D]:
     out = []
     for f in peaks:
@@ -917,8 +1452,7 @@ def get_peaks_near_diagonal(
 
 
 def get_strong_peaks(
-    peaks: List[Feature2D],
-    min_observed: float
+    peaks: List[Feature2D], min_observed: float
 ) -> List[Feature2D]:
     out = []
     for f in peaks:
@@ -940,20 +1474,20 @@ def merge_all_resolutions(
     looplists: Dict[int, List[Feature2D]]
 ) -> List[Feature2D]:
     """
-    仿 Juicer 的 HiCCUPSUtils.mergeAllResolutions:
+    Mimics Juicer's HiCCUPSUtils.mergeAllResolutions logic:
 
-    - 若存在 5kb 或 10kb：
-        * 若两者都有：
-            - 合并 5k & 10k（可重复 centroid 区域）
-            - 补充 10k 仅存在的 peaks
-            - 补充 5k 中近对角线 + 强 peaks
-        * 若只有 5kb 或只有 10kb：直接用该分辨率列表
-    - 若存在 25kb：
-        * 若前面已存在 merged：
-            - 提取 25k 中远离 merged centroid 的 peaks 加入
-        * 否则 merged = 25k
-    - 若 5/10/25 都没有：
-        * 简单地 union 所有分辨率并去重
+    - If 5 kb and/or 10 kb resolutions are available:
+        * If both are present:
+            - Merge 5 kb and 10 kb loops within overlapping centroid regions
+            - Add 10 kb peaks that do not have nearby 5 kb centroids
+            - Add 5 kb peaks that are either close to the diagonal or have strong signal
+        * If only 5 kb or only 10 kb is present, directly use that resolution
+    - If 25 kb resolution is available:
+        * If a merged list already exists:
+            - Add 25 kb peaks that are far from existing merged centroids
+        * Otherwise, set merged = 25 kb peaks
+    - If none of 5 kb / 10 kb / 25 kb resolutions are used:
+        * Simply take the union of all resolutions and remove duplicates
     """
     merged: List[Feature2D] = []
     list_altered = False
@@ -962,7 +1496,6 @@ def merge_all_resolutions(
     has10 = 10000 in looplists and len(looplists[10000]) > 0
     has25 = 25000 in looplists and len(looplists[25000]) > 0
 
-    # 处理 5k / 10k
     if has5 or has10:
         if has5 and has10:
             five = looplists[5000]
@@ -989,12 +1522,13 @@ def merge_all_resolutions(
 
         list_altered = True
 
-    # 处理 25k
     if has25:
         twenty5 = looplists[25000]
         if list_altered:
             c25 = extract_reproducible_centroids(merged, twenty5, 2 * 25000)
-            distant25 = extract_peaks_not_near_centroids(twenty5, c25, 2 * 25000)
+            distant25 = extract_peaks_not_near_centroids(
+                twenty5, c25, 2 * 25000
+            )
             merged.extend(distant25)
             merged = remove_duplicates(merged)
         else:
@@ -1011,99 +1545,376 @@ def merge_all_resolutions(
     return merged
 
 
-def run_hiccups_multiresolution(
+def run_hiccups_multi_resolution(
+    hic_file: str,
     chr_name: str,
-    mats_by_res: Dict[int, np.ndarray],
-    kr_by_res: Dict[int, np.ndarray],
-    expected_by_res: Dict[int, np.ndarray],
     configs: Dict[int, HiCCUPSConfig],
 ):
     """
-    多分辨率 HiCCUPS：
-      - 对每个 resolution 跑 run_hiccups_single_resolution
-      - 用 merge_all_resolutions 合并
+    Multi-resolution HiCCUPS:
+    - Run run_hiccups_single_resolution for each resolution
+    - Merge results using merge_all_resolutions
     """
     looplists: Dict[int, List[Feature2D]] = {}
-    for res, C_raw in mats_by_res.items():
-        conf = configs[res]
+    for res, conf in configs.items():
         loops, _ = run_hiccups_single_resolution(
+            hic_file,
             chr_name,
-            C_raw,
-            kr_by_res[res],
-            expected_by_res[res],
             conf,
         )
         looplists[res] = loops
-
     merged = merge_all_resolutions(looplists)
     return merged
 
 
+# -------------------------------------------------------------
+# High-level HiCCUPS function API (clean & structured)
+# -------------------------------------------------------------
+
+
+def _default_peak_width(res):
+    """Juicer default peak width."""
+    if res == 1000:
+        return 20
+    if res == 5000:
+        return 4
+    if res == 10000:
+        return 2
+    if res == 25000:
+        return 1
+    return 3
+
+
+def _default_window(res):
+    """Juicer default donut window."""
+    if res == 1000:
+        return 35
+    if res == 5000:
+        return 7
+    if res == 10000:
+        return 5
+    if res == 25000:
+        return 3
+    return 5
+
+
+from typing import Union
+
+
 def hiccups(
-    chr_names: List[str],
-    file_path: str,
-    configs_by_res: Dict[int, HiCCUPSConfig],
-    bedpe_path: str | None = None,
-) -> List[Feature2D]:
+    hic_file: str,
+    chroms: Union[str, list],
+    resolutions: list,
+    fdr: list = None,
+    peak_width: list = None,
+    window: list = None,
+    thresholds: list = (0.02, 1.5, 1.75, 2.0),
+    centroid_radius: list = None,
+    max_loop_dist_bp: int = 2_000_000,
+    kr_neighborhood: int = 5,
+    matrix_size: int = 512,
+    norm: str = "KR",
+    out_path: str = None,
+    n_jobs: int = -1,
+):
     """
-    对一个 chr，在多个分辨率上跑 HiCCUPS 并合并，输出最终 loops。
+    Run the HiCCUPS loop-calling algorithm on Hi-C data using the BandHiC data structure.
+
+    This function provides a high-level interface to a BandHiC-based reimplementation
+    of the HiCCUPS algorithm. It supports single- or multi-resolution loop detection
+    across one or more chromosomes and internally applies multiprocessing to accelerate
+    computation on large, high-resolution Hi-C matrices.
+
+    Parameters
+    ----------
+    hic_file : str
+        Path to the input Hi-C file. Supported formats include ``.hic``, ``.cool``,
+        and ``.mcool``.
+    chroms : str or list of str
+        Chromosome name or list of chromosome names (e.g., ``"chr1"`` or
+        ``["chr1", "chr2"]``).
+    resolutions : list of int
+        List of bin resolutions (in base pairs) at which HiCCUPS will be executed.
+    fdr : list of float or float, optional
+        Target false discovery rate (FDR) for loop detection at each resolution.
+        If a single value is provided, it is applied to all resolutions.
+    peak_width : list of int or int, optional
+        Peak half-width (in bins) for each resolution. Defaults follow Juicer
+        recommendations if not specified.
+    window : list of int or int, optional
+        Donut window size (in bins) for each resolution. Defaults follow Juicer
+        recommendations if not specified.
+    thresholds : list of float, optional
+        Threshold parameters ``[fdrsum, oe1, oe2, oe3]`` used for HiCCUPS filtering
+        and cross-resolution merging.
+    centroid_radius : list of int or int, optional
+        Radius (in base pairs) for clustering nearby loop pixels into centroids
+        at each resolution.
+    max_loop_dist_bp : int, optional
+        Maximum genomic distance (in base pairs) for loop search. Default is
+        2,000,000 bp.
+    kr_neighborhood : int, optional
+        Radius (in bins) used to mask low-quality bins based on the KR
+        normalization vector.
+    matrix_size : int, optional
+        Reserved parameter for compatibility; not used in the current implementation.
+    norm : str, optional
+        Normalization method to use (e.g., ``"KR"``, ``"VC"``). Default is ``"KR"``.
+    out_path : str, optional
+        Path to write the output loops in BEDPE format. If ``None``, results
+        are not written to disk.
+    n_jobs : int, optional
+        Number of parallel worker processes to use. ``-1`` uses all available CPUs.
+
+    Returns
+    -------
+    loops : list of Feature2D
+        List of detected chromatin loops after multi-resolution merging.
     """
-    loops = run_hiccups_multiresolution(
-        chr_name,
-        mats_by_res,
-        kr_by_res,
-        expected_by_res,
-        configs_by_res,
-    )
-    if bedpe_path is not None:
-        write_bedpe(loops, bedpe_path)
-    return loops
+    num_res = len(resolutions)
+
+    def _expand_param(param, default_fn=None, default_val=None):
+        if param is None:
+            if default_fn is not None:
+                return [default_fn(r) for r in resolutions]
+            elif default_val is not None:
+                return [default_val] * num_res
+        if isinstance(param, (int, float)):
+            return [param] * num_res
+        if isinstance(param, list):
+            if len(param) == 1:
+                return param * num_res
+            if len(param) != num_res:
+                raise ValueError(f"Parameter length mismatch for {param}")
+            return param
+        raise ValueError(f"Unsupported parameter type: {param}")
+
+    fdr = _expand_param(fdr, default_val=0.1)
+    peak_width = _expand_param(peak_width, default_fn=_default_peak_width)
+    window = _expand_param(window, default_fn=_default_window)
+    centroid_radius = _expand_param(centroid_radius, default_val=20000)
+    if isinstance(thresholds, (int, float)):
+        thresholds = [thresholds] * 4
+    if len(thresholds) != 4:
+        raise ValueError("thresholds must have length 4 or be a scalar.")
+    fdrsum, oe1, oe2, oe3 = thresholds
+    # Build configs
+    configs_by_res: Dict[int, HiCCUPSConfig] = {}
+    for idx, res in enumerate(resolutions):
+        conf = HiCCUPSConfig(
+            resolution=res,
+            window=window[idx],
+            peak_width=peak_width[idx],
+            fdr=fdr[idx],
+            oe1=oe1,
+            oe2=oe2,
+            oe3=oe3,
+            fdrsum=fdrsum,
+            cluster_radius_bp=centroid_radius[idx],
+            max_loop_dist_bp=max_loop_dist_bp,
+            kr_neighborhood=kr_neighborhood,
+            norm=norm,
+            n_jobs=n_jobs,
+        )
+        configs_by_res[res] = conf
+
+    # Support chroms as str or list
+    if isinstance(chroms, str):
+        chrom_list = [chroms]
+    else:
+        chrom_list = list(chroms)
+
+    all_loops = []
+    for chrom in chrom_list:
+        loops_chr = run_hiccups_multi_resolution(
+            hic_file,
+            chrom,
+            configs_by_res,
+        )
+        all_loops.extend(loops_chr)
+
+    if out_path is not None:
+        write_bedpe(all_loops, out_path)
+    return all_loops
 
 
 # =========================================================
-# Step 6: BEDPE 输出
+# Step 6: BEDPE Output
 # =========================================================
+
 
 def write_bedpe(loops: List[Feature2D], path: str):
     """
-    输出 bedpe：
-      chr1 start1 end1 chr2 start2 end2 score . . attrs
-    其中 attrs 包含 O/E 和 FDR 信息等。
+    header:
+    #chr1 x1 x2 chr2 y1 y2 name score strand1 strand2 color observed expectedBL expectedDonut expectedH expectedV fdrBL fdrDonut fdrH fdrV numCollapsed centroid1 centroid2 radius
     """
     with open(path, "w") as f:
+        header = [
+            "#chr1",
+            "x1",
+            "x2",
+            "chr2",
+            "y1",
+            "y2",
+            "name",
+            "score",
+            "strand1",
+            "strand2",
+            "color",
+            "observed",
+            "expectedBL",
+            "expectedDonut",
+            "expectedH",
+            "expectedV",
+            "fdrBL",
+            "fdrDonut",
+            "fdrH",
+            "fdrV",
+            "numCollapsed",
+            "centroid1",
+            "centroid2",
+            "radius",
+        ]
+        f.write("\t".join(header) + "\n")
         for feat in loops:
             score = feat.get_float(PEAK)
-            attrs_list = [
-                f"O={feat.get_float(OBSERVED):.3g}",
-                f"Ebl={feat.get_float(EXPECTEDBL):.3g}",
-                f"Edonut={feat.get_float(EXPECTEDDONUT):.3g}",
-                f"Eh={feat.get_float(EXPECTEDH):.3g}",
-                f"Ev={feat.get_float(EXPECTEDV):.3g}",
-            ]
-            if FDRBL in feat.attrs:
-                attrs_list.extend([
-                    f"FDRbl={feat.get_float(FDRBL):.3g}",
-                    f"FDRdonut={feat.get_float(FDRDONUT):.3g}",
-                    f"FDRh={feat.get_float(FDRH):.3g}",
-                    f"FDRv={feat.get_float(FDRV):.3g}",
-                ])
-            if NUMCOLLAPSED in feat.attrs:
-                attrs_list.append(f"nPix={feat.get_float(NUMCOLLAPSED):.0f}")
-            if RADIUS in feat.attrs:
-                attrs_list.append(f"radius={feat.get_float(RADIUS):.1f}")
+            observed = (
+                feat.get_float(OBSERVED)
+                if OBSERVED in feat.attrs
+                else float("nan")
+            )
+            expBL = (
+                feat.get_float(EXPECTEDBL)
+                if EXPECTEDBL in feat.attrs
+                else float("nan")
+            )
+            expDonut = (
+                feat.get_float(EXPECTEDDONUT)
+                if EXPECTEDDONUT in feat.attrs
+                else float("nan")
+            )
+            expH = (
+                feat.get_float(EXPECTEDH)
+                if EXPECTEDH in feat.attrs
+                else float("nan")
+            )
+            expV = (
+                feat.get_float(EXPECTEDV)
+                if EXPECTEDV in feat.attrs
+                else float("nan")
+            )
 
-            attrs_str = ";".join(attrs_list)
+            fdrBL_val = (
+                feat.get_float(FDRBL) if FDRBL in feat.attrs else float("nan")
+            )
+            fdrDo_val = (
+                feat.get_float(FDRDONUT)
+                if FDRDONUT in feat.attrs
+                else float("nan")
+            )
+            fdrH_val = (
+                feat.get_float(FDRH) if FDRH in feat.attrs else float("nan")
+            )
+            fdrV_val = (
+                feat.get_float(FDRV) if FDRV in feat.attrs else float("nan")
+            )
 
-            line = "\t".join([
+            numCollapsed_val = (
+                feat.get_float(NUMCOLLAPSED)
+                if NUMCOLLAPSED in feat.attrs
+                else float("nan")
+            )
+            centroid1_val = (
+                feat.get_float(CENTROID1)
+                if CENTROID1 in feat.attrs
+                else float("nan")
+            )
+            centroid2_val = (
+                feat.get_float(CENTROID2)
+                if CENTROID2 in feat.attrs
+                else float("nan")
+            )
+            radius_val = (
+                feat.get_float(RADIUS)
+                if RADIUS in feat.attrs
+                else float("nan")
+            )
+
+            color_str = ",".join(map(str, feat.color)) if feat.color else ""
+
+            line_items = [
                 feat.chr1,
                 str(feat.start1),
                 str(feat.end1),
                 feat.chr2,
                 str(feat.start2),
                 str(feat.end2),
+                ".",  # name
                 f"{score:.4g}",
-                ".",
-                ".",
-                attrs_str,
-            ])
-            f.write(line + "\n")
+                ".",  # strand1
+                ".",  # strand2
+                color_str,
+                f"{observed:.6g}",
+                f"{expBL:.6g}",
+                f"{expDonut:.6g}",
+                f"{expH:.6g}",
+                f"{expV:.6g}",
+                f"{fdrBL_val:.6g}",
+                f"{fdrDo_val:.6g}",
+                f"{fdrH_val:.6g}",
+                f"{fdrV_val:.6g}",
+                f"{numCollapsed_val:.6g}",
+                f"{centroid1_val:.6g}",
+                f"{centroid2_val:.6g}",
+                f"{radius_val:.6g}",
+            ]
+            f.write("\t".join(line_items) + "\n")
+
+
+# =========================================================
+# Simple test function for HiCCUPS
+# =========================================================
+def test_hiccups_basic():
+    """
+    Minimal smoke test for HiCCUPS:
+      - Runs hiccups on a small chromosome with one resolution.
+      - Does not validate biological correctness; only checks that
+        the pipeline executes end‑to‑end without errors.
+    """
+    # hic_path = "/Users/wwb/workspace-local/call_loop/data/GSE63525_GM12878_insitu_primary_replicate_combined.hic"
+    hic_path = "/Users/wwb/workspace-local/call_loop/data/GSE130275_mESC_WT_combined_1.3B_microc.hic"
+
+    chrom = "chr19"
+    resolutions = [1000]
+
+    loops = hiccups(
+        hic_file=hic_path,
+        chroms=chrom,
+        resolutions=resolutions,
+        out_path="../../test/hiccups_mESC_output_1000_chr19.bedpe",
+        n_jobs=-1,
+    )
+    print(f"Test completed. Loops detected: {len(loops)}")
+
+
+if __name__ == "__main__":
+    import time, os, psutil
+
+    proc = psutil.Process(os.getpid())
+
+    mem_before = proc.memory_info().rss / 1024**2
+    t0 = time.perf_counter()
+
+    test_hiccups_basic()
+
+    t1 = time.perf_counter()
+    mem_after = proc.memory_info().rss / 1024**2
+    mem_peak = (
+        proc.memory_info().peak_wset / 1024**2
+        if hasattr(proc.memory_info(), "peak_wset")
+        else mem_after
+    )
+
+    print(f"[HiCCUPS] time = {t1 - t0:.2f} s")
+    print(f"[HiCCUPS] RSS before = {mem_before:.1f} MiB")
+    print(f"[HiCCUPS] RSS after  = {mem_after:.1f} MiB")

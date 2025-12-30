@@ -23,9 +23,14 @@ def base_band_matrix():
         "path": "/Users/wwb/Documents/workspace/BandHiC-Master/data/GSE130275_mESC_WT_combined_1.3B_microc.hic",
         "chrom": "chr19",
         "resolution": 10000,
-        "diag_num": 200
+        "diag_num": 200,
     }
-    mat = bh.straw_chr(params['path'], params['chrom'], params['resolution'], params['diag_num'])
+    mat = bh.straw_chr(
+        params["path"],
+        params["chrom"],
+        params["resolution"],
+        params["diag_num"],
+    )
     # Prepare expected dense matrix with mask
     dense = mat.todense()
     row_sum = dense.sum(axis=0)
@@ -37,11 +42,13 @@ def base_band_matrix():
     expected[:, row_sum == 0] = np.ma.masked
     return mat, expected
 
+
 @pytest.fixture
 def example_band_matrix(base_band_matrix):
     base_mat, expected = base_band_matrix
     # Return a copy for each test
     return base_mat.copy(), expected.copy()
+
 
 def assert_result_equal(a, b):
     if isinstance(a, numbers.Number) and isinstance(b, numbers.Number):
@@ -58,7 +65,8 @@ def assert_result_equal(a, b):
             else:
                 raise AssertionError(
                     "Data in masked arrays do not match, masked arrays: {} vs {}".format(
-                        a[np.where(a.data!=b.data)[0]], b[np.where(a.data!=b.data)[0]]
+                        a[np.where(a.data != b.data)[0]],
+                        b[np.where(a.data != b.data)[0]],
                     )
                 )
         else:
@@ -188,20 +196,32 @@ def test_extract_row(example_band_matrix):
 def test_min_reduction(example_band_matrix, axis, expected):
     mat, expected_array = example_band_matrix
     result = mat.min(axis=axis)
-    if axis == 'col':
+    if axis == "col":
         axis = 1
-    elif axis == 'row':
+    elif axis == "row":
         axis = 0
     if axis != "diag":
         assert_result_equal(result, expected_array.min(axis=axis))
     else:
         if mat.mask is None:
             assert_result_equal(
-                result, np.array([np.diag(expected_array, k=i).min() for i in range(mat.diag_num)])
+                result,
+                np.array(
+                    [
+                        np.diag(expected_array, k=i).min()
+                        for i in range(mat.diag_num)
+                    ]
+                ),
             )
         else:
             assert_result_equal(
-                result, np.array([np.ma.diag(expected_array, k=i).min() for i in range(mat.diag_num)])
+                result,
+                np.array(
+                    [
+                        np.ma.diag(expected_array, k=i).min()
+                        for i in range(mat.diag_num)
+                    ]
+                ),
             )
 
 
@@ -213,54 +233,183 @@ def test_max_reduction(example_band_matrix, axis):
         assert_result_equal(result, expected_array.max(axis=axis))
     else:
         if mat.mask is None:
-            assert_result_equal(mat.max(axis=axis), np.array([np.diag(expected_array,k=i).max() for i in range(mat.diag_num)]))
+            assert_result_equal(
+                mat.max(axis=axis),
+                np.array(
+                    [
+                        np.diag(expected_array, k=i).max()
+                        for i in range(mat.diag_num)
+                    ]
+                ),
+            )
         else:
-            assert_result_equal(mat.max(axis=axis), np.array([np.ma.diag(expected_array,k=i).max() for i in range(mat.diag_num)]))
+            assert_result_equal(
+                mat.max(axis=axis),
+                np.array(
+                    [
+                        np.ma.diag(expected_array, k=i).max()
+                        for i in range(mat.diag_num)
+                    ]
+                ),
+            )
+
 
 @pytest.mark.parametrize("axis", [(None), (0), (1), ("diag")])  # max of all
-def test_mean_sum_prod_var_std_ptp(example_band_matrix,axis):
+def test_mean_sum_prod_var_std_ptp(example_band_matrix, axis):
     mat, mat_expect = example_band_matrix
     # Only main diagonal is nonzero
     if axis != "diag":
-        np.testing.assert_allclose( mat.sum(axis=axis), mat_expect.sum(axis=axis))
-        np.testing.assert_allclose( mat.mean(axis=axis), mat_expect.mean(axis=axis))
-        np.testing.assert_allclose( mat.prod(axis=axis), np.prod(mat_expect, axis=axis))
-        np.testing.assert_allclose( mat.ptp(axis=axis), mat_expect.ptp(axis=axis))
-        np.testing.assert_allclose(mat.var(axis=axis), mat_expect.var(ddof=0,axis=axis))
-        np.testing.assert_allclose(mat.std(axis=axis), mat_expect.std(ddof=0,axis=axis))
+        np.testing.assert_allclose(
+            mat.sum(axis=axis), mat_expect.sum(axis=axis)
+        )
+        np.testing.assert_allclose(
+            mat.mean(axis=axis), mat_expect.mean(axis=axis)
+        )
+        np.testing.assert_allclose(
+            mat.prod(axis=axis), np.prod(mat_expect, axis=axis)
+        )
+        np.testing.assert_allclose(
+            mat.ptp(axis=axis), mat_expect.ptp(axis=axis)
+        )
+        np.testing.assert_allclose(
+            mat.var(axis=axis), mat_expect.var(ddof=0, axis=axis)
+        )
+        np.testing.assert_allclose(
+            mat.std(axis=axis), mat_expect.std(ddof=0, axis=axis)
+        )
     # Axis reductions
     else:
         if mat.mask is None:
-            assert_result_equal(mat.mean(axis=axis), np.array([np.diag(mat_expect, k=i).mean() for i in range(mat.diag_num)]))
-            assert_result_equal(mat.sum(axis=axis), np.array([np.diag(mat_expect, k=i).sum() for i in range(mat.diag_num)]))
-            assert_result_equal(mat.prod(axis=axis), np.array([np.diag(mat_expect, k=i).prod() for i in range(mat.diag_num)]))
-            assert_result_equal(mat.var(axis=axis), np.array([np.diag(mat_expect, k=i).var(ddof=0) for i in range(mat.diag_num)]))
-            assert_result_equal(mat.std(axis=axis), np.array([np.diag(mat_expect, k=i).std(ddof=0) for i in range(mat.diag_num)]))
-            assert_result_equal(mat.ptp(axis=axis), np.array([np.diag(mat_expect, k=i).ptp() for i in range(mat.diag_num)]))
+            assert_result_equal(
+                mat.mean(axis=axis),
+                np.array(
+                    [
+                        np.diag(mat_expect, k=i).mean()
+                        for i in range(mat.diag_num)
+                    ]
+                ),
+            )
+            assert_result_equal(
+                mat.sum(axis=axis),
+                np.array(
+                    [
+                        np.diag(mat_expect, k=i).sum()
+                        for i in range(mat.diag_num)
+                    ]
+                ),
+            )
+            assert_result_equal(
+                mat.prod(axis=axis),
+                np.array(
+                    [
+                        np.diag(mat_expect, k=i).prod()
+                        for i in range(mat.diag_num)
+                    ]
+                ),
+            )
+            assert_result_equal(
+                mat.var(axis=axis),
+                np.array(
+                    [
+                        np.diag(mat_expect, k=i).var(ddof=0)
+                        for i in range(mat.diag_num)
+                    ]
+                ),
+            )
+            assert_result_equal(
+                mat.std(axis=axis),
+                np.array(
+                    [
+                        np.diag(mat_expect, k=i).std(ddof=0)
+                        for i in range(mat.diag_num)
+                    ]
+                ),
+            )
+            assert_result_equal(
+                mat.ptp(axis=axis),
+                np.array(
+                    [
+                        np.diag(mat_expect, k=i).ptp()
+                        for i in range(mat.diag_num)
+                    ]
+                ),
+            )
         else:
-        # If masked, use np.ma.diag
-            assert_result_equal(mat.mean(axis=axis), np.array([np.ma.diag(mat_expect, k=i).mean() for i in range(mat.diag_num)]))
-            assert_result_equal(mat.sum(axis=axis), np.array([np.ma.diag(mat_expect, k=i).sum() for i in range(mat.diag_num)]))
-            assert_result_equal(mat.prod(axis=axis), np.array([np.ma.diag(mat_expect, k=i).prod() for i in range(mat.diag_num)]))
-            assert_result_equal(mat.var(axis=axis), np.array([np.ma.diag(mat_expect, k=i).var(ddof=0) for i in range(mat.diag_num)]))
-            assert_result_equal(mat.std(axis=axis), np.array([np.ma.diag(mat_expect, k=i).std(ddof=0) for i in range(mat.diag_num)]))
-            assert_result_equal(mat.ptp(axis=axis), np.array([np.ma.diag(mat_expect, k=i).ptp() for i in range(mat.diag_num)]))
+            # If masked, use np.ma.diag
+            assert_result_equal(
+                mat.mean(axis=axis),
+                np.array(
+                    [
+                        np.ma.diag(mat_expect, k=i).mean()
+                        for i in range(mat.diag_num)
+                    ]
+                ),
+            )
+            assert_result_equal(
+                mat.sum(axis=axis),
+                np.array(
+                    [
+                        np.ma.diag(mat_expect, k=i).sum()
+                        for i in range(mat.diag_num)
+                    ]
+                ),
+            )
+            assert_result_equal(
+                mat.prod(axis=axis),
+                np.array(
+                    [
+                        np.ma.diag(mat_expect, k=i).prod()
+                        for i in range(mat.diag_num)
+                    ]
+                ),
+            )
+            assert_result_equal(
+                mat.var(axis=axis),
+                np.array(
+                    [
+                        np.ma.diag(mat_expect, k=i).var(ddof=0)
+                        for i in range(mat.diag_num)
+                    ]
+                ),
+            )
+            assert_result_equal(
+                mat.std(axis=axis),
+                np.array(
+                    [
+                        np.ma.diag(mat_expect, k=i).std(ddof=0)
+                        for i in range(mat.diag_num)
+                    ]
+                ),
+            )
+            assert_result_equal(
+                mat.ptp(axis=axis),
+                np.array(
+                    [
+                        np.ma.diag(mat_expect, k=i).ptp()
+                        for i in range(mat.diag_num)
+                    ]
+                ),
+            )
+
 
 def array_reduce_diag(mat, func, diag_num):
     if mat.mask is None:
         return np.array([func(np.diag(mat, k=i)) for i in range(diag_num)])
     else:
         return np.array([func(np.ma.diag(mat, k=i)) for i in range(diag_num)])
+
+
 def test_normalize(example_band_matrix):
     mat, expected_array = example_band_matrix
     # Normalize by diagonal
     mat_norm_diag = mat.normalize()
     assert isinstance(mat_norm_diag, band_hic_matrix)
-    
+
     for k in range(mat.diag_num):
         diag = np.diag(expected_array, k=k)
-        diag_norm = (diag-diag.mean())/ diag.std(ddof=0)
+        diag_norm = (diag - diag.mean()) / diag.std(ddof=0)
         np.testing.assert_array_equal(mat_norm_diag.diag(k), diag_norm)
+
 
 def test_all_any(example_band_matrix):
     mat, expected_array = example_band_matrix
@@ -301,7 +450,7 @@ def test_clip_and_fill(example_band_matrix):
     mat, expected_array = example_band_matrix
     mat.clip(2, 4)
     assert np.all(mat.data <= 4)
-    mat2=mat.filled(5)
+    mat2 = mat.filled(5)
     assert mat2.mask is None
 
 
@@ -455,13 +604,15 @@ def test_dump_and_load(example_band_matrix):
         assert mat2.diag_num == mat.diag_num
         assert np.all(mat2.shape == mat.shape)
 
+
 def test_save_and_load(example_band_matrix):
     with tempfile.TemporaryDirectory() as tmpdir:
         mat = example_band_matrix[0]
         fname = os.path.join(tmpdir, "example_bandhic.npz")
         bh.save_npz(fname, mat)
         mat2 = bh.load_npz(fname)
-        bh.assert_band_matrix_equal(mat,mat2)
+        bh.assert_band_matrix_equal(mat, mat2)
+
 
 @pytest.mark.parametrize(
     "ufunc",
@@ -579,7 +730,15 @@ def test_unary_ufuncs(example_band_matrix, ufunc):
 def test_binary_ufuncs(example_band_matrix, ufunc):
     mat, mat_dense = example_band_matrix
     other = mat.copy()
-    if ufunc in [np.bitwise_and, np.bitwise_or, np.bitwise_xor, np.left_shift, np.right_shift, np.gcd, np.lcm]:
+    if ufunc in [
+        np.bitwise_and,
+        np.bitwise_or,
+        np.bitwise_xor,
+        np.left_shift,
+        np.right_shift,
+        np.gcd,
+        np.lcm,
+    ]:
         # Ensure integer type for bitwise operations
         mat = mat.astype(np.int64)
         other = other.astype(np.int64)
@@ -627,7 +786,13 @@ def test_operator_overloads(example_band_matrix, op, ufunc):
     other = mat.copy()
     # Ensure no division by zero for truediv
     # other.data[:] = np.where(mat.data == 0, 1, mat.data)
-    if op in [operator.and_, operator.or_, operator.xor, operator.lshift, operator.rshift]:
+    if op in [
+        operator.and_,
+        operator.or_,
+        operator.xor,
+        operator.lshift,
+        operator.rshift,
+    ]:
         mat = mat.astype(np.int64)
         mat.default_value = 0
         other = other.astype(np.int64)

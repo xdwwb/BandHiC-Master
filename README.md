@@ -53,7 +53,7 @@ If you have any questions, please contact us:
 
 ## 🔧 Installation
 
-### Required Package
+### Core dependencies (required)
 
 **BandHiC** could be installed in a linux-like system and requires the following dependencies.
 
@@ -62,7 +62,9 @@ If you have any questions, please contact us:
 3. pandas >= 2.3
 4. scipy >= 1.16
 5. [cooler >= 0.10](https://cooler.readthedocs.io/en/latest/)
-6. [hic_straw >= 1.3](https://pypi.org/project/hic-straw/)
+6. [hic-straw](https://pypi.org/project/hic-straw) >= 1.3
+7. joblib >= 1.2
+8. numba >= 0.59
 
 There are two recommended ways to install **BandHiC**:
 
@@ -98,70 +100,38 @@ $ conda activate bandhic
 ```bash
 $ pip install .
 ```
-### Build Troubleshooting for `hic-straw`
-
-If you encounter an error like the following while installing or building `hic-straw`:
-
-```
-fatal error: curl/curl.h: No such file or directory
-```
-
-This means the C++ extension in `hic-straw` requires the **libcurl development headers**, which are not installed by default on many systems.
 
 ---
 
-#### ✅ Solution 1: Install system dependencies (for pip installation)
+### Optional dependency for `.hic` file support: `hic-straw`
 
-You need to install the `libcurl` development package before building:
+Support for reading `.hic` format Hi-C data relies on the third-party package **hic-straw**, which is **not installed automatically** with BandHiC.
 
-**On Ubuntu/Debian**:
+If you do **not** need to read `.hic` files, you can ignore this dependency and use BandHiC normally.
 
-```bash
-$ sudo apt-get update
-$ sudo apt-get install libcurl4-openssl-dev
-```
+If you **do** need `.hic` support, please install `hic-straw` manually using one of the following methods.
 
-**On Fedora/CentOS/RHEL**:
+#### Method 1: Install via pip
 
 ```bash
-$ sudo dnf install libcurl-devel
+pip install hic-straw
 ```
 
-**On macOS** (with Homebrew):
+Note that `hic-straw` includes native C/C++ extensions. Installation via `pip` may require a compatible compiler toolchain and system libraries (e.g. `libcurl` development headers).
+
+#### Method 2: Install via Conda
 
 ```bash
-$ brew install curl
+conda install -c bioconda hic-straw
 ```
 
-> If Homebrew's curl is not found automatically, you may need to set environment variables:
+Using Conda provides prebuilt binaries on many platforms and avoids local compilation issues.
 
-```bash
-export CPATH="$(brew --prefix curl)/include"
-export LIBRARY_PATH="$(brew --prefix curl)/lib"
-```
+#### Upstream installation guide
 
----
+For detailed, system-specific installation instructions, please refer to the official *straw* repository maintained by the Aiden Lab:
 
-#### ✅ Solution 2: Use Conda (recommended for convenience)
-
-Instead of building `hic-straw` from source, you can install a prebuilt binary via [Bioconda](https://bioconda.github.io/):
-
-```bash
-$ conda install -c bioconda hic-straw
-```
-
-To avoid conflicts and ensure reproducibility, we recommend installing it in a fresh Conda environment:
-
-```bash
-$ conda create -n bandhic-env python=3.11
-$ conda activate bandhic-env
-$ conda install -c bioconda hic-straw
-```
-
-```bash
-# Install BandHiC
-$ pip install bandhic
-```
+https://github.com/aidenlab/straw
 -----
 
 ## 🚀 Quick Start

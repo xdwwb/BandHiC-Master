@@ -72,7 +72,7 @@ import bandhic as bh
                     [False, False, False, False],
                 ],
             ),
-        }
+        },
     ]
 )
 def example_band_matrix(request):
@@ -86,14 +86,20 @@ def example_band_matrix(request):
             mat.mask = params["mask"].copy()
         return mat.copy(), copy.deepcopy(params["expected_array"])
     elif "path" in params:
-        mat = bh.straw_chr(params['path'],params['chrom'],params['resolution'],params['diag_num'])
+        mat = bh.straw_chr(
+            params["path"],
+            params["chrom"],
+            params["resolution"],
+            params["diag_num"],
+        )
         mat_dense = mat.todense()
         row_sum = mat_dense.sum(axis=0)
-        mat.add_mask_row_col(row_sum==0)
-        mat_dense=np.ma.masked_array(mat_dense,mask=False,fill_value=0)
-        mat_dense[row_sum==0,:]=np.ma.masked
-        mat_dense[:,row_sum==0]=np.ma.masked
+        mat.add_mask_row_col(row_sum == 0)
+        mat_dense = np.ma.masked_array(mat_dense, mask=False, fill_value=0)
+        mat_dense[row_sum == 0, :] = np.ma.masked
+        mat_dense[:, row_sum == 0] = np.ma.masked
         return mat.copy(), copy.deepcopy(mat_dense)
+
 
 def assert_result_equal(a, b):
     if isinstance(a, np.ndarray) and isinstance(b, np.ndarray):
@@ -250,20 +256,32 @@ def test_extract_row(example_band_matrix):
 def test_min_reduction(example_band_matrix, axis, expected):
     mat, expected_array = example_band_matrix
     result = mat.min(axis=axis)
-    if axis == 'col':
+    if axis == "col":
         axis = 1
-    elif axis == 'row':
+    elif axis == "row":
         axis = 0
     if axis != "diag":
         assert_result_equal(result, expected_array.min(axis=axis))
     else:
         if mat.mask is None:
             assert_result_equal(
-                result, np.array([np.diag(expected_array, k=i).min() for i in range(mat.diag_num)])
+                result,
+                np.array(
+                    [
+                        np.diag(expected_array, k=i).min()
+                        for i in range(mat.diag_num)
+                    ]
+                ),
             )
         else:
             assert_result_equal(
-                result, np.array([np.ma.diag(expected_array, k=i).min() for i in range(mat.diag_num)])
+                result,
+                np.array(
+                    [
+                        np.ma.diag(expected_array, k=i).min()
+                        for i in range(mat.diag_num)
+                    ]
+                ),
             )
 
 
@@ -275,9 +293,25 @@ def test_max_reduction(example_band_matrix, axis):
         assert_result_equal(result, expected_array.max(axis=axis))
     else:
         if mat.mask is None:
-            assert_result_equal(mat.max(axis=axis), np.array([np.diag(expected_array,k=i).max() for i in range(mat.diag_num)]))
+            assert_result_equal(
+                mat.max(axis=axis),
+                np.array(
+                    [
+                        np.diag(expected_array, k=i).max()
+                        for i in range(mat.diag_num)
+                    ]
+                ),
+            )
         else:
-            assert_result_equal(mat.max(axis=axis), np.array([np.ma.diag(expected_array,k=i).max() for i in range(mat.diag_num)]))
+            assert_result_equal(
+                mat.max(axis=axis),
+                np.array(
+                    [
+                        np.ma.diag(expected_array, k=i).max()
+                        for i in range(mat.diag_num)
+                    ]
+                ),
+            )
 
 
 def test_mean_sum_prod_var_std_ptp(example_band_matrix):
@@ -294,10 +328,23 @@ def test_mean_sum_prod_var_std_ptp(example_band_matrix):
     np.testing.assert_array_equal(rows, mat_expect.mean(axis=0))
     diags = mat.mean(axis="diag")
     if mat.mask is None:
-        np.testing.assert_array_equal(diags, np.array([np.diag(mat_expect,k=i).mean() for i in range(mat.diag_num)]))
+        np.testing.assert_array_equal(
+            diags,
+            np.array(
+                [np.diag(mat_expect, k=i).mean() for i in range(mat.diag_num)]
+            ),
+        )
     else:
         # Masked array mean
-        np.testing.assert_array_equal(diags, np.array([np.ma.diag(mat_expect,k=i).mean() for i in range(mat.diag_num)]))
+        np.testing.assert_array_equal(
+            diags,
+            np.array(
+                [
+                    np.ma.diag(mat_expect, k=i).mean()
+                    for i in range(mat.diag_num)
+                ]
+            ),
+        )
 
 
 def test_all_any(example_band_matrix):
@@ -339,14 +386,14 @@ def test_clip_and_fill(example_band_matrix):
     mat, expected_array = example_band_matrix
     mat.clip(2, 4)
     assert np.all(mat.data <= 4)
-    mat2=mat.filled(5)
+    mat2 = mat.filled(5)
     assert mat2.mask is None
 
 
 def test_filled_and_reset_mask(example_band_matrix):
     mat, expected_array = example_band_matrix
     mat.add_mask([0, 1], [1, 1])
-    mat2=mat.filled(99)
+    mat2 = mat.filled(99)
     assert mat2.data[0, 1] == 99
     assert mat2.data[1, 0] == 99
     mat.clear_mask()
@@ -449,6 +496,7 @@ def test_invalid_initialization():
     with pytest.raises(ValueError):
         band_hic_matrix(np.ones(4), diag_num=1)
 
+
 def test_memory_usage(example_band_matrix):
     mat, expected_array = example_band_matrix
     sz = mat.memory_usage()
@@ -487,13 +535,15 @@ def test_dump_and_load(example_band_matrix):
         assert mat2.diag_num == mat.diag_num
         assert np.all(mat2.shape == mat.shape)
 
+
 def test_save_and_load(example_band_matrix):
     with tempfile.TemporaryDirectory() as tmpdir:
         mat = example_band_matrix[0]
         fname = os.path.join(tmpdir, "example_bandhic.npz")
         bh.save_npz(fname, mat)
         mat2 = bh.load_npz(fname)
-        bh.assert_band_matrix_equal(mat,mat2)
+        bh.assert_band_matrix_equal(mat, mat2)
+
 
 @pytest.mark.parametrize(
     "ufunc",
@@ -594,6 +644,7 @@ def test_binary_ufuncs(example_band_matrix, ufunc):
     assert result.shape == mat_dense.shape
     np.testing.assert_array_equal(result.todense(), result_dense)
 
+
 # Test operator overloads for basic arithmetic
 @pytest.mark.parametrize(
     "op, ufunc",
@@ -637,3 +688,15 @@ def test_operator_overloads(example_band_matrix, op, ufunc):
     assert isinstance(result, band_hic_matrix)
     assert result.shape == expected.shape
     np.testing.assert_array_equal(result.todense(), expected)
+
+
+# def test_convolve2d(example_band_matrix):
+#     mat, expected_array = example_band_matrix
+#     kernel = np.ones((3, 3)) / 9
+#     conv = bh.convolve2d(mat, kernel)
+#     assert isinstance(conv, band_hic_matrix)
+#     assert conv.shape == mat.shape
+#     # Compare with dense convolution
+#     # from scipy.signal import convolve2d as dense_convolve2d
+#     # expected_conv = dense_convolve2d(expected_array, kernel, mode='same', boundary='symm')
+#     # np.testing.assert_array_almost_equal(conv.todense(), expected_conv)

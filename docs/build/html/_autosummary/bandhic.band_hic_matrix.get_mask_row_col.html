@@ -1,12 +1,13 @@
 
+
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../" >
+<html lang="en" data-content_root="" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>bandhic.band_hic_matrix.get_mask_row_col &#8212; BandHiC  documentation</title>
   
@@ -30,7 +31,7 @@
   <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -38,9 +39,11 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_autosummary/bandhic.band_hic_matrix.get_mask_row_col';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -426,8 +429,6 @@
 <li class="toctree-l2"><a class="reference internal" href="bandhic.straw_all_chrs.html">bandhic.straw_all_chrs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bandhic.cooler_chr.html">bandhic.cooler_chr</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bandhic.cooler_all_chrs.html">bandhic.cooler_all_chrs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bandhic.cooler_chr_all_cells.html">bandhic.cooler_chr_all_cells</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bandhic.cooler_all_cells_all_chrs.html">bandhic.cooler_all_cells_all_chrs</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api/ufunc.html">Vectorized operations for BandHiC matrices</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -525,6 +526,11 @@
 <li class="toctree-l2"><a class="reference internal" href="bandhic.compute_bin_bias.html">bandhic.compute_bin_bias</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bandhic.call_tad.html">bandhic.call_tad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bandhic.topdom.html">bandhic.topdom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bandhic.apa.html">bandhic.apa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bandhic.hiccups.html">bandhic.hiccups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bandhic.load_norm_vector_from_hic.html">bandhic.load_norm_vector_from_hic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bandhic.load_norm_vector_from_cooler.html">bandhic.load_norm_vector_from_cooler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bandhic.scc.html">bandhic.scc</a></li>
 </ul>
 </details></li>
 </ul>
@@ -591,10 +597,10 @@
                 <article class="bd-article">
                   
   <section id="bandhic-band-hic-matrix-get-mask-row-col">
-<h1>bandhic.band_hic_matrix.get_mask_row_col<a class="headerlink" href="#bandhic-band-hic-matrix-get-mask-row-col" title="Link to this heading">#</a></h1>
+<h1>bandhic.band_hic_matrix.get_mask_row_col<a class="headerlink" href="#bandhic-band-hic-matrix-get-mask-row-col" title="Permalink to this heading">#</a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="bandhic.band_hic_matrix.get_mask_row_col">
-<span class="sig-prename descclassname"><span class="pre">band_hic_matrix.</span></span><span class="sig-name descname"><span class="pre">get_mask_row_col</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bandhic/bandhic.html#band_hic_matrix.get_mask_row_col"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bandhic.band_hic_matrix.get_mask_row_col" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">band_hic_matrix.</span></span><span class="sig-name descname"><span class="pre">get_mask_row_col</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bandhic/bandhic.html#band_hic_matrix.get_mask_row_col"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bandhic.band_hic_matrix.get_mask_row_col" title="Permalink to this definition">#</a></dt>
 <dd><p>Get current row/column mask.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -652,18 +658,6 @@
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
-
-  <div class="sidebar-secondary-item">
-<div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bandhic.band_hic_matrix.get_mask_row_col"><code class="docutils literal notranslate"><span class="pre">band_hic_matrix.get_mask_row_col()</span></code></a></li>
-</ul>
-  </nav></div>
 
   <div class="sidebar-secondary-item">
 
@@ -724,7 +718,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
     <br/>
   </p>
 </div>

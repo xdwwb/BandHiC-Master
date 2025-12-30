@@ -19,8 +19,8 @@ setup(
     install_requires=[
         "numpy>=2.3",
         "scipy>=1.16",
-        "hic-straw>=1.3",
         "cooler>0.10",
         "pandas>=2.3",
+        "joblib>=1.2" "numba>=0.59",
     ],
 )

@@ -2,4 +2,5 @@ numpy>=2.3
 pandas>=2.3
 scipy>=1.16
 cooler>=0.10
-hic_straw>=1.3
+joblib>=1.2
+numba>=0.59
