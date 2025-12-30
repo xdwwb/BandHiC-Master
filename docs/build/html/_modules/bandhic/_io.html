@@ -48,7 +48,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1.9" />
+  <meta name="docsearch:version" content="0.2.0" />
   </head>
   
   
@@ -345,6 +345,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.bandhic</span><span class="w"> </span><span class="kn">import</span> <span class="n">band_hic_matrix</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+
 <span class="c1"># import hicstraw</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">cooler</span>
 
@@ -358,6 +359,7 @@
     <span class="c1"># &quot;cooler_chr_all_cells&quot;,</span>
     <span class="c1"># &quot;cooler_all_cells_all_chrs&quot;,</span>
 <span class="p">]</span>
+
 
 <div class="viewcode-block" id="save_npz"><a class="viewcode-back" href="../../_autosummary/bandhic.save_npz.html#bandhic.save_npz">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">save_npz</span><span class="p">(</span><span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mat</span><span class="p">:</span> <span class="n">band_hic_matrix</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -385,6 +387,7 @@
         <span class="n">dtype</span><span class="o">=</span><span class="n">mat</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
     <span class="p">)</span></div>
     <span class="c1"># Save the band_hic_matrix to a .npz file</span>
+
 
 <div class="viewcode-block" id="load_npz"><a class="viewcode-back" href="../../_autosummary/bandhic.load_npz.html#bandhic.load_npz">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">load_npz</span><span class="p">(</span><span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">band_hic_matrix</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -436,7 +439,8 @@
         <span class="n">default_value</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;default_value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
         <span class="n">band_data_input</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span></div>
-    
+
+
 <div class="viewcode-block" id="straw_chr"><a class="viewcode-back" href="../../_autosummary/bandhic.straw_chr.html#bandhic.straw_chr">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">straw_chr</span><span class="p">(</span>
     <span class="n">hic_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">chrom</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -467,7 +471,7 @@
 <span class="sd">        See `hicstraw` documentation for more details.</span>
 <span class="sd">    unit : str, optional</span>
 <span class="sd">        Unit of measurement for the Hi-C data. Default is &#39;BP&#39; (base pairs). Other options include &#39;FRAG&#39; (fragments), etc.</span>
-<span class="sd">        </span>
+
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
 <span class="sd">    `hicstraw documentation &lt;https://github.com/aidenlab/straw/tree/master/pybind11_python&gt;`_</span>
@@ -496,8 +500,10 @@
         <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
             <span class="s2">&quot;hicstraw is required for reading .hic files. Please install it via &#39;pip install hic-straw&#39;.&quot;</span>
         <span class="p">)</span>
-    
-    <span class="n">chrom_short</span> <span class="o">=</span> <span class="n">chrom</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;chr&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">chrom</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;chr&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">chrom</span>
+
+    <span class="n">chrom_short</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">chrom</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;chr&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">chrom</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;chr&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">chrom</span>
+    <span class="p">)</span>
     <span class="n">records</span> <span class="o">=</span> <span class="n">hicstraw</span><span class="o">.</span><span class="n">straw</span><span class="p">(</span>
         <span class="n">data_type</span><span class="p">,</span>
         <span class="n">normalization</span><span class="p">,</span>
@@ -508,20 +514,25 @@
         <span class="n">resolution</span><span class="p">,</span>
     <span class="p">)</span>
 
-<span class="c1">#TODO: can more fast?</span>
+    <span class="c1"># TODO: can more fast?</span>
 
-    <span class="n">row_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="n">rec</span><span class="o">.</span><span class="n">binX</span> <span class="o">//</span> <span class="n">resolution</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
-    <span class="n">col_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="n">rec</span><span class="o">.</span><span class="n">binY</span> <span class="o">//</span> <span class="n">resolution</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">row_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">binX</span> <span class="o">//</span> <span class="n">resolution</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span>
+    <span class="p">)</span>
+    <span class="n">col_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">binY</span> <span class="o">//</span> <span class="n">resolution</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span>
+    <span class="p">)</span>
     <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s2">&quot;observed&quot;</span><span class="p">:</span>
         <span class="n">coo_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="n">rec</span><span class="o">.</span><span class="n">counts</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">coo_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="n">rec</span><span class="o">.</span><span class="n">counts</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">coo_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">counts</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+        <span class="p">)</span>
 
-    <span class="n">mat</span> <span class="o">=</span> <span class="n">band_hic_matrix</span><span class="p">(</span>
-        <span class="p">(</span><span class="n">coo_data</span><span class="p">,</span> <span class="p">(</span><span class="n">row_idx</span><span class="p">,</span> <span class="n">col_idx</span><span class="p">)),</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span>
-    <span class="p">)</span>
+    <span class="n">mat</span> <span class="o">=</span> <span class="n">band_hic_matrix</span><span class="p">((</span><span class="n">coo_data</span><span class="p">,</span> <span class="p">(</span><span class="n">row_idx</span><span class="p">,</span> <span class="n">col_idx</span><span class="p">)),</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">)</span>
     <span class="c1"># Set the mask for invalid rows and columns</span>
     <span class="k">return</span> <span class="n">mat</span></div>
+
 
 <div class="viewcode-block" id="straw_all_chrs"><a class="viewcode-back" href="../../_autosummary/bandhic.straw_all_chrs.html#bandhic.straw_all_chrs">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">straw_all_chrs</span><span class="p">(</span>
     <span class="n">hic_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -576,7 +587,7 @@
         <span class="p">)</span>
     <span class="n">chroms</span> <span class="o">=</span> <span class="n">hicstraw</span><span class="o">.</span><span class="n">HiCFile</span><span class="p">(</span><span class="n">hic_file</span><span class="p">)</span><span class="o">.</span><span class="n">getChromosomes</span><span class="p">()</span>
     <span class="n">mats</span> <span class="o">=</span> <span class="p">{}</span>
-    
+
     <span class="k">for</span> <span class="n">chrom</span> <span class="ow">in</span> <span class="n">chroms</span><span class="p">:</span>
         <span class="n">chrom</span> <span class="o">=</span> <span class="n">chrom</span><span class="o">.</span><span class="n">name</span>
         <span class="k">if</span> <span class="n">chrom</span> <span class="o">==</span> <span class="s2">&quot;ALL&quot;</span> <span class="ow">or</span> <span class="n">chrom</span> <span class="o">==</span> <span class="s2">&quot;M&quot;</span><span class="p">:</span>
@@ -591,8 +602,9 @@
             <span class="n">normalization</span><span class="o">=</span><span class="n">normalization</span><span class="p">,</span>
             <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span>
         <span class="p">)</span>
-    
+
     <span class="k">return</span> <span class="n">mats</span></div>
+
 
 <div class="viewcode-block" id="cooler_chr"><a class="viewcode-back" href="../../_autosummary/bandhic.cooler_chr.html#bandhic.cooler_chr">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">cooler_chr</span><span class="p">(</span>
     <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -616,7 +628,7 @@
 <span class="sd">    cell_id : str, optional</span>
 <span class="sd">        Cell ID for .scool files.</span>
 <span class="sd">    resolution : int, optional</span>
-<span class="sd">        Resolution of the Hi-C data. </span>
+<span class="sd">        Resolution of the Hi-C data.</span>
 <span class="sd">    balance : bool, optional</span>
 <span class="sd">        If True, use balanced data. Default is False. This parameter is specific to cooler files.</span>
 
@@ -636,19 +648,21 @@
 <span class="sd">    &gt;&gt;&gt; mat = bh.cooler_chr(&#39;/Users/wwb/Documents/workspace/BandHiC-Master/data/yeast.10kb.cool&#39;, &#39;chrI&#39;, resolution=10000, diag_num=10)</span>
 <span class="sd">    &gt;&gt;&gt; isinstance(mat, band_hic_matrix)</span>
 <span class="sd">    True</span>
-<span class="sd">    </span>
+
 <span class="sd">    See also</span>
 <span class="sd">    --------</span>
 <span class="sd">    `cooler documentation &lt;https://cooler.readthedocs.io/en/latest/index.html&gt;`_</span>
 <span class="sd">    Official documentation for the Cooler format and API usage.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="n">file_format</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">file_format</span> <span class="o">==</span> <span class="s2">&quot;mcool&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">resolution</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;resolution is required for .mcool files&quot;</span><span class="p">)</span>
         <span class="c1"># For .scool files, we need to specify the group path</span>
-        <span class="n">cool_file</span> <span class="o">=</span> <span class="n">file_path</span> <span class="o">+</span> <span class="s2">&quot;::resolutions/</span><span class="si">{resolution}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span><span class="p">)</span>
+        <span class="n">cool_file</span> <span class="o">=</span> <span class="n">file_path</span> <span class="o">+</span> <span class="s2">&quot;::resolutions/</span><span class="si">{resolution}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span>
+        <span class="p">)</span>
     <span class="k">elif</span> <span class="n">file_format</span> <span class="o">==</span> <span class="s2">&quot;cool&quot;</span><span class="p">:</span>
         <span class="c1"># For .cool and .mcool files, we can use the file path directly</span>
         <span class="n">cool_file</span> <span class="o">=</span> <span class="n">file_path</span>
@@ -669,6 +683,7 @@
     <span class="n">mat</span> <span class="o">=</span> <span class="n">band_hic_matrix</span><span class="p">(</span><span class="n">contacts</span><span class="o">=</span><span class="n">coo_matrix</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mat</span></div>
 
+
 <div class="viewcode-block" id="cooler_all_chrs"><a class="viewcode-back" href="../../_autosummary/bandhic.cooler_all_chrs.html#bandhic.cooler_all_chrs">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">cooler_all_chrs</span><span class="p">(</span>
     <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">diag_num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -686,7 +701,7 @@
 <span class="sd">    diag_num : int</span>
 <span class="sd">        Number of diagonals to consider.</span>
 <span class="sd">    resolution : int, optional</span>
-<span class="sd">        Resolution of the Hi-C data. </span>
+<span class="sd">        Resolution of the Hi-C data.</span>
 <span class="sd">    cell_id : str, optional</span>
 <span class="sd">        Cell ID for .scool files.</span>
 <span class="sd">    balance : bool, optional</span>
@@ -710,9 +725,9 @@
 <span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">clr</span> <span class="o">=</span> <span class="n">cooler</span><span class="o">.</span><span class="n">Cooler</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
-    
+
     <span class="n">mats</span> <span class="o">=</span> <span class="p">{}</span>
-    
+
     <span class="k">for</span> <span class="n">chrom</span> <span class="ow">in</span> <span class="n">clr</span><span class="o">.</span><span class="n">chromnames</span><span class="p">:</span>
         <span class="n">mats</span><span class="p">[</span><span class="n">chrom</span><span class="p">]</span> <span class="o">=</span> <span class="n">cooler_chr</span><span class="p">(</span>
             <span class="n">file_path</span><span class="p">,</span>
@@ -722,8 +737,9 @@
             <span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span><span class="p">,</span>
             <span class="n">balance</span><span class="o">=</span><span class="n">balance</span><span class="p">,</span>
         <span class="p">)</span>
-    
+
     <span class="k">return</span> <span class="n">mats</span></div>
+
 
 <span class="c1"># # TODO: need test for scool files</span>
 <span class="c1"># def cooler_chr_all_cells(</span>
@@ -763,7 +779,7 @@
 <span class="c1">#     &gt;&gt;&gt; isinstance(mats[&#39;cell1&#39;], band_hic_matrix)</span>
 <span class="c1">#     True</span>
 <span class="c1">#     &quot;&quot;&quot;</span>
-    
+
 <span class="c1">#     clr = cooler.Cooler(file_path)</span>
 <span class="c1">#     mats = {}</span>
 <span class="c1">#     for cell_id in clr.cell_ids:</span>
@@ -796,7 +812,7 @@
 <span class="c1">#     diag_num : int</span>
 <span class="c1">#         Number of diagonals to consider.</span>
 <span class="c1">#     resolution : int, optional</span>
-<span class="c1">#         Resolution of the Hi-C data. </span>
+<span class="c1">#         Resolution of the Hi-C data.</span>
 
 <span class="c1">#     Returns</span>
 <span class="c1">#     -------</span>
@@ -816,9 +832,9 @@
 <span class="c1">#     True</span>
 <span class="c1">#     &quot;&quot;&quot;</span>
 <span class="c1">#     clr = cooler.Cooler(file_path)</span>
-    
+
 <span class="c1">#     mats = {}</span>
-    
+
 <span class="c1">#     for cell_id in clr.cell_ids:</span>
 <span class="c1">#         mats[cell_id] = {}</span>
 <span class="c1">#         for chrom in clr.chromnames:</span>
@@ -829,7 +845,7 @@
 <span class="c1">#                 diag_num=diag_num,</span>
 <span class="c1">#                 resolution=resolution,</span>
 <span class="c1">#             )</span>
-    
+
 <span class="c1">#     return mats</span>
 </pre></div>
 

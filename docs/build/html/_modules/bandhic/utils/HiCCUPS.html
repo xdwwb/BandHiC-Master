@@ -48,7 +48,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1.9" />
+  <meta name="docsearch:version" content="0.2.0" />
   </head>
   
   
@@ -385,11 +385,12 @@
     <span class="s2">&quot;load_norm_vector_from_hic&quot;</span><span class="p">,</span>
     <span class="s2">&quot;load_norm_vector_from_cooler&quot;</span><span class="p">,</span>
 <span class="p">]</span>
-    
+
 
 <span class="c1"># =========================================================</span>
 <span class="c1"># Normalization vector loaders</span>
 <span class="c1"># =========================================================</span>
+
 
 <div class="viewcode-block" id="load_norm_vector_from_hic"><a class="viewcode-back" href="../../../_autosummary/bandhic.load_norm_vector_from_hic.html#bandhic.load_norm_vector_from_hic">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">load_norm_vector_from_hic</span><span class="p">(</span><span class="n">hic_file</span><span class="p">,</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">norm</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -422,14 +423,25 @@
         <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
             <span class="s2">&quot;hicstraw is required for reading .hic files. Please install it via &#39;pip install hic-straw&#39;.&quot;</span>
         <span class="p">)</span>
-    <span class="n">chrom_short</span> <span class="o">=</span> <span class="n">chrom</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;chr&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">chrom</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;chr&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">chrom</span>
+    <span class="n">chrom_short</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">chrom</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;chr&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">chrom</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;chr&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">chrom</span>
+    <span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">hic</span> <span class="o">=</span> <span class="n">hicstraw</span><span class="o">.</span><span class="n">HiCFile</span><span class="p">(</span><span class="n">hic_file</span><span class="p">)</span>
-        <span class="n">chrom_short_specific</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">chrom_short</span><span class="p">)</span> <span class="k">if</span> <span class="n">chrom_short</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">chrom_short</span>
-        <span class="n">kr</span> <span class="o">=</span> <span class="n">hic</span><span class="o">.</span><span class="n">getMatrixZoomData</span><span class="p">(</span><span class="n">chrom_short</span><span class="p">,</span> <span class="n">chrom_short</span><span class="p">,</span> <span class="s1">&#39;observed&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="p">,</span> <span class="s1">&#39;BP&#39;</span><span class="p">,</span> <span class="n">resolution</span><span class="p">)</span><span class="o">.</span><span class="n">getNormVector</span><span class="p">(</span><span class="n">chrom_short_specific</span><span class="p">)</span>
+        <span class="n">chrom_short_specific</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">chrom_short</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">chrom_short</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">]</span>
+            <span class="k">else</span> <span class="n">chrom_short</span>
+        <span class="p">)</span>
+        <span class="n">kr</span> <span class="o">=</span> <span class="n">hic</span><span class="o">.</span><span class="n">getMatrixZoomData</span><span class="p">(</span>
+            <span class="n">chrom_short</span><span class="p">,</span> <span class="n">chrom_short</span><span class="p">,</span> <span class="s2">&quot;observed&quot;</span><span class="p">,</span> <span class="n">norm</span><span class="p">,</span> <span class="s2">&quot;BP&quot;</span><span class="p">,</span> <span class="n">resolution</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">getNormVector</span><span class="p">(</span><span class="n">chrom_short_specific</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Normalization vector not found in .hic for </span><span class="si">{</span><span class="n">chrom</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">resolution</span><span class="si">}</span><span class="s2"> bp, norm=</span><span class="si">{</span><span class="n">norm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Normalization vector not found in .hic for </span><span class="si">{</span><span class="n">chrom</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">resolution</span><span class="si">}</span><span class="s2"> bp, norm=</span><span class="si">{</span><span class="n">norm</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">kr</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="load_norm_vector_from_cooler"><a class="viewcode-back" href="../../../_autosummary/bandhic.load_norm_vector_from_cooler.html#bandhic.load_norm_vector_from_cooler">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">load_norm_vector_from_cooler</span><span class="p">(</span><span class="n">cool_path</span><span class="p">,</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">norm</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -457,16 +469,21 @@
 <span class="sd">        If the normalization vector cannot be found for the specified parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">cooler</span>
+
     <span class="k">try</span><span class="p">:</span>
         <span class="n">clr</span> <span class="o">=</span> <span class="n">cooler</span><span class="o">.</span><span class="n">Cooler</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cool_path</span><span class="si">}</span><span class="s2">::/resolutions/</span><span class="si">{</span><span class="n">resolution</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">kr</span> <span class="o">=</span> <span class="n">clr</span><span class="o">.</span><span class="n">bins</span><span class="p">()[</span><span class="n">norm</span><span class="p">][</span><span class="n">clr</span><span class="o">.</span><span class="n">bins</span><span class="p">()[</span><span class="s1">&#39;chrom&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">chrom</span><span class="p">][</span><span class="n">norm</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">kr</span> <span class="o">=</span> <span class="n">clr</span><span class="o">.</span><span class="n">bins</span><span class="p">()[</span><span class="n">norm</span><span class="p">][</span><span class="n">clr</span><span class="o">.</span><span class="n">bins</span><span class="p">()[</span><span class="s2">&quot;chrom&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">chrom</span><span class="p">][</span><span class="n">norm</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Normalization vector not found in cooler for </span><span class="si">{</span><span class="n">chrom</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">resolution</span><span class="si">}</span><span class="s2"> bp, norm=</span><span class="si">{</span><span class="n">norm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Normalization vector not found in cooler for </span><span class="si">{</span><span class="n">chrom</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">resolution</span><span class="si">}</span><span class="s2"> bp, norm=</span><span class="si">{</span><span class="n">norm</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">kr</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span></div>
+
 
 <span class="c1"># =========================================================</span>
 <span class="c1"># Data structures</span>
 <span class="c1"># =========================================================</span>
+
 
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Feature2D</span><span class="p">:</span>
@@ -487,19 +504,19 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_float</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-    
+
     <span class="k">def</span><span class="w"> </span><span class="nf">has_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span>
 
 
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">HiCCUPSConfig</span><span class="p">:</span>
-    <span class="n">resolution</span><span class="p">:</span> <span class="nb">int</span>               <span class="c1"># bp</span>
-    <span class="n">window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>              <span class="c1"># donut window (in bins)</span>
-    <span class="n">peak_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>           <span class="c1"># peak half-width (in bins)</span>
-    <span class="n">w1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">40</span>                  <span class="c1"># max bin index (for log-binning)</span>
-    <span class="n">fdr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>              <span class="c1"># FDR target (Juicer-like)</span>
-    <span class="n">max_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10000</span>        <span class="c1"># max observed tracked in hist</span>
+    <span class="n">resolution</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># bp</span>
+    <span class="n">window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># donut window (in bins)</span>
+    <span class="n">peak_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># peak half-width (in bins)</span>
+    <span class="n">w1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">40</span>  <span class="c1"># max bin index (for log-binning)</span>
+    <span class="n">fdr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># FDR target (Juicer-like)</span>
+    <span class="n">max_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10000</span>  <span class="c1"># max observed tracked in hist</span>
     <span class="n">cluster_radius_bp</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20000</span>  <span class="c1"># centroid merge radius (bp)</span>
     <span class="c1"># OE thresholds, similar to Juicer oeThreshold1/2/3</span>
     <span class="n">fdrsum</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.02</span>
@@ -507,7 +524,9 @@
     <span class="n">oe2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.75</span>
     <span class="n">oe3</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span>
     <span class="n">max_loop_dist_bp</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8_000_000</span>  <span class="c1"># max loop search distance (bp)</span>
-    <span class="n">kr_neighborhood</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># KR neighborhood radius (bins), like Java HiCCUPS.krNeighborhood</span>
+    <span class="n">kr_neighborhood</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">5</span>  <span class="c1"># KR neighborhood radius (bins), like Java HiCCUPS.krNeighborhood</span>
+    <span class="p">)</span>
     <span class="n">norm</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;KR&quot;</span>
     <span class="n">n_jobs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># Number of parallel jobs</span>
 
@@ -536,7 +555,7 @@
     <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">arr</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;reverse_cumulative only supports 1D or 2D arrays.&quot;</span><span class="p">)</span>
 
@@ -657,14 +676,14 @@
     <span class="n">oo_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">ii_arr</span><span class="p">)</span>
     <span class="n">e_bl_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">N</span> <span class="o">*</span> <span class="p">(</span><span class="n">k_end</span> <span class="o">-</span> <span class="n">k_start</span><span class="p">),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
     <span class="n">e_dn_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">e_bl_arr</span><span class="p">)</span>
-    <span class="n">e_h_arr</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">e_bl_arr</span><span class="p">)</span>
-    <span class="n">e_v_arr</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">e_bl_arr</span><span class="p">)</span>
+    <span class="n">e_h_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">e_bl_arr</span><span class="p">)</span>
+    <span class="n">e_v_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">e_bl_arr</span><span class="p">)</span>
     <span class="n">bBL_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">N</span> <span class="o">*</span> <span class="p">(</span><span class="n">k_end</span> <span class="o">-</span> <span class="n">k_start</span><span class="p">),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
     <span class="n">bDo_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">bBL_arr</span><span class="p">)</span>
-    <span class="n">bH_arr</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">bBL_arr</span><span class="p">)</span>
-    <span class="n">bV_arr</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">bBL_arr</span><span class="p">)</span>
+    <span class="n">bH_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">bBL_arr</span><span class="p">)</span>
+    <span class="n">bV_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">bBL_arr</span><span class="p">)</span>
     <span class="n">upd_ptr</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">lognorm</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">**</span> <span class="mf">0.33</span><span class="p">)</span>
+    <span class="n">lognorm</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.0</span><span class="o">**</span><span class="mf">0.33</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">bin_val</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">e</span> <span class="o">&lt;=</span> <span class="mf">1.0</span> <span class="ow">or</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="ow">or</span> <span class="n">math</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
@@ -684,7 +703,9 @@
             <span class="k">continue</span>
         <span class="k">if</span> <span class="n">diagDist</span> <span class="o">&gt;=</span> <span class="n">Nexp</span><span class="p">:</span>
             <span class="k">continue</span>
-        <span class="k">if</span> <span class="n">expected_dist</span><span class="p">[</span><span class="n">diagDist</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">expected_dist</span><span class="p">[</span><span class="n">diagDist</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">expected_dist</span><span class="p">[</span><span class="n">diagDist</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span>
+            <span class="n">expected_dist</span><span class="p">[</span><span class="n">diagDist</span><span class="p">]</span>
+        <span class="p">):</span>
             <span class="k">continue</span>
         <span class="n">d_diag</span> <span class="o">=</span> <span class="n">expected_dist</span><span class="p">[</span><span class="n">diagDist</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="n">diagDist</span><span class="p">):</span>
@@ -734,7 +755,10 @@
                                 <span class="k">if</span> <span class="ow">not</span> <span class="n">mask</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">dist</span><span class="p">]:</span>
                                     <span class="n">E_bl</span> <span class="o">+=</span> <span class="n">v</span>
                                     <span class="n">Ed_bl</span> <span class="o">+=</span> <span class="n">expected_dist</span><span class="p">[</span><span class="n">dist</span><span class="p">]</span>
-                                    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">ii</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="o">+</span> <span class="n">peak_w</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">-</span> <span class="n">peak_w</span> <span class="o">&lt;=</span> <span class="n">jj</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">):</span>
+                                    <span class="k">if</span> <span class="p">(</span>
+                                        <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">ii</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="o">+</span> <span class="n">peak_w</span> <span class="o">+</span> <span class="mi">1</span>
+                                        <span class="ow">and</span> <span class="n">j</span> <span class="o">-</span> <span class="n">peak_w</span> <span class="o">&lt;=</span> <span class="n">jj</span> <span class="o">&lt;</span> <span class="n">j</span>
+                                    <span class="p">):</span>
                                         <span class="n">E_bl</span> <span class="o">-=</span> <span class="n">v</span>
                                         <span class="n">Ed_bl</span> <span class="o">-=</span> <span class="n">expected_dist</span><span class="p">[</span><span class="n">dist</span><span class="p">]</span>
             <span class="c1"># ----- Donut -----</span>
@@ -762,7 +786,7 @@
             <span class="n">E_v</span> <span class="o">=</span> <span class="mf">0.0</span>
             <span class="n">Ed_v</span> <span class="o">=</span> <span class="mf">0.0</span>
             <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">wsize</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">peak_w</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
-                <span class="n">dist</span> <span class="o">=</span> <span class="n">j</span><span class="o">-</span><span class="n">ii</span>
+                <span class="n">dist</span> <span class="o">=</span> <span class="n">j</span> <span class="o">-</span> <span class="n">ii</span>
                 <span class="n">v_mid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">dist</span><span class="p">]</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">mask</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">dist</span><span class="p">]:</span>
                     <span class="k">if</span> <span class="n">dist</span> <span class="o">&lt;</span> <span class="n">Nexp</span><span class="p">:</span>
@@ -780,7 +804,7 @@
                                 <span class="n">E_v</span> <span class="o">+=</span> <span class="n">v</span>
                                 <span class="n">Ed_v</span> <span class="o">+=</span> <span class="n">expected_dist</span><span class="p">[</span><span class="n">dist</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">peak_w</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">wsize</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">)):</span>
-                <span class="n">dist</span> <span class="o">=</span> <span class="n">j</span><span class="o">-</span><span class="n">ii</span>
+                <span class="n">dist</span> <span class="o">=</span> <span class="n">j</span> <span class="o">-</span> <span class="n">ii</span>
                 <span class="n">v_mid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">dist</span><span class="p">]</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">mask</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">dist</span><span class="p">]:</span>
                     <span class="k">if</span> <span class="n">dist</span> <span class="o">&lt;</span> <span class="n">Nexp</span><span class="p">:</span>
@@ -837,15 +861,21 @@
                                 <span class="n">E_h</span> <span class="o">+=</span> <span class="n">v</span>
                                 <span class="n">Ed_h</span> <span class="o">+=</span> <span class="n">expected_dist</span><span class="p">[</span><span class="n">dist</span><span class="p">]</span>
             <span class="c1"># normalize</span>
-            <span class="n">e_bl</span> <span class="o">=</span> <span class="p">(</span><span class="n">E_bl</span> <span class="o">*</span> <span class="n">d_diag</span> <span class="o">/</span> <span class="n">Ed_bl</span><span class="p">)</span> <span class="o">*</span> <span class="n">kr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">kr</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">if</span> <span class="n">Ed_bl</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
-            <span class="n">e_dn</span> <span class="o">=</span> <span class="p">(</span><span class="n">E_donut</span> <span class="o">*</span> <span class="n">d_diag</span> <span class="o">/</span> <span class="n">Ed_donut</span><span class="p">)</span> <span class="o">*</span> <span class="n">kr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">kr</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">if</span> <span class="n">Ed_donut</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
+            <span class="n">e_bl</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">E_bl</span> <span class="o">*</span> <span class="n">d_diag</span> <span class="o">/</span> <span class="n">Ed_bl</span><span class="p">)</span> <span class="o">*</span> <span class="n">kr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">kr</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">if</span> <span class="n">Ed_bl</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
+            <span class="p">)</span>
+            <span class="n">e_dn</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">E_donut</span> <span class="o">*</span> <span class="n">d_diag</span> <span class="o">/</span> <span class="n">Ed_donut</span><span class="p">)</span> <span class="o">*</span> <span class="n">kr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">kr</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">Ed_donut</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                <span class="k">else</span> <span class="mf">0.0</span>
+            <span class="p">)</span>
             <span class="n">e_h</span> <span class="o">=</span> <span class="p">(</span><span class="n">E_h</span> <span class="o">*</span> <span class="n">d_diag</span> <span class="o">/</span> <span class="n">Ed_h</span><span class="p">)</span> <span class="o">*</span> <span class="n">kr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">kr</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">if</span> <span class="n">Ed_h</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
             <span class="n">e_v</span> <span class="o">=</span> <span class="p">(</span><span class="n">E_v</span> <span class="o">*</span> <span class="n">d_diag</span> <span class="o">/</span> <span class="n">Ed_v</span><span class="p">)</span> <span class="o">*</span> <span class="n">kr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">kr</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">if</span> <span class="n">Ed_v</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
             <span class="n">bBL</span> <span class="o">=</span> <span class="n">bin_val</span><span class="p">(</span><span class="n">e_bl</span><span class="p">)</span>
             <span class="n">bDo</span> <span class="o">=</span> <span class="n">bin_val</span><span class="p">(</span><span class="n">e_dn</span><span class="p">)</span>
             <span class="n">bH</span> <span class="o">=</span> <span class="n">bin_val</span><span class="p">(</span><span class="n">e_h</span><span class="p">)</span>
             <span class="n">bV</span> <span class="o">=</span> <span class="n">bin_val</span><span class="p">(</span><span class="n">e_v</span><span class="p">)</span>
-            <span class="n">o</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">diagDist</span><span class="p">]</span><span class="o">*</span><span class="n">kr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">kr</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+            <span class="n">o</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">diagDist</span><span class="p">]</span> <span class="o">*</span> <span class="n">kr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">kr</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
             <span class="k">if</span> <span class="n">o</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">o</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">if</span> <span class="n">o</span> <span class="o">&gt;</span> <span class="n">max_count</span><span class="p">:</span>
@@ -859,18 +889,31 @@
             <span class="n">oo_arr</span><span class="p">[</span><span class="n">upd_ptr</span><span class="p">]</span> <span class="o">=</span> <span class="n">o</span>
             <span class="n">e_bl_arr</span><span class="p">[</span><span class="n">upd_ptr</span><span class="p">]</span> <span class="o">=</span> <span class="n">e_bl</span>
             <span class="n">e_dn_arr</span><span class="p">[</span><span class="n">upd_ptr</span><span class="p">]</span> <span class="o">=</span> <span class="n">e_dn</span>
-            <span class="n">e_h_arr</span><span class="p">[</span><span class="n">upd_ptr</span><span class="p">]</span>  <span class="o">=</span> <span class="n">e_h</span>
-            <span class="n">e_v_arr</span><span class="p">[</span><span class="n">upd_ptr</span><span class="p">]</span>  <span class="o">=</span> <span class="n">e_v</span>
+            <span class="n">e_h_arr</span><span class="p">[</span><span class="n">upd_ptr</span><span class="p">]</span> <span class="o">=</span> <span class="n">e_h</span>
+            <span class="n">e_v_arr</span><span class="p">[</span><span class="n">upd_ptr</span><span class="p">]</span> <span class="o">=</span> <span class="n">e_v</span>
             <span class="n">bBL_arr</span><span class="p">[</span><span class="n">upd_ptr</span><span class="p">]</span> <span class="o">=</span> <span class="n">bBL</span>
             <span class="n">bDo_arr</span><span class="p">[</span><span class="n">upd_ptr</span><span class="p">]</span> <span class="o">=</span> <span class="n">bDo</span>
-            <span class="n">bH_arr</span><span class="p">[</span><span class="n">upd_ptr</span><span class="p">]</span>  <span class="o">=</span> <span class="n">bH</span>
-            <span class="n">bV_arr</span><span class="p">[</span><span class="n">upd_ptr</span><span class="p">]</span>  <span class="o">=</span> <span class="n">bV</span>
+            <span class="n">bH_arr</span><span class="p">[</span><span class="n">upd_ptr</span><span class="p">]</span> <span class="o">=</span> <span class="n">bH</span>
+            <span class="n">bV_arr</span><span class="p">[</span><span class="n">upd_ptr</span><span class="p">]</span> <span class="o">=</span> <span class="n">bV</span>
             <span class="n">upd_ptr</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">histBL</span><span class="p">,</span> <span class="n">histDonut</span><span class="p">,</span> <span class="n">histH</span><span class="p">,</span> <span class="n">histV</span><span class="p">,</span>
-            <span class="n">upd_ptr</span><span class="p">,</span>
-            <span class="n">ii_arr</span><span class="p">,</span> <span class="n">kk_arr</span><span class="p">,</span> <span class="n">oo_arr</span><span class="p">,</span>
-            <span class="n">e_bl_arr</span><span class="p">,</span> <span class="n">e_dn_arr</span><span class="p">,</span> <span class="n">e_h_arr</span><span class="p">,</span> <span class="n">e_v_arr</span><span class="p">,</span>
-            <span class="n">bBL_arr</span><span class="p">,</span> <span class="n">bDo_arr</span><span class="p">,</span> <span class="n">bH_arr</span><span class="p">,</span> <span class="n">bV_arr</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">histBL</span><span class="p">,</span>
+        <span class="n">histDonut</span><span class="p">,</span>
+        <span class="n">histH</span><span class="p">,</span>
+        <span class="n">histV</span><span class="p">,</span>
+        <span class="n">upd_ptr</span><span class="p">,</span>
+        <span class="n">ii_arr</span><span class="p">,</span>
+        <span class="n">kk_arr</span><span class="p">,</span>
+        <span class="n">oo_arr</span><span class="p">,</span>
+        <span class="n">e_bl_arr</span><span class="p">,</span>
+        <span class="n">e_dn_arr</span><span class="p">,</span>
+        <span class="n">e_h_arr</span><span class="p">,</span>
+        <span class="n">e_v_arr</span><span class="p">,</span>
+        <span class="n">bBL_arr</span><span class="p">,</span>
+        <span class="n">bDo_arr</span><span class="p">,</span>
+        <span class="n">bH_arr</span><span class="p">,</span>
+        <span class="n">bV_arr</span><span class="p">,</span>
+    <span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_evalues_and_hist_parallel</span><span class="p">(</span>
@@ -941,8 +984,10 @@
 
     <span class="n">max_loop_k</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">max_loop_dist_bp</span> <span class="o">//</span> <span class="n">conf</span><span class="o">.</span><span class="n">resolution</span>
 
-    <span class="n">chunks</span> <span class="o">=</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="n">chunk_size</span><span class="p">,</span> <span class="n">diag_num</span><span class="p">))</span>
-              <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">diag_num</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">)]</span>
+    <span class="n">chunks</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="n">chunk_size</span><span class="p">,</span> <span class="n">diag_num</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">diag_num</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">)</span>
+    <span class="p">]</span>
 
     <span class="n">ctx</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">get_context</span><span class="p">(</span><span class="s2">&quot;fork&quot;</span><span class="p">)</span>
     <span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span>
@@ -965,32 +1010,45 @@
         <span class="p">)</span>
         <span class="k">for</span> <span class="p">(</span><span class="n">k0</span><span class="p">,</span> <span class="n">k1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">chunks</span>
     <span class="p">)</span>
-    
+
     <span class="n">histBL</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">conf</span><span class="o">.</span><span class="n">w1</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">max_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
     <span class="n">histDo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">histBL</span><span class="p">)</span>
-    <span class="n">histH</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">histBL</span><span class="p">)</span>
-    <span class="n">histV</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">histBL</span><span class="p">)</span>
+    <span class="n">histH</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">histBL</span><span class="p">)</span>
+    <span class="n">histV</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">histBL</span><span class="p">)</span>
 
     <span class="n">observed</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
     <span class="n">eBL</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
     <span class="n">eDo</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-    <span class="n">eH</span>  <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-    <span class="n">eV</span>  <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-    
+    <span class="n">eH</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">eV</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
     <span class="n">binBL</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
     <span class="n">binDo</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
-    <span class="n">binH</span>  <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
-    <span class="n">binV</span>  <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
-    
-    <span class="k">for</span> <span class="p">(</span><span class="n">hBL</span><span class="p">,</span> <span class="n">hDo</span><span class="p">,</span> <span class="n">hH</span><span class="p">,</span> <span class="n">hV</span><span class="p">,</span>
-         <span class="n">p</span><span class="p">,</span>
-         <span class="n">ii</span><span class="p">,</span> <span class="n">kk</span><span class="p">,</span> <span class="n">oo</span><span class="p">,</span>
-         <span class="n">e_bl_arr</span><span class="p">,</span> <span class="n">e_dn_arr</span><span class="p">,</span> <span class="n">e_h_arr</span><span class="p">,</span> <span class="n">e_v_arr</span><span class="p">,</span>
-         <span class="n">bBL_arr</span><span class="p">,</span> <span class="n">bDo_arr</span><span class="p">,</span> <span class="n">bH_arr</span><span class="p">,</span> <span class="n">bV_arr</span><span class="p">)</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="n">binH</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
+    <span class="n">binV</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">diag_num</span><span class="o">=</span><span class="n">diag_num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="p">(</span>
+        <span class="n">hBL</span><span class="p">,</span>
+        <span class="n">hDo</span><span class="p">,</span>
+        <span class="n">hH</span><span class="p">,</span>
+        <span class="n">hV</span><span class="p">,</span>
+        <span class="n">p</span><span class="p">,</span>
+        <span class="n">ii</span><span class="p">,</span>
+        <span class="n">kk</span><span class="p">,</span>
+        <span class="n">oo</span><span class="p">,</span>
+        <span class="n">e_bl_arr</span><span class="p">,</span>
+        <span class="n">e_dn_arr</span><span class="p">,</span>
+        <span class="n">e_h_arr</span><span class="p">,</span>
+        <span class="n">e_v_arr</span><span class="p">,</span>
+        <span class="n">bBL_arr</span><span class="p">,</span>
+        <span class="n">bDo_arr</span><span class="p">,</span>
+        <span class="n">bH_arr</span><span class="p">,</span>
+        <span class="n">bV_arr</span><span class="p">,</span>
+    <span class="p">)</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
         <span class="n">histBL</span> <span class="o">+=</span> <span class="n">hBL</span>
         <span class="n">histDo</span> <span class="o">+=</span> <span class="n">hDo</span>
-        <span class="n">histH</span>  <span class="o">+=</span> <span class="n">hH</span>
-        <span class="n">histV</span>  <span class="o">+=</span> <span class="n">hV</span>
+        <span class="n">histH</span> <span class="o">+=</span> <span class="n">hH</span>
+        <span class="n">histV</span> <span class="o">+=</span> <span class="n">hV</span>
 
         <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">continue</span>
@@ -1000,12 +1058,12 @@
         <span class="n">observed</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">kk</span><span class="p">]</span> <span class="o">=</span> <span class="n">oo</span><span class="p">[:</span><span class="n">p</span><span class="p">]</span>
         <span class="n">eBL</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">kk</span><span class="p">]</span> <span class="o">=</span> <span class="n">e_bl_arr</span><span class="p">[:</span><span class="n">p</span><span class="p">]</span>
         <span class="n">eDo</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">kk</span><span class="p">]</span> <span class="o">=</span> <span class="n">e_dn_arr</span><span class="p">[:</span><span class="n">p</span><span class="p">]</span>
-        <span class="n">eH</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">kk</span><span class="p">]</span>  <span class="o">=</span> <span class="n">e_h_arr</span><span class="p">[:</span><span class="n">p</span><span class="p">]</span>
-        <span class="n">eV</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">kk</span><span class="p">]</span>  <span class="o">=</span> <span class="n">e_v_arr</span><span class="p">[:</span><span class="n">p</span><span class="p">]</span>
+        <span class="n">eH</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">kk</span><span class="p">]</span> <span class="o">=</span> <span class="n">e_h_arr</span><span class="p">[:</span><span class="n">p</span><span class="p">]</span>
+        <span class="n">eV</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">kk</span><span class="p">]</span> <span class="o">=</span> <span class="n">e_v_arr</span><span class="p">[:</span><span class="n">p</span><span class="p">]</span>
         <span class="n">binBL</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">kk</span><span class="p">]</span> <span class="o">=</span> <span class="n">bBL_arr</span><span class="p">[:</span><span class="n">p</span><span class="p">]</span>
         <span class="n">binDo</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">kk</span><span class="p">]</span> <span class="o">=</span> <span class="n">bDo_arr</span><span class="p">[:</span><span class="n">p</span><span class="p">]</span>
-        <span class="n">binH</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">kk</span><span class="p">]</span>  <span class="o">=</span> <span class="n">bH_arr</span><span class="p">[:</span><span class="n">p</span><span class="p">]</span>
-        <span class="n">binV</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">kk</span><span class="p">]</span>  <span class="o">=</span> <span class="n">bV_arr</span><span class="p">[:</span><span class="n">p</span><span class="p">]</span>
+        <span class="n">binH</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">kk</span><span class="p">]</span> <span class="o">=</span> <span class="n">bH_arr</span><span class="p">[:</span><span class="n">p</span><span class="p">]</span>
+        <span class="n">binV</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">kk</span><span class="p">]</span> <span class="o">=</span> <span class="n">bV_arr</span><span class="p">[:</span><span class="n">p</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="p">(</span>
         <span class="n">observed</span><span class="p">,</span>
@@ -1023,9 +1081,11 @@
         <span class="n">histV</span><span class="p">,</span>
     <span class="p">)</span>
 
+
 <span class="c1"># =========================================================</span>
 <span class="c1"># Step 2: thresholds + FDR tables</span>
 <span class="c1"># =========================================================</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_thresholds_and_fdr</span><span class="p">(</span>
     <span class="n">hist</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
@@ -1063,7 +1123,7 @@
     <span class="n">rcsHist</span> <span class="o">=</span> <span class="n">reverse_cumulative</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">w1</span><span class="p">):</span>
-        <span class="n">cnt</span> <span class="o">=</span> <span class="n">rcsHist</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">cnt</span> <span class="o">=</span> <span class="n">rcsHist</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">cnt</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">continue</span>
 
@@ -1077,8 +1137,8 @@
         <span class="n">rcsExpected</span> <span class="o">=</span> <span class="n">reverse_cumulative</span><span class="p">(</span><span class="n">expected</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">width</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">rcsExpected</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">/</span><span class="n">rcsHist</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">conf</span><span class="o">.</span><span class="n">fdr</span><span class="p">:</span>
-            <span class="c1"># if conf.fdr * rcsExpected[j] &lt;= rcsHist[idx, j]:</span>
+            <span class="k">if</span> <span class="n">rcsExpected</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="n">rcsHist</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">conf</span><span class="o">.</span><span class="n">fdr</span><span class="p">:</span>
+                <span class="c1"># if conf.fdr * rcsExpected[j] &lt;= rcsHist[idx, j]:</span>
                 <span class="n">threshold</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">width</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="k">break</span>
 
@@ -1095,6 +1155,7 @@
 <span class="c1"># =========================================================</span>
 <span class="c1"># Step 3: Feature2D + FDR + centroid合并</span>
 <span class="c1"># =========================================================</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">generate_peak_feature</span><span class="p">(</span>
     <span class="n">chr_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1180,7 +1241,7 @@
     <span class="n">fdrLogBL</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">fdrLogDonut</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">fdrLogH</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-    <span class="n">fdrLogV</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">fdrLogV</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Assign FDR values to a Feature2D object.</span>
@@ -1243,18 +1304,20 @@
     <span class="n">fDn</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">FDRDONUT</span><span class="p">)</span>
     <span class="n">fH</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">FDRH</span><span class="p">)</span>
     <span class="n">fV</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">FDRV</span><span class="p">)</span>
-    <span class="n">numCollapsed</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">NUMCOLLAPSED</span><span class="p">))</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">has_attr</span><span class="p">(</span><span class="n">NUMCOLLAPSED</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span>
+    <span class="n">numCollapsed</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">NUMCOLLAPSED</span><span class="p">))</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">has_attr</span><span class="p">(</span><span class="n">NUMCOLLAPSED</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span>
+    <span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="n">expBL</span><span class="p">,</span> <span class="n">expDn</span><span class="p">,</span> <span class="n">expH</span><span class="p">,</span> <span class="n">expV</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">1e-6</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
-        <span class="n">obs</span> <span class="o">&gt;</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe2</span> <span class="o">*</span> <span class="n">expBL</span> <span class="ow">and</span>
-        <span class="n">obs</span> <span class="o">&gt;</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe2</span> <span class="o">*</span> <span class="n">expDn</span> <span class="ow">and</span>
-        <span class="n">obs</span> <span class="o">&gt;</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe1</span> <span class="o">*</span> <span class="n">expH</span> <span class="ow">and</span>
-        <span class="n">obs</span> <span class="o">&gt;</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe1</span> <span class="o">*</span> <span class="n">expV</span> <span class="ow">and</span>
-        <span class="p">(</span><span class="n">obs</span> <span class="o">&gt;</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe3</span> <span class="o">*</span> <span class="n">expBL</span> <span class="ow">or</span> <span class="n">obs</span> <span class="o">&gt;</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe3</span> <span class="o">*</span> <span class="n">expDn</span><span class="p">)</span> <span class="ow">and</span>
-        <span class="p">(</span><span class="n">numCollapsed</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="p">(</span><span class="n">fBL</span> <span class="o">+</span> <span class="n">fDn</span> <span class="o">+</span> <span class="n">fH</span> <span class="o">+</span> <span class="n">fV</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">conf</span><span class="o">.</span><span class="n">fdrsum</span><span class="p">)</span>
+        <span class="n">obs</span> <span class="o">&gt;</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe2</span> <span class="o">*</span> <span class="n">expBL</span>
+        <span class="ow">and</span> <span class="n">obs</span> <span class="o">&gt;</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe2</span> <span class="o">*</span> <span class="n">expDn</span>
+        <span class="ow">and</span> <span class="n">obs</span> <span class="o">&gt;</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe1</span> <span class="o">*</span> <span class="n">expH</span>
+        <span class="ow">and</span> <span class="n">obs</span> <span class="o">&gt;</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe1</span> <span class="o">*</span> <span class="n">expV</span>
+        <span class="ow">and</span> <span class="p">(</span><span class="n">obs</span> <span class="o">&gt;</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe3</span> <span class="o">*</span> <span class="n">expBL</span> <span class="ow">or</span> <span class="n">obs</span> <span class="o">&gt;</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe3</span> <span class="o">*</span> <span class="n">expDn</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="p">(</span><span class="n">numCollapsed</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="p">(</span><span class="n">fBL</span> <span class="o">+</span> <span class="n">fDn</span> <span class="o">+</span> <span class="n">fH</span> <span class="o">+</span> <span class="n">fV</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">conf</span><span class="o">.</span><span class="n">fdrsum</span><span class="p">)</span>
     <span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
 
@@ -1263,6 +1326,7 @@
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">return</span> <span class="kc">True</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">fdr_thresholds_satisfied</span><span class="p">(</span>
     <span class="n">f</span><span class="p">:</span> <span class="n">Feature2D</span><span class="p">,</span>
@@ -1296,17 +1360,19 @@
     <span class="n">fDn</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">FDRDONUT</span><span class="p">)</span>
     <span class="n">fH</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">FDRH</span><span class="p">)</span>
     <span class="n">fV</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">FDRV</span><span class="p">)</span>
-    <span class="n">numCollapsed</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">NUMCOLLAPSED</span><span class="p">))</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">has_attr</span><span class="p">(</span><span class="n">NUMCOLLAPSED</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span>
+    <span class="n">numCollapsed</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">NUMCOLLAPSED</span><span class="p">))</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">has_attr</span><span class="p">(</span><span class="n">NUMCOLLAPSED</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span>
+    <span class="p">)</span>
 
     <span class="c1"># if min(expBL, expDn, expH, expV) &lt;= 1e-6:</span>
     <span class="c1">#     return False</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
-    <span class="c1">#     obs &gt; conf.oe2 * expBL and</span>
-    <span class="c1">#     obs &gt; conf.oe2 * expDn and</span>
-    <span class="c1">#     obs &gt; conf.oe1 * expH and</span>
-    <span class="c1">#     obs &gt; conf.oe1 * expV and</span>
-    <span class="c1">#     (obs &gt; conf.oe3 * expBL or obs &gt; conf.oe3 * expDn) and</span>
+        <span class="c1">#     obs &gt; conf.oe2 * expBL and</span>
+        <span class="c1">#     obs &gt; conf.oe2 * expDn and</span>
+        <span class="c1">#     obs &gt; conf.oe1 * expH and</span>
+        <span class="c1">#     obs &gt; conf.oe1 * expV and</span>
+        <span class="c1">#     (obs &gt; conf.oe3 * expBL or obs &gt; conf.oe3 * expDn) and</span>
         <span class="p">(</span><span class="n">numCollapsed</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="p">(</span><span class="n">fBL</span> <span class="o">+</span> <span class="n">fDn</span> <span class="o">+</span> <span class="n">fH</span> <span class="o">+</span> <span class="n">fV</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">conf</span><span class="o">.</span><span class="n">fdrsum</span><span class="p">)</span>
     <span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
@@ -1349,7 +1415,9 @@
     <span class="n">uniq</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">feats</span><span class="p">:</span>
         <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">chr1</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">start1</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">start2</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">uniq</span> <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">OBSERVED</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">uniq</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">OBSERVED</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">uniq</span> <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">OBSERVED</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">uniq</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span>
+            <span class="n">OBSERVED</span>
+        <span class="p">):</span>
             <span class="n">uniq</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span>
     <span class="n">feats</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">uniq</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
@@ -1398,6 +1466,7 @@
 <span class="c1"># =========================================================</span>
 <span class="c1"># Step 4: Single-resolution HiCCUPS</span>
 <span class="c1"># =========================================================</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">run_hiccups_single_resolution</span><span class="p">(</span>
     <span class="n">hic_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1449,7 +1518,9 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported Hi-C file format: </span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="n">t_load1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[TIME] data loading (</span><span class="si">{</span><span class="n">chr_name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2"> bp): </span><span class="si">{</span><span class="n">t_load1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t_load0</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> s&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;[TIME] data loading (</span><span class="si">{</span><span class="n">chr_name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2"> bp): </span><span class="si">{</span><span class="n">t_load1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t_load0</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> s&quot;</span>
+    <span class="p">)</span>
 
     <span class="n">N</span> <span class="o">=</span> <span class="n">C_norm</span><span class="o">.</span><span class="n">bin_num</span>
     <span class="n">kr</span> <span class="o">=</span> <span class="n">kr</span><span class="p">[:</span><span class="n">N</span><span class="p">]</span>
@@ -1473,13 +1544,23 @@
     <span class="c1">#     mask_row_col=C_raw.mask_row_col,</span>
     <span class="c1">#     band_data_input=True,</span>
     <span class="c1"># )</span>
-    <span class="n">expected_dist</span> <span class="o">=</span> <span class="n">C_norm</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;diag&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">expected_dist</span> <span class="o">=</span> <span class="n">C_norm</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">&quot;diag&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing expected values and histograms...&quot;</span><span class="p">)</span>
     <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
     <span class="p">(</span>
-        <span class="n">observed</span><span class="p">,</span> <span class="n">eBL</span><span class="p">,</span> <span class="n">eDonut</span><span class="p">,</span> <span class="n">eH</span><span class="p">,</span> <span class="n">eV</span><span class="p">,</span>
-        <span class="n">binBL</span><span class="p">,</span> <span class="n">binDonut</span><span class="p">,</span> <span class="n">binH</span><span class="p">,</span> <span class="n">binV</span><span class="p">,</span>
-        <span class="n">histBL</span><span class="p">,</span> <span class="n">histDonut</span><span class="p">,</span> <span class="n">histH</span><span class="p">,</span> <span class="n">histV</span><span class="p">,</span>
+        <span class="n">observed</span><span class="p">,</span>
+        <span class="n">eBL</span><span class="p">,</span>
+        <span class="n">eDonut</span><span class="p">,</span>
+        <span class="n">eH</span><span class="p">,</span>
+        <span class="n">eV</span><span class="p">,</span>
+        <span class="n">binBL</span><span class="p">,</span>
+        <span class="n">binDonut</span><span class="p">,</span>
+        <span class="n">binH</span><span class="p">,</span>
+        <span class="n">binV</span><span class="p">,</span>
+        <span class="n">histBL</span><span class="p">,</span>
+        <span class="n">histDonut</span><span class="p">,</span>
+        <span class="n">histH</span><span class="p">,</span>
+        <span class="n">histV</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">=</span> <span class="n">compute_evalues_and_hist_parallel</span><span class="p">(</span>
         <span class="n">C_norm</span><span class="p">,</span> <span class="n">expected_dist</span><span class="p">,</span> <span class="n">conf</span><span class="p">,</span> <span class="n">kr</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">n_jobs</span>
     <span class="p">)</span>
@@ -1503,15 +1584,17 @@
     <span class="c1"># gather bin-specific thresholds</span>
     <span class="n">thr_bl_mat</span> <span class="o">=</span> <span class="n">thrBL</span><span class="p">[</span><span class="n">binBL</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
     <span class="n">thr_do_mat</span> <span class="o">=</span> <span class="n">thrDo</span><span class="p">[</span><span class="n">binDonut</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
-    <span class="n">thr_h_mat</span>  <span class="o">=</span> <span class="n">thrH</span><span class="p">[</span><span class="n">binH</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
-    <span class="n">thr_v_mat</span>  <span class="o">=</span> <span class="n">thrV</span><span class="p">[</span><span class="n">binV</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+    <span class="n">thr_h_mat</span> <span class="o">=</span> <span class="n">thrH</span><span class="p">[</span><span class="n">binH</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+    <span class="n">thr_v_mat</span> <span class="o">=</span> <span class="n">thrV</span><span class="p">[</span><span class="n">binV</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
 
-    <span class="n">sb_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span>
-        <span class="n">thr_bl_mat</span><span class="p">,</span>
-        <span class="n">thr_do_mat</span><span class="p">,</span>
-        <span class="n">thr_h_mat</span><span class="p">,</span>
-        <span class="n">thr_v_mat</span><span class="p">,</span>
-    <span class="p">])</span>
+    <span class="n">sb_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">thr_bl_mat</span><span class="p">,</span>
+            <span class="n">thr_do_mat</span><span class="p">,</span>
+            <span class="n">thr_h_mat</span><span class="p">,</span>
+            <span class="n">thr_v_mat</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
 
     <span class="n">peak_data</span> <span class="o">=</span> <span class="n">observed</span><span class="o">.</span><span class="n">data</span> <span class="o">-</span> <span class="n">sb_mat</span>
 
@@ -1528,36 +1611,49 @@
     <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Filtering peaks...&quot;</span><span class="p">)</span>
     <span class="c1"># Second pass: local maxima, FDR, and OE threshold filtering</span>
-    
-    <span class="n">peak</span><span class="o">.</span><span class="n">mask</span><span class="p">[:,:</span><span class="n">conf</span><span class="o">.</span><span class="n">peak_width</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># mask out diagonals within peak_width</span>
+
+    <span class="n">peak</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span>
+        <span class="p">:,</span> <span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">peak_width</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># mask out diagonals within peak_width</span>
     <span class="n">peak</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">peak</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">peak</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">peak</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">peak</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">peak</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
     <span class="n">peak</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">peak</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">peak</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
 
     <span class="n">peak</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="n">eBL</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">eDonut</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">eH</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">eV</span><span class="o">.</span><span class="n">data</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="n">peak</span><span class="o">.</span><span class="n">mask</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="n">eBL</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">eDonut</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">eH</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">eV</span><span class="o">.</span><span class="n">data</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mf">1e-6</span><span class="p">,</span>
+        <span class="n">peak</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span>
     <span class="p">)</span>
-    
+
     <span class="n">peak</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">observed</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;=</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe2</span> <span class="o">*</span> <span class="n">eBL</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">peak</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
-    <span class="n">peak</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">observed</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;=</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe2</span> <span class="o">*</span> <span class="n">eDonut</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">peak</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+    <span class="n">peak</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span>
+        <span class="n">observed</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;=</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe2</span> <span class="o">*</span> <span class="n">eDonut</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">peak</span><span class="o">.</span><span class="n">mask</span>
+    <span class="p">)</span>
     <span class="n">peak</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">observed</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;=</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe1</span> <span class="o">*</span> <span class="n">eH</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">peak</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
     <span class="n">peak</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">observed</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;=</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe1</span> <span class="o">*</span> <span class="n">eV</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">peak</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
-    
+
     <span class="n">peak</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">observed</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;=</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe3</span> <span class="o">*</span> <span class="n">eBL</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;=</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe3</span> <span class="o">*</span> <span class="n">eDonut</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> 
-        <span class="n">peak</span><span class="o">.</span><span class="n">mask</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+            <span class="n">observed</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;=</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe3</span> <span class="o">*</span> <span class="n">eBL</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">observed</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;=</span> <span class="n">conf</span><span class="o">.</span><span class="n">oe3</span> <span class="o">*</span> <span class="n">eDonut</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">peak</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span>
     <span class="p">)</span>
-    
+
     <span class="n">observed_clip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">observed</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">max_count</span><span class="p">)</span>
     <span class="n">peak</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="n">fdrBL</span><span class="p">[</span><span class="n">binBL</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">observed_clip</span><span class="p">],</span> 
-                           <span class="n">fdrDo</span><span class="p">[</span><span class="n">binDonut</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">observed_clip</span><span class="p">],</span> 
-                           <span class="n">fdrH</span><span class="p">[</span><span class="n">binH</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">observed_clip</span><span class="p">],</span> 
-                           <span class="n">fdrV</span><span class="p">[</span><span class="n">binV</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">observed_clip</span><span class="p">]])</span> <span class="o">&gt;</span> <span class="n">conf</span><span class="o">.</span><span class="n">fdr</span><span class="p">,</span>
-        <span class="n">peak</span><span class="o">.</span><span class="n">mask</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">fdrBL</span><span class="p">[</span><span class="n">binBL</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">observed_clip</span><span class="p">],</span>
+                <span class="n">fdrDo</span><span class="p">[</span><span class="n">binDonut</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">observed_clip</span><span class="p">],</span>
+                <span class="n">fdrH</span><span class="p">[</span><span class="n">binH</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">observed_clip</span><span class="p">],</span>
+                <span class="n">fdrV</span><span class="p">[</span><span class="n">binV</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">observed_clip</span><span class="p">],</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="o">&gt;</span> <span class="n">conf</span><span class="o">.</span><span class="n">fdr</span><span class="p">,</span>
+        <span class="n">peak</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">del</span> <span class="n">observed_clip</span>
-    
+
     <span class="n">candidates</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">~</span><span class="n">peak</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
@@ -1590,15 +1686,25 @@
         <span class="n">bV</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">binV</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">])</span>
 
         <span class="n">f</span> <span class="o">=</span> <span class="n">generate_peak_feature</span><span class="p">(</span>
-            <span class="n">chr_name</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">resolution</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span>
-            <span class="n">o</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span>
-            <span class="n">e_bl</span><span class="p">,</span> <span class="n">e_dn</span><span class="p">,</span> <span class="n">e_hh</span><span class="p">,</span> <span class="n">e_vv</span><span class="p">,</span>
-            <span class="n">bBL</span><span class="p">,</span> <span class="n">bDo</span><span class="p">,</span> <span class="n">bH</span><span class="p">,</span> <span class="n">bV</span><span class="p">,</span>
+            <span class="n">chr_name</span><span class="p">,</span>
+            <span class="n">conf</span><span class="o">.</span><span class="n">resolution</span><span class="p">,</span>
+            <span class="n">i</span><span class="p">,</span>
+            <span class="n">j</span><span class="p">,</span>
+            <span class="n">o</span><span class="p">,</span>
+            <span class="n">val</span><span class="p">,</span>
+            <span class="n">e_bl</span><span class="p">,</span>
+            <span class="n">e_dn</span><span class="p">,</span>
+            <span class="n">e_hh</span><span class="p">,</span>
+            <span class="n">e_vv</span><span class="p">,</span>
+            <span class="n">bBL</span><span class="p">,</span>
+            <span class="n">bDo</span><span class="p">,</span>
+            <span class="n">bH</span><span class="p">,</span>
+            <span class="n">bV</span><span class="p">,</span>
         <span class="p">)</span>
-        
+
         <span class="n">add_fdr_to_feature</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">fdrBL</span><span class="p">,</span> <span class="n">fdrDo</span><span class="p">,</span> <span class="n">fdrH</span><span class="p">,</span> <span class="n">fdrV</span><span class="p">)</span>
         <span class="n">candidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        
+
     <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[TIME] local maxima + filtering: </span><span class="si">{</span><span class="n">t1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t0</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> s&quot;</span><span class="p">)</span>
 
@@ -1618,6 +1724,7 @@
 <span class="c1"># Step 5: multi-resolution HiCCUPS + merging</span>
 <span class="c1"># =========================================================</span>
 
+
 <span class="k">def</span><span class="w"> </span><span class="nf">euclid_bp</span><span class="p">(</span><span class="n">f1</span><span class="p">:</span> <span class="n">Feature2D</span><span class="p">,</span> <span class="n">f2</span><span class="p">:</span> <span class="n">Feature2D</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="n">dx</span> <span class="o">=</span> <span class="n">f1</span><span class="o">.</span><span class="n">start1</span> <span class="o">-</span> <span class="n">f2</span><span class="o">.</span><span class="n">start1</span>
     <span class="n">dy</span> <span class="o">=</span> <span class="n">f1</span><span class="o">.</span><span class="n">start2</span> <span class="o">-</span> <span class="n">f2</span><span class="o">.</span><span class="n">start2</span>
@@ -1625,9 +1732,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">extract_reproducible_centroids</span><span class="p">(</span>
-    <span class="n">list_a</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">],</span>
-    <span class="n">list_b</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">],</span>
-    <span class="n">radius_bp</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">list_a</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">],</span> <span class="n">list_b</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">],</span> <span class="n">radius_bp</span><span class="p">:</span> <span class="nb">int</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">]:</span>
     <span class="n">centroids</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">fb</span> <span class="ow">in</span> <span class="n">list_b</span><span class="p">:</span>
@@ -1641,9 +1746,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">extract_peaks_near_centroids</span><span class="p">(</span>
-    <span class="n">peaks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">],</span>
-    <span class="n">centroids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">],</span>
-    <span class="n">radius_bp</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">peaks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">],</span> <span class="n">centroids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">],</span> <span class="n">radius_bp</span><span class="p">:</span> <span class="nb">int</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">]:</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">peaks</span><span class="p">:</span>
@@ -1655,9 +1758,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">extract_peaks_not_near_centroids</span><span class="p">(</span>
-    <span class="n">peaks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">],</span>
-    <span class="n">centroids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">],</span>
-    <span class="n">radius_bp</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">peaks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">],</span> <span class="n">centroids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">],</span> <span class="n">radius_bp</span><span class="p">:</span> <span class="nb">int</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">]:</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">peaks</span><span class="p">:</span>
@@ -1672,8 +1773,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">get_peaks_near_diagonal</span><span class="p">(</span>
-    <span class="n">peaks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">],</span>
-    <span class="n">max_dist_bp</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">peaks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">],</span> <span class="n">max_dist_bp</span><span class="p">:</span> <span class="nb">int</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">]:</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">peaks</span><span class="p">:</span>
@@ -1683,8 +1783,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">get_strong_peaks</span><span class="p">(</span>
-    <span class="n">peaks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">],</span>
-    <span class="n">min_observed</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">peaks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">],</span> <span class="n">min_observed</span><span class="p">:</span> <span class="nb">float</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">]:</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">peaks</span><span class="p">:</span>
@@ -1758,7 +1857,9 @@
         <span class="n">twenty5</span> <span class="o">=</span> <span class="n">looplists</span><span class="p">[</span><span class="mi">25000</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">list_altered</span><span class="p">:</span>
             <span class="n">c25</span> <span class="o">=</span> <span class="n">extract_reproducible_centroids</span><span class="p">(</span><span class="n">merged</span><span class="p">,</span> <span class="n">twenty5</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">25000</span><span class="p">)</span>
-            <span class="n">distant25</span> <span class="o">=</span> <span class="n">extract_peaks_not_near_centroids</span><span class="p">(</span><span class="n">twenty5</span><span class="p">,</span> <span class="n">c25</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">25000</span><span class="p">)</span>
+            <span class="n">distant25</span> <span class="o">=</span> <span class="n">extract_peaks_not_near_centroids</span><span class="p">(</span>
+                <span class="n">twenty5</span><span class="p">,</span> <span class="n">c25</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">25000</span>
+            <span class="p">)</span>
             <span class="n">merged</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">distant25</span><span class="p">)</span>
             <span class="n">merged</span> <span class="o">=</span> <span class="n">remove_duplicates</span><span class="p">(</span><span class="n">merged</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1796,6 +1897,7 @@
     <span class="n">merged</span> <span class="o">=</span> <span class="n">merge_all_resolutions</span><span class="p">(</span><span class="n">looplists</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">merged</span>
 
+
 <span class="c1"># -------------------------------------------------------------</span>
 <span class="c1"># High-level HiCCUPS function API (clean &amp; structured)</span>
 <span class="c1"># -------------------------------------------------------------</span>
@@ -1828,6 +1930,7 @@
 
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
+
 
 <div class="viewcode-block" id="hiccups"><a class="viewcode-back" href="../../../_autosummary/bandhic.hiccups.html#bandhic.hiccups">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">hiccups</span><span class="p">(</span>
     <span class="n">hic_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1900,6 +2003,7 @@
 <span class="sd">        List of detected chromatin loops after multi-resolution merging.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">num_res</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resolutions</span><span class="p">)</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_expand_param</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">default_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default_val</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">default_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1969,6 +2073,7 @@
 <span class="c1"># Step 6: BEDPE Output</span>
 <span class="c1"># =========================================================</span>
 
+
 <span class="k">def</span><span class="w"> </span><span class="nf">write_bedpe</span><span class="p">(</span><span class="n">loops</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Feature2D</span><span class="p">],</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    header:</span>
@@ -1976,30 +2081,95 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">header</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s2">&quot;#chr1&quot;</span><span class="p">,</span> <span class="s2">&quot;x1&quot;</span><span class="p">,</span> <span class="s2">&quot;x2&quot;</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="s2">&quot;y1&quot;</span><span class="p">,</span> <span class="s2">&quot;y2&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="s2">&quot;strand1&quot;</span><span class="p">,</span> <span class="s2">&quot;strand2&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;observed&quot;</span><span class="p">,</span> <span class="s2">&quot;expectedBL&quot;</span><span class="p">,</span> <span class="s2">&quot;expectedDonut&quot;</span><span class="p">,</span> <span class="s2">&quot;expectedH&quot;</span><span class="p">,</span> <span class="s2">&quot;expectedV&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;fdrBL&quot;</span><span class="p">,</span> <span class="s2">&quot;fdrDonut&quot;</span><span class="p">,</span> <span class="s2">&quot;fdrH&quot;</span><span class="p">,</span> <span class="s2">&quot;fdrV&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;numCollapsed&quot;</span><span class="p">,</span> <span class="s2">&quot;centroid1&quot;</span><span class="p">,</span> <span class="s2">&quot;centroid2&quot;</span><span class="p">,</span> <span class="s2">&quot;radius&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;#chr1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;x1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;x2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;y1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;y2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;score&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;strand1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;strand2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;color&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;observed&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;expectedBL&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;expectedDonut&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;expectedH&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;expectedV&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;fdrBL&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;fdrDonut&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;fdrH&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;fdrV&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;numCollapsed&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;centroid1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;centroid2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;radius&quot;</span><span class="p">,</span>
         <span class="p">]</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">feat</span> <span class="ow">in</span> <span class="n">loops</span><span class="p">:</span>
             <span class="n">score</span> <span class="o">=</span> <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">PEAK</span><span class="p">)</span>
-            <span class="n">observed</span> <span class="o">=</span> <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">OBSERVED</span><span class="p">)</span> <span class="k">if</span> <span class="n">OBSERVED</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
-            <span class="n">expBL</span> <span class="o">=</span> <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">EXPECTEDBL</span><span class="p">)</span> <span class="k">if</span> <span class="n">EXPECTEDBL</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
-            <span class="n">expDonut</span> <span class="o">=</span> <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">EXPECTEDDONUT</span><span class="p">)</span> <span class="k">if</span> <span class="n">EXPECTEDDONUT</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
-            <span class="n">expH</span> <span class="o">=</span> <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">EXPECTEDH</span><span class="p">)</span> <span class="k">if</span> <span class="n">EXPECTEDH</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
-            <span class="n">expV</span> <span class="o">=</span> <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">EXPECTEDV</span><span class="p">)</span> <span class="k">if</span> <span class="n">EXPECTEDV</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">OBSERVED</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">OBSERVED</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span>
+                <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">expBL</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">EXPECTEDBL</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">EXPECTEDBL</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span>
+                <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">expDonut</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">EXPECTEDDONUT</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">EXPECTEDDONUT</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span>
+                <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">expH</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">EXPECTEDH</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">EXPECTEDH</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span>
+                <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">expV</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">EXPECTEDV</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">EXPECTEDV</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span>
+                <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
 
-            <span class="n">fdrBL_val</span> <span class="o">=</span> <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">FDRBL</span><span class="p">)</span> <span class="k">if</span> <span class="n">FDRBL</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
-            <span class="n">fdrDo_val</span> <span class="o">=</span> <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">FDRDONUT</span><span class="p">)</span> <span class="k">if</span> <span class="n">FDRDONUT</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
-            <span class="n">fdrH_val</span> <span class="o">=</span> <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">FDRH</span><span class="p">)</span> <span class="k">if</span> <span class="n">FDRH</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
-            <span class="n">fdrV_val</span> <span class="o">=</span> <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">FDRV</span><span class="p">)</span> <span class="k">if</span> <span class="n">FDRV</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+            <span class="n">fdrBL_val</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">FDRBL</span><span class="p">)</span> <span class="k">if</span> <span class="n">FDRBL</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">fdrDo_val</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">FDRDONUT</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">FDRDONUT</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span>
+                <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">fdrH_val</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">FDRH</span><span class="p">)</span> <span class="k">if</span> <span class="n">FDRH</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">fdrV_val</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">FDRV</span><span class="p">)</span> <span class="k">if</span> <span class="n">FDRV</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
 
-            <span class="n">numCollapsed_val</span> <span class="o">=</span> <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">NUMCOLLAPSED</span><span class="p">)</span> <span class="k">if</span> <span class="n">NUMCOLLAPSED</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
-            <span class="n">centroid1_val</span> <span class="o">=</span> <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">CENTROID1</span><span class="p">)</span> <span class="k">if</span> <span class="n">CENTROID1</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
-            <span class="n">centroid2_val</span> <span class="o">=</span> <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">CENTROID2</span><span class="p">)</span> <span class="k">if</span> <span class="n">CENTROID2</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
-            <span class="n">radius_val</span> <span class="o">=</span> <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">RADIUS</span><span class="p">)</span> <span class="k">if</span> <span class="n">RADIUS</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+            <span class="n">numCollapsed_val</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">NUMCOLLAPSED</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">NUMCOLLAPSED</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span>
+                <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">centroid1_val</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">CENTROID1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">CENTROID1</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span>
+                <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">centroid2_val</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">CENTROID2</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">CENTROID2</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span>
+                <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">radius_val</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">feat</span><span class="o">.</span><span class="n">get_float</span><span class="p">(</span><span class="n">RADIUS</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">RADIUS</span> <span class="ow">in</span> <span class="n">feat</span><span class="o">.</span><span class="n">attrs</span>
+                <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
 
             <span class="n">color_str</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">feat</span><span class="o">.</span><span class="n">color</span><span class="p">))</span> <span class="k">if</span> <span class="n">feat</span><span class="o">.</span><span class="n">color</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
 
@@ -2044,7 +2214,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># hic_path = &quot;/Users/wwb/workspace-local/call_loop/data/GSE63525_GM12878_insitu_primary_replicate_combined.hic&quot;</span>
     <span class="n">hic_path</span> <span class="o">=</span> <span class="s2">&quot;/Users/wwb/workspace-local/call_loop/data/GSE130275_mESC_WT_combined_1.3B_microc.hic&quot;</span>
-    
+
     <span class="n">chrom</span> <span class="o">=</span> <span class="s2">&quot;chr19&quot;</span>
     <span class="n">resolutions</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1000</span><span class="p">]</span>
 
@@ -2056,6 +2226,7 @@
         <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test completed. Loops detected: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loops</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">time</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">psutil</span>
@@ -2069,7 +2240,11 @@
 
     <span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
     <span class="n">mem_after</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span> <span class="o">/</span> <span class="mi">1024</span><span class="o">**</span><span class="mi">2</span>
-    <span class="n">mem_peak</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">peak_wset</span> <span class="o">/</span> <span class="mi">1024</span><span class="o">**</span><span class="mi">2</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">proc</span><span class="o">.</span><span class="n">memory_info</span><span class="p">(),</span> <span class="s2">&quot;peak_wset&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">mem_after</span>
+    <span class="n">mem_peak</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">proc</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">peak_wset</span> <span class="o">/</span> <span class="mi">1024</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">proc</span><span class="o">.</span><span class="n">memory_info</span><span class="p">(),</span> <span class="s2">&quot;peak_wset&quot;</span><span class="p">)</span>
+        <span class="k">else</span> <span class="n">mem_after</span>
+    <span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[HiCCUPS] time = </span><span class="si">{</span><span class="n">t1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t0</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> s&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[HiCCUPS] RSS before = </span><span class="si">{</span><span class="n">mem_before</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MiB&quot;</span><span class="p">)</span>
