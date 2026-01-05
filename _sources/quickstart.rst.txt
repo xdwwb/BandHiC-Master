@@ -1,0 +1,11 @@
+Quick Start
+===========
+
+This section shows basic usage of the **BandHiC** package, including installation and a brief introduction to its features.
+
+.. toctree::
+   :maxdepth: 2
+
+   quickstart/intro
+   quickstart/installation
+   quickstart/whatis
