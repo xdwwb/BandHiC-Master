@@ -20,3 +20,7 @@ test/**
 
 bandhic/_conv2d.py
 
+build/**
+
+dist/**
+

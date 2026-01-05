@@ -21,6 +21,7 @@ setup(
         "scipy>=1.16",
         "cooler>0.10",
         "pandas>=2.3",
-        "joblib>=1.2" "numba>=0.59",
+        "joblib>=1.2",
+        "numba>=0.59",
     ],
 )
