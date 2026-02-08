@@ -7,7 +7,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>bandhic.cooler_chr &#8212; BandHiC  documentation</title>
   
@@ -51,7 +51,7 @@
     <link rel="prev" title="bandhic.straw_all_chrs" href="bandhic.straw_all_chrs.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.2.0" />
+  <meta name="docsearch:version" content="0.3.0" />
   </head>
   
   
@@ -625,7 +625,7 @@
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">bandhic</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bh</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">cooler_chr</span><span class="p">(</span><span class="s1">&#39;/Users/wwb/Documents/workspace/BandHiC-Master/data/yeast.10kb.cool&#39;</span><span class="p">,</span> <span class="s1">&#39;chrI&#39;</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span> <span class="o">=</span> <span class="n">bh</span><span class="o">.</span><span class="n">cooler_chr</span><span class="p">(</span><span class="s1">&#39;./data/yeast.10kb.cool&#39;</span><span class="p">,</span> <span class="s1">&#39;chrI&#39;</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">diag_num</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">band_hic_matrix</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
