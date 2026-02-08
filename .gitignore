@@ -17,6 +17,7 @@ bandhic/__pycache__/
 
 test/**
 !test/*_test.py
+!test/quick_start_example.ipynb
 
 bandhic/_conv2d.py
 

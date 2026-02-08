@@ -493,7 +493,7 @@ The file `data/sample.npz` contains a small Hi-C matrix stored in NumPy NPZ form
 
 An interactive Jupyter notebook is provided in the `test/` directory:
 
-- **Tutorial notebook**: [`test/tutorial_bandhic.ipynb`](test/tutorial_bandhic.ipynb)
+- **Tutorial notebook**: [`test/quick_start_example.ipynb.ipynb`](test/quick_start_example.ipynb)
 
 This notebook uses `data/sample.npz` as a running example and demonstrates, step by step, how to:
 - load a Hi-C matrix from an NPZ file,
