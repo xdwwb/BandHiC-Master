@@ -361,11 +361,12 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from bandhic import band_hic_matrix</span>
-<span class="sd">    &gt;&gt;&gt; from bandhic import scc</span>
-<span class="sd">    &gt;&gt;&gt; A = band_hic_matrix.straw_chr(&quot;example1.hic&quot;, &quot;chr1&quot;, 10000, diag_num=200)</span>
-<span class="sd">    &gt;&gt;&gt; B = band_hic_matrix.straw_chr(&quot;example2.hic&quot;, &quot;chr1&quot;, 10000, diag_num=200)</span>
+<span class="sd">    &gt;&gt;&gt; import bandhic as bh</span>
+<span class="sd">    &gt;&gt;&gt; A = bh.straw_chr(&quot;./data/GSE130275_mESC_WT_combined_1.3B_microc.hic&quot;, &quot;chr1&quot;, 100_000, diag_num=20)</span>
+<span class="sd">    &gt;&gt;&gt; B = A.copy()</span>
 <span class="sd">    &gt;&gt;&gt; scc, per_diag = scc(A, B)</span>
+<span class="sd">    &gt;&gt;&gt; scc</span>
+<span class="sd">    1.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>

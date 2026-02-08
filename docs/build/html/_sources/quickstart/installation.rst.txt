@@ -6,21 +6,22 @@ Required Package
 
 **BandHiC** can be installed on Linux-like systems and requires the following dependencies:
 
-#. python >= 3.11
-#. numpy >= 2.3
-#. pandas >= 2.3
-#. scipy >= 1.16
+#. python >= 3.8
+#. numpy >= 1.24
+#. pandas >= 2.0
+#. scipy >= 1.10
 #. `cooler >= 0.10 <https://cooler.readthedocs.io/en/latest/>`__
 #. `hic_straw >= 1.3 <https://pypi.org/project/hic-straw/>`__
 #. joblib >= 1.2
-#. numba >= 0.59
+#. numba >= 0.58
+#. matplotlib >= 3.7
 
 There are two recommended ways to install **BandHiC**:
 
 Option 1: Install via pip
 --------------------------
 
-If you already have Python >= 3.11 installed:
+If you already have Python >= 3.8 installed:
 
 .. code-block:: bash
 

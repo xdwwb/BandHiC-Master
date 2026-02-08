@@ -159,7 +159,7 @@ def straw_chr(
     Examples
     --------
     >>> import bandhic as bh
-    >>> mat = bh.straw_chr('/Users/wwb/Documents/workspace/BandHiC-Master/data/GSE130275_mESC_WT_combined_1.3B_microc.hic', 'chr1', resolution=10000, diag_num=200)
+    >>> mat = bh.straw_chr('./data/GSE130275_mESC_WT_combined_1.3B_microc.hic', 'chr1', resolution=10000, diag_num=200)
     >>> isinstance(mat, band_hic_matrix)
     True
     """
@@ -244,7 +244,7 @@ def straw_all_chrs(
     Examples
     --------
     >>> import bandhic as bh
-    >>> mats = bh.straw_all_chrs('/Users/wwb/Documents/workspace/BandHiC-Master/data/GSE130275_mESC_WT_combined_1.3B_microc.hic', resolution=10000, diag_num=200)
+    >>> mats = bh.straw_all_chrs('./data/GSE130275_mESC_WT_combined_1.3B_microc.hic', resolution=10000, diag_num=200)
     >>> isinstance(mats['chr1'], band_hic_matrix)
     True
     """
@@ -314,7 +314,7 @@ def cooler_chr(
     Examples
     --------
     >>> import bandhic as bh
-    >>> mat = bh.cooler_chr('/Users/wwb/Documents/workspace/BandHiC-Master/data/yeast.10kb.cool', 'chrI', resolution=10000, diag_num=10)
+    >>> mat = bh.cooler_chr('./data/yeast.10kb.cool', 'chrI', resolution=10000, diag_num=10)
     >>> isinstance(mat, band_hic_matrix)
     True
 

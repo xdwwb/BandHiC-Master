@@ -14,7 +14,7 @@ using a banded matrix representation.
 import copy
 import sys
 import warnings
-from numbers import Number
+from numbers import Number, Integral
 from typing import (
     Any,
     Callable,
@@ -706,7 +706,7 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         elif isinstance(mask_row_col, (int, np.integer)):
             mask_row_col = np.array([mask_row_col])
 
-        if isinstance(mask_row_col, np.ndarray):
+        if type(mask_row_col) is np.ndarray:
             if mask_row_col.ndim != 1:
                 raise ValueError(
                     "mask_row_col must be a 1D array, {} type is provided.".format(
@@ -819,6 +819,9 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
             k_arr = col_idx[in_range_idx] - row_idx[in_range_idx]
             # Update mask for valid entries
             self.mask[row_idx[in_range_idx], k_arr] = False
+            if self.mask_row_col is not None:
+                unmasked_row_col = np.unique(np.concatenate([row_idx[in_range_idx], col_idx[in_range_idx]]))
+                self.mask_row_col[unmasked_row_col] = False
 
     def _set_mask_by_array(self, mask_array):
         """
@@ -1250,7 +1253,7 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         # Single-element access (scalar)
 
         >>> mat[1, 2]
-        6
+        np.int64(6)
 
         # Masked element returns masked
 
@@ -1294,7 +1297,26 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
                     mask=[False, False, False, False],
             fill_value=0.0)
         """
-
+        
+        if (
+            isinstance(index, tuple)
+            and len(index) == 2
+            and isinstance(index[0], Integral)
+            and isinstance(index[1], Integral)
+        ):
+            # If both row and column indices are integers, return a scalar
+            i, j = index
+            if i < 0 or i >= self.bin_num or j < 0 or j >= self.bin_num:
+                raise IndexError("Index out of bounds.")
+            if i > j:
+                i, j = j, i  # Swap to ensure i <= j
+            k = j - i
+            if k >= self.diag_num:
+                return self.default_value
+            if self.mask is not None and self.mask[i, k]:
+                return ma.masked
+            else:
+                return self.data[i, k]
         if (
             isinstance(index, tuple)
             and isinstance(index[0], slice)
@@ -1523,6 +1545,22 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
         - If a boolean mask is used, it must be a `band_hic_matrix` with dtype `bool` and the same shape as the original matrix.
         - If a single slice is provided, it behaves like mat[i:j, i:j] for square submatrices.
         """
+        if (
+            isinstance(index, tuple)
+            and len(index) == 2
+            and isinstance(index[0], Integral)
+            and isinstance(index[1], Integral)
+        ):
+            # If both row and column indices are integers, return a scalar
+            i, j = index
+            if i < 0 or i >= self.bin_num or j < 0 or j >= self.bin_num:
+                raise IndexError("Index out of bounds.")
+            if i > j:
+                i, j = j, i  # Swap to ensure i <= j
+            k = j - i
+            if k < self.diag_num:
+                self.data[i, k] = values
+            return
         # Handle single slice: mat[i:j] means mat[i:j, i:j]
         if isinstance(index, self.__class__):
             if index.shape != self.shape:
@@ -2873,7 +2911,7 @@ class band_hic_matrix(np.lib.mixins.NDArrayOperatorsMixin):
 
     def all(
         self, axis: Optional[Union[int, str]] = None, banded_only: bool = False
-    ) -> Union[np.bool_, np.ndarray[np.bool_, Any]]:
+    ) -> Union[np.bool_, np.ndarray]:
         """
         Test whether all (or any) array elements along a given axis evaluate to True.
 

@@ -57,20 +57,21 @@ If you have any questions, please contact us:
 
 **BandHiC** could be installed in a linux-like system and requires the following dependencies.
 
-1. python >= 3.11
-2. numpy >= 2.3
-3. pandas >= 2.3
-4. scipy >= 1.16
+1. python >= 3.8
+2. numpy >= 1.24
+3. pandas >= 2.0
+4. scipy >= 1.10
 5. [cooler >= 0.10](https://cooler.readthedocs.io/en/latest/)
 6. [hic-straw](https://pypi.org/project/hic-straw) >= 1.3
 7. joblib >= 1.2
-8. numba >= 0.59
+8. numba >= 0.58
+9. matplotlib >=3.7
 
 There are two recommended ways to install **BandHiC**:
 
 ### Option 1: Install via `pip`
 
-If you already have Python ≥ 3.11 installed:
+If you already have Python ≥ 3.8 installed:
 
 ```bash
 $ pip install bandhic
@@ -131,7 +132,8 @@ Using Conda provides prebuilt binaries on many platforms and avoids local compil
 
 For detailed, system-specific installation instructions, please refer to the official *straw* repository maintained by the Aiden Lab:
 
-https://github.com/aidenlab/straw
+[https://github.com/aidenlab/straw](https://github.com/aidenlab/straw)
+
 -----
 
 ## 🚀 Quick Start
@@ -483,6 +485,29 @@ Compute the sum of all elements along the `diag` axis
 ```
 ---
 
+### Example data and tutorial notebook
+
+To help users get started quickly, we provide a lightweight example dataset together with an interactive tutorial.
+
+The file `data/sample.npz` contains a small Hi-C matrix stored in NumPy NPZ format and serves as a minimal working example. Due to their large file sizes, raw `.hic` and `.mcool` files are not included in the repository.
+
+An interactive Jupyter notebook is provided in the `test/` directory:
+
+- **Tutorial notebook**: [`test/tutorial_bandhic.ipynb`](test/tutorial_bandhic.ipynb)
+
+This notebook uses `data/sample.npz` as a running example and demonstrates, step by step, how to:
+- load a Hi-C matrix from an NPZ file,
+- construct a `BandHiC` object,
+- perform basic indexing and data access operations,
+- visualize and inspect the matrix content.
+
+Users can open and run the notebook locally using Jupyter Notebook or JupyterLab. For convenience, the notebook can also be viewed directly on GitHub or launched in an online environment such as Binder.
+
+#### Running the tutorial notebook locally
+
+```bash
+jupyter notebook test/tutorial_bandhic.ipynb
+```
 
 ## 📝 License
 

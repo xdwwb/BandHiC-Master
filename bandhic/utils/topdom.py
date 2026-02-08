@@ -367,7 +367,7 @@ def Get_Diamond_Matrix(mat_data, i, size):
     return mat_data[lowerbound : (i + 1), (i + 1) : (upperbound + 1)]
 
 
-def Which_Gap_Region2(matrix_data, w):
+def Which_Gap_Region2(matrix_data, w, k=0):
     n_bins = matrix_data.shape[0]
     gap = np.zeros(n_bins)
     if (

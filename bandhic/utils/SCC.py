@@ -30,11 +30,12 @@ def scc(
 
     Examples
     --------
-    >>> from bandhic import band_hic_matrix
-    >>> from bandhic import scc
-    >>> A = band_hic_matrix.straw_chr("example1.hic", "chr1", 10000, diag_num=200)
-    >>> B = band_hic_matrix.straw_chr("example2.hic", "chr1", 10000, diag_num=200)
+    >>> import bandhic as bh
+    >>> A = bh.straw_chr("./data/GSE130275_mESC_WT_combined_1.3B_microc.hic", "chr1", 100_000, diag_num=20)
+    >>> B = A.copy()
     >>> scc, per_diag = scc(A, B)
+    >>> scc
+    1.0
     """
 
     if A.shape != B.shape:

@@ -490,7 +490,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import bandhic as bh</span>
-<span class="sd">    &gt;&gt;&gt; mat = bh.straw_chr(&#39;/Users/wwb/Documents/workspace/BandHiC-Master/data/GSE130275_mESC_WT_combined_1.3B_microc.hic&#39;, &#39;chr1&#39;, resolution=10000, diag_num=200)</span>
+<span class="sd">    &gt;&gt;&gt; mat = bh.straw_chr(&#39;./data/GSE130275_mESC_WT_combined_1.3B_microc.hic&#39;, &#39;chr1&#39;, resolution=10000, diag_num=200)</span>
 <span class="sd">    &gt;&gt;&gt; isinstance(mat, band_hic_matrix)</span>
 <span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -575,7 +575,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import bandhic as bh</span>
-<span class="sd">    &gt;&gt;&gt; mats = bh.straw_all_chrs(&#39;/Users/wwb/Documents/workspace/BandHiC-Master/data/GSE130275_mESC_WT_combined_1.3B_microc.hic&#39;, resolution=10000, diag_num=200)</span>
+<span class="sd">    &gt;&gt;&gt; mats = bh.straw_all_chrs(&#39;./data/GSE130275_mESC_WT_combined_1.3B_microc.hic&#39;, resolution=10000, diag_num=200)</span>
 <span class="sd">    &gt;&gt;&gt; isinstance(mats[&#39;chr1&#39;], band_hic_matrix)</span>
 <span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -645,7 +645,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import bandhic as bh</span>
-<span class="sd">    &gt;&gt;&gt; mat = bh.cooler_chr(&#39;/Users/wwb/Documents/workspace/BandHiC-Master/data/yeast.10kb.cool&#39;, &#39;chrI&#39;, resolution=10000, diag_num=10)</span>
+<span class="sd">    &gt;&gt;&gt; mat = bh.cooler_chr(&#39;./data/yeast.10kb.cool&#39;, &#39;chrI&#39;, resolution=10000, diag_num=10)</span>
 <span class="sd">    &gt;&gt;&gt; isinstance(mat, band_hic_matrix)</span>
 <span class="sd">    True</span>
 

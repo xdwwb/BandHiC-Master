@@ -3,11 +3,12 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python>=3.11
-  - numpy>=2.3
-  - scipy>=1.16
-  - pandas>=2.3
+  - python>=3.8
+  - numpy>=1.24
+  - scipy>=1.10
+  - pandas>=2.0
   - joblib>=1.2
-  - numba>=0.59
+  - numba>=0.58
+  - matplotlib>=3.7
   - pip:
     - cooler>=0.10

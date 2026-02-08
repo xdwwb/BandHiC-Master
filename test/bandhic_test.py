@@ -322,7 +322,7 @@ def test_mean_sum_prod_var_std_ptp(example_band_matrix):
     assert mat.prod() == np.prod(mat_expect)  # because zeros in off-diagonal
     assert mat.var() == mat_expect.var(ddof=0)
     assert mat.std() == mat_expect.std(ddof=0)
-    assert mat.ptp() == mat_expect.ptp()
+    assert mat.ptp() == np.ptp(mat_expect)
     # Axis reductions
     rows = mat.mean(axis="row")
     np.testing.assert_array_equal(rows, mat_expect.mean(axis=0))

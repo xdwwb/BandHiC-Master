@@ -698,7 +698,7 @@
     <span class="k">return</span> <span class="n">mat_data</span><span class="p">[</span><span class="n">lowerbound</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:</span> <span class="p">(</span><span class="n">upperbound</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">Which_Gap_Region2</span><span class="p">(</span><span class="n">matrix_data</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">Which_Gap_Region2</span><span class="p">(</span><span class="n">matrix_data</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="n">n_bins</span> <span class="o">=</span> <span class="n">matrix_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">gap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_bins</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span>

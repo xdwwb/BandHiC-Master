@@ -5,7 +5,6 @@ import os
 import numbers
 
 # Pytest-based test suite for band_hic_matrix
-from matplotlib import axis
 import pytest
 import numpy as np
 from scipy.sparse import coo_matrix
@@ -20,7 +19,7 @@ import bandhic as bh
 def base_band_matrix():
     # Create the heavy band_hic_matrix once
     params = {
-        "path": "/Users/wwb/Documents/workspace/BandHiC-Master/data/GSE130275_mESC_WT_combined_1.3B_microc.hic",
+        "path": "./data/GSE130275_mESC_WT_combined_1.3B_microc.hic",
         "chrom": "chr19",
         "resolution": 10000,
         "diag_num": 200,

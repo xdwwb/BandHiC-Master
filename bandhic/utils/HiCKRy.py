@@ -55,6 +55,21 @@ def compute_bin_bias(
     is_valid : bool
         A boolean indicating whether the bias vector is valid (mean and median within typical range).
 
+    Examples
+    --------
+    >>> import scipy.sparse as sps
+    >>> from bandhic import compute_bin_bias
+    >>> # Create a sample sparse COO matrix
+    >>> row = np.array([0, 1, 2, 0, 1, 2])
+    >>> col = np.array([0, 1, 2, 1, 2, 0])
+    >>> data = np.array([10, 10, 10, 0, 0, 0])
+    >>> hic_coo = sps.coo_array((data, (row, col)), shape=(3, 3))
+    >>> bias, is_valid = compute_bin_bias(hic_coo, verbose=False)
+    >>> print(bias)
+    [1. 1. 1.]
+    >>> print(is_valid)
+    True
+    
     Notes
     -----
     This function removes a specified percentage of the most sparse bins from the Hi-C matrix before computing
@@ -227,7 +242,7 @@ def removeZeroDiagonalCSR(mtx, perc, verbose):
             % valToRemove
         )
     for value in rowSums:
-        if value[1] <= valToRemove:
+        if value[1] < valToRemove:
             toRemove.append(value[0])
     list(set(toRemove))
     toRemove.sort()
@@ -258,7 +273,7 @@ def addZeroBiases(lst, vctr):
 def dropcols_coo(M, idx_to_drop):
     idx_to_drop = np.unique(idx_to_drop)
     C = M.tocoo()
-    keep = ~np.in1d(C.col, idx_to_drop)
+    keep = ~np.isin(C.col, idx_to_drop)
     C.data, C.row, C.col = C.data[keep], C.row[keep], C.col[keep]
     C.col -= idx_to_drop.searchsorted(C.col)  # decrement column indices
     C._shape = (C.shape[0], C.shape[1] - len(idx_to_drop))
@@ -454,7 +469,16 @@ def main():
         outputBias(bias, revFrag, args.output)
     else:
         print("Error!!!")
+        
+def main_test():
+    import scipy.sparse as sps
+    # Create a sample sparse COO matrix
+    row = np.array([0, 1, 2, 0, 1, 2])
+    col = np.array([0, 1, 2, 1, 2, 0])
+    data = np.array([10, 20, 30, 40, 50, 60])
+    hic_coo = sps.coo_array((data, (row, col)), shape=(3, 3))
+    bias, is_valid = compute_bin_bias(hic_coo, verbose=False)
 
 
 if __name__ == "__main__":
-    main()
+    main_test()
